@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
 import { VisaIcon, MastercardIcon, AmexIcon, PayPalIcon, ApplePayIcon, GooglePayIcon } from './PaymentIcons';
 import { trackFormSubmit, trackPhoneClick } from '../lib/analytics';
+import { supabase } from '../lib/supabase';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -13,18 +14,42 @@ export default function ContactForm() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError('');
 
-    trackFormSubmit('Contact Form');
+    try {
+      // Save to database
+      const { error: dbError } = await supabase
+        .from('contact_inquiries')
+        .insert({
+          full_name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          destination: formData.destination,
+          message: formData.message,
+          status: 'new'
+        });
 
-    setSubmitted(true);
+      if (dbError) throw dbError;
 
-    setTimeout(() => {
-      trackPhoneClick('888-602-6667');
-      window.location.href = 'tel:888-602-6667';
-    }, 2000);
+      trackFormSubmit('Contact Form');
+      setSubmitted(true);
+
+      setTimeout(() => {
+        trackPhoneClick('888-602-6667');
+        window.location.href = 'tel:888-602-6667';
+      }, 2000);
+    } catch (err: any) {
+      console.error('Error submitting form:', err);
+      setError('Failed to submit form. Please try again or call us directly at 888-602-6667');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -171,6 +196,11 @@ export default function ContactForm() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800 text-sm">
+                    {error}
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Full Name *
@@ -253,10 +283,11 @@ export default function ContactForm() {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-brand-red to-brand-red/90 text-white py-4 rounded-lg font-bold text-lg hover:from-brand-red/90 hover:to-brand-red/80 transition shadow-lg flex items-center justify-center gap-2"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-brand-red to-brand-red/90 text-white py-4 rounded-lg font-bold text-lg hover:from-brand-red/90 hover:to-brand-red/80 transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-5 h-5" />
-                  Submit & Get Free Quote
+                  {isSubmitting ? 'Submitting...' : 'Submit & Get Free Quote'}
                 </button>
 
                 <p className="text-xs text-gray-500 text-center">

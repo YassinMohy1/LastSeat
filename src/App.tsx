@@ -9,6 +9,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import CreateInvoice from './pages/CreateInvoice';
 import CustomerPayment from './pages/CustomerPayment';
 import CustomersManagement from './pages/CustomersManagement';
+import InquiriesManagement from './pages/InquiriesManagement';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
@@ -26,6 +27,7 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/create-invoice" element={<CreateInvoice />} />
           <Route path="/admin/customers" element={<CustomersManagement />} />
+          <Route path="/admin/inquiries" element={<InquiriesManagement />} />
 
           <Route path="/pay/:paymentLink" element={<CustomerPayment />} />
         </Routes>
