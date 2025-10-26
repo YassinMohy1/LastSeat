@@ -188,7 +188,7 @@ export default function Reviews() {
 
         <div className="mt-8 text-center">
           <a
-            href="https://www.trustpilot.com/review/lastseatticket.com"
+            href="https://www.trustpilot.com/review/lastseattickets.com"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-[#00B67A] hover:bg-[#009963] text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
