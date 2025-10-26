@@ -10,10 +10,10 @@ export default function Hero() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="/WhatsApp Video 2025-10-26 at 3.57.56 AM.mp4" type="video/mp4" />
+        <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=68ffac37&is=68fe5ab7&hm=af607192c54b40c6ef2a4bdcd429d16c4224c13bf6c532f2f4805203cbc5bf74&" type="video/mp4" />
       </video>
 
-      <div className="absolute inset-0 bg-black/40"></div>
+      <div className="absolute inset-0 bg-black/30"></div>
 
       <div className="container mx-auto relative z-10">
         <div className="text-center mb-8 animate-fadeIn">
