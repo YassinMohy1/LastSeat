@@ -1,0 +1,75 @@
+{
+  "product": {
+    "name": "Round Trip Flight to Montego Bay",
+    "destination": "Montego Bay, Jamaica (MBJ)",
+    "origin": "New York (JFK)",
+    "base_fare": 399.00,
+    "currency": "USD"
+  },
+  "flights": {
+    "outbound": {
+      "date": "March 15, 2025",
+      "departure_time": "08:30 AM",
+      "arrival_time": "12:45 PM",
+      "duration": "4h 15m",
+      "airline": "Caribbean Airlines",
+      "flight_number": "CA 123",
+      "from": "New York (JFK)",
+      "to": "Montego Bay (MBJ)"
+    },
+    "return": {
+      "date": "March 22, 2025",
+      "departure_time": "02:00 PM",
+      "arrival_time": "06:30 PM",
+      "duration": "4h 30m",
+      "airline": "Caribbean Airlines",
+      "flight_number": "CA 456",
+      "from": "Montego Bay (MBJ)",
+      "to": "New York (JFK)"
+    }
+  },
+  "addons": {
+    "plans": [
+      {
+        "id": "none",
+        "title": "No Protection",
+        "price": 0,
+        "features": []
+      },
+      {
+        "id": "basic",
+        "title": "Basic Plan",
+        "price": 54.99,
+        "features": [
+          "Flight Change Fee Waiver",
+          "24/7 Customer Support",
+          "Basic Trip Interruption Coverage"
+        ]
+      },
+      {
+        "id": "premium",
+        "title": "Premium Plan",
+        "price": 84.99,
+        "features": [
+          "Flight Change Fee Waiver",
+          "24/7 Premium Customer Support",
+          "Trip Interruption Coverage",
+          "Travel Delay Coverage",
+          "Medical Emergency Assistance",
+          "Baggage Delay Coverage"
+        ],
+        "recommended": true
+      }
+    ],
+    "baggage_protection": {
+      "price": 19.99,
+      "coverage": "$2,000 per lost bag",
+      "description": "Covers up to $2,000 per lost bag with 24-hour claim processing"
+    }
+  },
+  "fees": {
+    "tax_rate": 7.5,
+    "service_fee": 29.00
+  },
+  "currency_display": "symbol"
+}

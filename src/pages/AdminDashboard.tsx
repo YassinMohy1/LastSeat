@@ -1,0 +1,634 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+import {
+  LogOut,
+  Plus,
+  FileText,
+  DollarSign,
+  CheckCircle,
+  Clock,
+  XCircle,
+  Eye,
+  Copy,
+  Check,
+  Users,
+  TrendingUp,
+  Calendar,
+  Filter,
+  Search,
+  RefreshCw,
+  MoreVertical,
+  Download,
+  Edit,
+  Trash2,
+  AlertCircle
+} from 'lucide-react';
+
+interface Invoice {
+  id: string;
+  invoice_number: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string | null;
+  flight_from: string;
+  flight_to: string;
+  departure_date: string;
+  return_date: string | null;
+  passengers: number;
+  cabin_class: string;
+  amount: number;
+  currency: string;
+  payment_status: string;
+  payment_method: string | null;
+  payment_link: string;
+  notes: string | null;
+  created_at: string;
+  paid_at: string | null;
+}
+
+export default function AdminDashboard() {
+  const { adminProfile, signOut, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<string>('all');
+  const [stats, setStats] = useState({
+    total: 0,
+    pending: 0,
+    paid: 0,
+    cancelled: 0,
+    revenue: 0,
+    todayRevenue: 0,
+    monthRevenue: 0
+  });
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (authLoading) return;
+
+    if (!adminProfile) {
+      navigate('/login', { replace: true });
+      return;
+    }
+
+    if (adminProfile.role !== 'admin') {
+      navigate('/', { replace: true });
+      return;
+    }
+
+    fetchInvoices();
+  }, [authLoading, adminProfile, navigate]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-brand-blue"></div>
+          <p className="mt-4 text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!adminProfile) {
+    return null;
+  }
+
+  useEffect(() => {
+    filterInvoices();
+  }, [searchQuery, statusFilter, dateFilter, invoices]);
+
+  const fetchInvoices = async () => {
+    try {
+      setRefreshing(true);
+      const { data, error } = await supabase
+        .from('invoices')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setInvoices(data || []);
+      calculateStats(data || []);
+    } catch (error) {
+      console.error('Error fetching invoices:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const calculateStats = (data: Invoice[]) => {
+    const total = data.length;
+    const pending = data.filter(inv => inv.payment_status === 'pending').length;
+    const paid = data.filter(inv => inv.payment_status === 'paid').length;
+    const cancelled = data.filter(inv => inv.payment_status === 'cancelled').length;
+
+    const revenue = data
+      .filter(inv => inv.payment_status === 'paid')
+      .reduce((sum, inv) => sum + Number(inv.amount), 0);
+
+    const today = new Date().toDateString();
+    const todayRevenue = data
+      .filter(inv => inv.payment_status === 'paid' && inv.paid_at && new Date(inv.paid_at).toDateString() === today)
+      .reduce((sum, inv) => sum + Number(inv.amount), 0);
+
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const monthRevenue = data
+      .filter(inv => {
+        if (inv.payment_status === 'paid' && inv.paid_at) {
+          const paidDate = new Date(inv.paid_at);
+          return paidDate.getMonth() === currentMonth && paidDate.getFullYear() === currentYear;
+        }
+        return false;
+      })
+      .reduce((sum, inv) => sum + Number(inv.amount), 0);
+
+    setStats({ total, pending, paid, cancelled, revenue, todayRevenue, monthRevenue });
+  };
+
+  const filterInvoices = () => {
+    let filtered = [...invoices];
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(inv =>
+        inv.invoice_number.toLowerCase().includes(query) ||
+        inv.customer_name.toLowerCase().includes(query) ||
+        inv.customer_email.toLowerCase().includes(query) ||
+        inv.flight_from.toLowerCase().includes(query) ||
+        inv.flight_to.toLowerCase().includes(query)
+      );
+    }
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(inv => inv.payment_status === statusFilter);
+    }
+
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      filtered = filtered.filter(inv => {
+        const createdDate = new Date(inv.created_at);
+        switch (dateFilter) {
+          case 'today':
+            return createdDate.toDateString() === now.toDateString();
+          case 'week':
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            return createdDate >= weekAgo;
+          case 'month':
+            return createdDate.getMonth() === now.getMonth() &&
+                   createdDate.getFullYear() === now.getFullYear();
+          default:
+            return true;
+        }
+      });
+    }
+
+    setFilteredInvoices(filtered);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    alert('تم تسجيل الخروج بنجاح');
+    window.location.href = '/login';
+  };
+
+  const copyPaymentLink = (invoiceId: string, paymentLink: string) => {
+    const fullLink = `${window.location.origin}/pay/${paymentLink}`;
+    navigator.clipboard.writeText(fullLink);
+    setCopiedId(invoiceId);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const updateInvoiceStatus = async (invoiceId: string, newStatus: string) => {
+    try {
+      const updateData: any = { payment_status: newStatus };
+      if (newStatus === 'paid' && !invoices.find(i => i.id === invoiceId)?.paid_at) {
+        updateData.paid_at = new Date().toISOString();
+      }
+
+      const { error } = await supabase
+        .from('invoices')
+        .update(updateData)
+        .eq('id', invoiceId);
+
+      if (error) throw error;
+
+      await fetchInvoices();
+      setSelectedInvoice(null);
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+    }
+  };
+
+  const deleteInvoice = async (invoiceId: string) => {
+    if (!confirm('هل أنت متأكد من حذف هذه الفاتورة؟')) return;
+
+    try {
+      const { error } = await supabase
+        .from('invoices')
+        .delete()
+        .eq('id', invoiceId);
+
+      if (error) throw error;
+
+      await fetchInvoices();
+      setSelectedInvoice(null);
+    } catch (error) {
+      console.error('Error deleting invoice:', error);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const styles = {
+      pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      paid: 'bg-green-100 text-green-800 border-green-200',
+      cancelled: 'bg-red-100 text-red-800 border-red-200'
+    };
+    const icons = {
+      pending: <Clock className="w-4 h-4" />,
+      paid: <CheckCircle className="w-4 h-4" />,
+      cancelled: <XCircle className="w-4 h-4" />
+    };
+    const labels = {
+      pending: 'قيد الانتظار',
+      paid: 'مدفوعة',
+      cancelled: 'ملغية'
+    };
+
+    return (
+      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${styles[status as keyof typeof styles]}`}>
+        {icons[status as keyof typeof icons]}
+        {labels[status as keyof typeof labels]}
+      </span>
+    );
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="bg-gradient-to-r from-brand-blue to-blue-600 w-12 h-12 rounded-xl flex items-center justify-center">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">لوحة التحكم</h1>
+                <p className="text-sm text-gray-600">مرحباً، {adminProfile?.full_name}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate('/admin/customers')}
+                className="bg-white text-brand-blue border-2 border-brand-blue px-5 py-2.5 rounded-lg font-semibold hover:bg-brand-blue hover:text-white transition-all duration-300 flex items-center gap-2"
+              >
+                <Users className="w-5 h-5" />
+                إدارة العملاء
+              </button>
+              <button
+                onClick={() => navigate('/admin/create-invoice')}
+                className="bg-gradient-to-r from-brand-blue to-blue-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+              >
+                <Plus className="w-5 h-5" />
+                إنشاء فاتورة
+              </button>
+              <button
+                onClick={handleSignOut}
+                className="bg-gray-100 text-gray-700 px-4 py-2.5 rounded-lg font-semibold hover:bg-gray-200 transition-all flex items-center gap-2"
+              >
+                <LogOut className="w-5 h-5" />
+                تسجيل الخروج
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="text-blue-100 text-sm font-medium">إجمالي الفواتير</p>
+                <p className="text-3xl font-bold mt-1">{stats.total}</p>
+              </div>
+              <div className="bg-white/20 p-3 rounded-lg">
+                <FileText className="w-8 h-8" />
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-blue-100 text-sm">
+              <TrendingUp className="w-4 h-4" />
+              <span>جميع الفواتير المسجلة</span>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="text-yellow-100 text-sm font-medium">قيد الانتظار</p>
+                <p className="text-3xl font-bold mt-1">{stats.pending}</p>
+              </div>
+              <div className="bg-white/20 p-3 rounded-lg">
+                <Clock className="w-8 h-8" />
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-yellow-100 text-sm">
+              <AlertCircle className="w-4 h-4" />
+              <span>في انتظار الدفع</span>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="text-green-100 text-sm font-medium">المدفوعة</p>
+                <p className="text-3xl font-bold mt-1">{stats.paid}</p>
+              </div>
+              <div className="bg-white/20 p-3 rounded-lg">
+                <CheckCircle className="w-8 h-8" />
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-green-100 text-sm">
+              <DollarSign className="w-4 h-4" />
+              <span>{formatCurrency(stats.revenue)}</span>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-xl p-6 text-white shadow-lg">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <p className="text-red-100 text-sm font-medium">الملغية</p>
+                <p className="text-3xl font-bold mt-1">{stats.cancelled}</p>
+              </div>
+              <div className="bg-white/20 p-3 rounded-lg">
+                <XCircle className="w-8 h-8" />
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-red-100 text-sm">
+              <XCircle className="w-4 h-4" />
+              <span>فواتير ملغاة</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="bg-emerald-100 p-2 rounded-lg">
+                <DollarSign className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">إيرادات اليوم</p>
+                <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.todayRevenue)}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <Calendar className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">إيرادات الشهر</p>
+                <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.monthRevenue)}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="bg-purple-100 p-2 rounded-lg">
+                <TrendingUp className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">إجمالي الإيرادات</p>
+                <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.revenue)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-bold text-gray-900">الفواتير</h2>
+                <button
+                  onClick={fetchInvoices}
+                  disabled={refreshing}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 text-gray-600 ${refreshing ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="بحث في الفواتير..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+                  />
+                </div>
+
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+                >
+                  <option value="all">كل الحالات</option>
+                  <option value="pending">قيد الانتظار</option>
+                  <option value="paid">مدفوعة</option>
+                  <option value="cancelled">ملغية</option>
+                </select>
+
+                <select
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                  className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+                >
+                  <option value="all">كل الفترات</option>
+                  <option value="today">اليوم</option>
+                  <option value="week">آخر أسبوع</option>
+                  <option value="month">هذا الشهر</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="p-12 text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-brand-blue"></div>
+              <p className="mt-4 text-gray-600">جاري التحميل...</p>
+            </div>
+          ) : filteredInvoices.length === 0 ? (
+            <div className="p-12 text-center">
+              <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600 text-lg mb-2">
+                {searchQuery || statusFilter !== 'all' || dateFilter !== 'all'
+                  ? 'لا توجد نتائج مطابقة للبحث'
+                  : 'لا توجد فواتير بعد'}
+              </p>
+              {!searchQuery && statusFilter === 'all' && dateFilter === 'all' && (
+                <button
+                  onClick={() => navigate('/admin/create-invoice')}
+                  className="mt-4 text-brand-blue font-semibold hover:underline"
+                >
+                  إنشاء أول فاتورة
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full" dir="rtl">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700">رقم الفاتورة</th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700">العميل</th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700">الرحلة</th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700">تاريخ السفر</th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700">المبلغ</th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700">الحالة</th>
+                    <th className="px-6 py-3 text-center text-xs font-semibold text-gray-700">الإجراءات</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredInvoices.map((invoice) => (
+                    <tr key={invoice.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">{invoice.invoice_number}</div>
+                        <div className="text-xs text-gray-500">
+                          {new Date(invoice.created_at).toLocaleDateString('ar-EG')}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">{invoice.customer_name}</div>
+                        <div className="text-xs text-gray-500">{invoice.customer_email}</div>
+                        {invoice.customer_phone && (
+                          <div className="text-xs text-gray-500">{invoice.customer_phone}</div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">{invoice.flight_from} ← {invoice.flight_to}</div>
+                        <div className="text-xs text-gray-500">
+                          {invoice.passengers} راكب • {invoice.cabin_class}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">
+                          {new Date(invoice.departure_date).toLocaleDateString('ar-EG')}
+                        </div>
+                        {invoice.return_date && (
+                          <div className="text-xs text-gray-500">
+                            العودة: {new Date(invoice.return_date).toLocaleDateString('ar-EG')}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-semibold text-gray-900">
+                          {formatCurrency(Number(invoice.amount))}
+                        </div>
+                        {invoice.payment_method && (
+                          <div className="text-xs text-gray-500">{invoice.payment_method}</div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        {getStatusBadge(invoice.payment_status)}
+                        {invoice.paid_at && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            {new Date(invoice.paid_at).toLocaleDateString('ar-EG')}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => copyPaymentLink(invoice.id, invoice.payment_link)}
+                            className="p-2 text-brand-blue hover:bg-blue-50 rounded-lg transition-colors"
+                            title="نسخ رابط الدفع"
+                          >
+                            {copiedId === invoice.id ? (
+                              <Check className="w-4 h-4 text-green-600" />
+                            ) : (
+                              <Copy className="w-4 h-4" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => window.open(`/pay/${invoice.payment_link}`, '_blank')}
+                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                            title="معاينة"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <div className="relative">
+                            <button
+                              onClick={() => setSelectedInvoice(selectedInvoice === invoice.id ? null : invoice.id)}
+                              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                              <MoreVertical className="w-4 h-4" />
+                            </button>
+                            {selectedInvoice === invoice.id && (
+                              <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                                <div className="py-1">
+                                  {invoice.payment_status === 'pending' && (
+                                    <button
+                                      onClick={() => updateInvoiceStatus(invoice.id, 'paid')}
+                                      className="w-full px-4 py-2 text-right text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                    >
+                                      <CheckCircle className="w-4 h-4 text-green-600" />
+                                      تحديد كمدفوعة
+                                    </button>
+                                  )}
+                                  {invoice.payment_status !== 'cancelled' && (
+                                    <button
+                                      onClick={() => updateInvoiceStatus(invoice.id, 'cancelled')}
+                                      className="w-full px-4 py-2 text-right text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                    >
+                                      <XCircle className="w-4 h-4 text-red-600" />
+                                      إلغاء الفاتورة
+                                    </button>
+                                  )}
+                                  <button
+                                    onClick={() => deleteInvoice(invoice.id)}
+                                    className="w-full px-4 py-2 text-right text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                    حذف الفاتورة
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}
