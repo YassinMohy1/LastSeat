@@ -1,6 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './components/ToastContainer';
 import Home from './pages/Home';
@@ -13,8 +11,6 @@ import CustomerPayment from './pages/CustomerPayment';
 import CustomersManagement from './pages/CustomersManagement';
 import InquiriesManagement from './pages/InquiriesManagement';
 import FlightInquiriesManagement from './pages/FlightInquiriesManagement';
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 function App() {
   return (

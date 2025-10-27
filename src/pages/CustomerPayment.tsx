@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import {
   Plane,
   Calendar,
@@ -13,8 +11,6 @@ import {
   Loader2,
   AlertCircle
 } from 'lucide-react';
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 interface Invoice {
   id: string;
@@ -34,102 +30,15 @@ interface Invoice {
   notes: string | null;
 }
 
-function PaymentForm({ invoice }: { invoice: Invoice }) {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
-
-    setError('');
-    setLoading(true);
-
-    try {
-      const { error: submitError } = await elements.submit();
-      if (submitError) throw submitError;
-
-      const { error: confirmError } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/payment-success`,
-        },
-      });
-
-      if (confirmError) throw confirmError;
-
-      setSuccess(true);
-
-      await supabase
-        .from('invoices')
-        .update({
-          payment_status: 'paid',
-          payment_method: 'visa',
-          paid_at: new Date().toISOString()
-        })
-        .eq('id', invoice.id);
-    } catch (err: any) {
-      setError(err.message || 'فشل إتمام الدفع');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (success) {
-    return (
-      <div className="text-center py-12">
-        <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <CheckCircle className="w-10 h-10 text-green-600" />
-        </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">تم الدفع بنجاح!</h3>
-        <p className="text-gray-600">شكراً لك، تم استلام دفعتك</p>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
-          {error}
-        </div>
-      )}
-
-      <PaymentElement />
-
-      <button
-        type="submit"
-        disabled={!stripe || loading}
-        className="w-full bg-gradient-to-r from-brand-blue to-blue-600 text-white py-4 rounded-lg font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            جاري المعالجة...
-          </>
-        ) : (
-          <>
-            <CreditCard className="w-5 h-5" />
-            ادفع ${Number(invoice.amount).toFixed(2)}
-          </>
-        )}
-      </button>
-    </form>
-  );
-}
-
 export default function CustomerPayment() {
   const { paymentLink } = useParams();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'visa' | 'bank' | null>(null);
-  const [clientSecret, setClientSecret] = useState('');
+  const [paymentUrl, setPaymentUrl] = useState('');
   const [bankTransferSuccess, setBankTransferSuccess] = useState(false);
+  const [processingPayment, setProcessingPayment] = useState(false);
 
   useEffect(() => {
     fetchInvoice();
@@ -158,9 +67,12 @@ export default function CustomerPayment() {
     setPaymentMethod(method);
 
     if (method === 'visa') {
+      setProcessingPayment(true);
       try {
+        const redirectUrl = `${window.location.origin}/payment-success?invoice=${invoice!.invoice_number}`;
+
         const response = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-payment-intent`,
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-create-payment`,
           {
             method: 'POST',
             headers: {
@@ -169,9 +81,11 @@ export default function CustomerPayment() {
             },
             body: JSON.stringify({
               amount: invoice!.amount,
-              currency: invoice!.currency.toLowerCase(),
+              currency: invoice!.currency,
               description: `Flight Booking - ${invoice!.invoice_number}`,
               customerEmail: invoice!.customer_email,
+              invoiceNumber: invoice!.invoice_number,
+              redirectUrl: redirectUrl,
             }),
           }
         );
@@ -182,9 +96,16 @@ export default function CustomerPayment() {
         }
 
         const data = await response.json();
-        setClientSecret(data.clientSecret);
+
+        if (data.formUrl) {
+          window.location.href = data.formUrl;
+        } else {
+          throw new Error('فشل الحصول على رابط الدفع');
+        }
       } catch (err: any) {
         setError(err.message || 'فشل تهيئة الدفع');
+        setProcessingPayment(false);
+        setPaymentMethod(null);
       }
     }
   };
@@ -194,15 +115,14 @@ export default function CustomerPayment() {
       await supabase
         .from('invoices')
         .update({
-          payment_status: 'paid',
+          payment_status: 'pending',
           payment_method: 'bank_transfer',
-          paid_at: new Date().toISOString()
         })
         .eq('id', invoice!.id);
 
       setBankTransferSuccess(true);
-    } catch (err) {
-      setError('فشل تأكيد الدفع');
+    } catch (err: any) {
+      setError(err.message || 'فشل تأكيد التحويل');
     }
   };
 
@@ -211,35 +131,50 @@ export default function CustomerPayment() {
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-white animate-spin mx-auto mb-4" />
-          <p className="text-white text-lg">جاري التحميل...</p>
+          <p className="text-white">جاري التحميل...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error && !invoice) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">حدث خطأ</h2>
-          <p className="text-gray-600">{error}</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">خطأ</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <a
+            href="/"
+            className="inline-block bg-brand-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+          >
+            العودة للصفحة الرئيسية
+          </a>
         </div>
       </div>
     );
   }
 
-  if (!invoice) {
-    return null;
-  }
+  if (!invoice) return null;
 
   if (invoice.payment_status === 'paid') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">تم الدفع بالفعل</h2>
-          <p className="text-gray-600">هذه الفاتورة تم دفعها مسبقاً</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">تم الدفع مسبقاً</h2>
+          <p className="text-gray-600">هذه الفاتورة تم دفعها بالفعل</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (processingPayment) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-white animate-spin mx-auto mb-4" />
+          <p className="text-white text-lg">جاري تحويلك لصفحة الدفع الآمنة...</p>
         </div>
       </div>
     );
@@ -249,7 +184,6 @@ export default function CustomerPayment() {
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Header */}
           <div className="bg-gradient-to-r from-brand-blue to-blue-600 px-8 py-6">
             <h1 className="text-2xl font-bold text-white mb-2">فاتورة رقم {invoice.invoice_number}</h1>
             <p className="text-blue-100">أكمل الدفع لإتمام حجزك</p>
@@ -257,7 +191,6 @@ export default function CustomerPayment() {
 
           <div className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              {/* Invoice Details */}
               <div>
                 <h2 className="text-lg font-bold text-gray-900 mb-4">تفاصيل الحجز</h2>
                 <div className="space-y-3">
@@ -292,7 +225,6 @@ export default function CustomerPayment() {
                 </div>
               </div>
 
-              {/* Payment Method Selection or Form */}
               <div>
                 <h2 className="text-lg font-bold text-gray-900 mb-4">طريقة الدفع</h2>
 
@@ -327,21 +259,6 @@ export default function CustomerPayment() {
                         </div>
                       </div>
                     </button>
-                  </div>
-                ) : paymentMethod === 'visa' && clientSecret ? (
-                  <div>
-                    <button
-                      onClick={() => {
-                        setPaymentMethod(null);
-                        setClientSecret('');
-                      }}
-                      className="text-sm text-brand-blue hover:underline mb-4"
-                    >
-                      ← تغيير طريقة الدفع
-                    </button>
-                    <Elements stripe={stripePromise} options={{ clientSecret }}>
-                      <PaymentForm invoice={invoice} />
-                    </Elements>
                   </div>
                 ) : paymentMethod === 'bank' ? (
                   <div>
@@ -385,6 +302,13 @@ export default function CustomerPayment() {
                     )}
                   </div>
                 ) : null}
+
+                {error && paymentMethod && (
+                  <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                    {error}
+                  </div>
+                )}
               </div>
             </div>
 
