@@ -5,6 +5,7 @@ declare global {
   interface Window {
     CollectJS: {
       configure: (config: any) => void;
+      startPaymentRequest: () => void;
     };
   }
 }
@@ -167,7 +168,14 @@ export default function NMIPaymentForm({
       return;
     }
 
-    setProcessing(true);
+    try {
+      setProcessing(true);
+      window.CollectJS.startPaymentRequest();
+    } catch (err: any) {
+      console.error('Error starting payment request:', err);
+      onError('Failed to process payment. Please try again.');
+      setProcessing(false);
+    }
   };
 
   return (
