@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Calendar, Users } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Calendar, Users, ChevronDown } from 'lucide-react';
 import { trackSearchFlight, trackButtonClick } from '../lib/analytics';
 import CityAutocomplete from './CityAutocomplete';
 
@@ -9,7 +9,25 @@ export default function SearchBar() {
   const [destination, setDestination] = useState('');
   const [departDate, setDepartDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
-  const [passengers, setPassengers] = useState('1 Adult, Economy');
+  const [adults, setAdults] = useState(1);
+  const [cabin, setCabin] = useState<'Economy' | 'Business' | 'First Class'>('Economy');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const getPassengersDisplay = () => {
+    return `${adults} Adult${adults > 1 ? 's' : ''}, ${cabin}`;
+  };
 
   const formatDateDisplay = (dateStr: string) => {
     if (!dateStr) return '';
@@ -23,7 +41,7 @@ export default function SearchBar() {
       to: destination || 'Not specified',
       departDate: departDate,
       returnDate: tripType === 'roundtrip' ? returnDate : undefined,
-      passengers: parseInt(passengers.split(' ')[0]) || 1,
+      passengers: adults,
       tripType: tripType
     });
 
@@ -138,23 +156,76 @@ export default function SearchBar() {
           </div>
         )}
 
-        <div className="relative">
+        <div className="relative" ref={dropdownRef}>
           <label className="block text-xs font-semibold text-white mb-1 drop-shadow-md">Passengers / Cabin</label>
           <div className="relative group">
-            <Users className="absolute left-2 top-2 w-3.5 h-3.5 text-white group-focus-within:text-brand-blue transition-colors" />
-            <select
-              value={passengers}
-              onChange={(e) => setPassengers(e.target.value)}
-              className="w-full pl-8 pr-2.5 py-2 border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 appearance-none text-xs hover:border-white/50 hover:bg-white/20 cursor-pointer"
+            <Users className="absolute left-2 top-2 w-3.5 h-3.5 text-white group-focus-within:text-brand-blue transition-colors z-10 pointer-events-none" />
+            <button
+              type="button"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-full pl-8 pr-7 py-2 border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 text-xs hover:border-white/50 hover:bg-white/20 cursor-pointer text-left"
             >
-              <option className="bg-gray-800 text-white">1 Adult, Economy</option>
-              <option className="bg-gray-800 text-white">2 Adults, Economy</option>
-              <option className="bg-gray-800 text-white">3 Adults, Economy</option>
-              <option className="bg-gray-800 text-white">4 Adults, Economy</option>
-              <option className="bg-gray-800 text-white">1 Adult, Business</option>
-              <option className="bg-gray-800 text-white">2 Adults, Business</option>
-              <option className="bg-gray-800 text-white">1 Adult, First Class</option>
-            </select>
+              {getPassengersDisplay()}
+            </button>
+            <ChevronDown className={`absolute right-2 top-2 w-3.5 h-3.5 text-white transition-transform duration-200 pointer-events-none ${isDropdownOpen ? 'rotate-180' : ''}`} />
+
+            {isDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-2xl z-50 overflow-hidden border-2 border-gray-200">
+                <div className="p-4 space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-2">Number of Passengers</label>
+                    <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
+                      <span className="text-sm text-gray-700">Adults</span>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setAdults(Math.max(1, adults - 1))}
+                          className="w-7 h-7 rounded-full bg-brand-blue text-white font-bold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                        >
+                          -
+                        </button>
+                        <span className="text-sm font-semibold text-gray-900 w-4 text-center">{adults}</span>
+                        <button
+                          type="button"
+                          onClick={() => setAdults(Math.min(9, adults + 1))}
+                          className="w-7 h-7 rounded-full bg-brand-blue text-white font-bold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-2">Cabin Class</label>
+                    <div className="space-y-2">
+                      {(['Economy', 'Business', 'First Class'] as const).map((cabinType) => (
+                        <button
+                          key={cabinType}
+                          type="button"
+                          onClick={() => setCabin(cabinType)}
+                          className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                            cabin === cabinType
+                              ? 'bg-brand-blue text-white shadow-md'
+                              : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                          }`}
+                        >
+                          {cabinType}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="w-full bg-gradient-to-r from-brand-blue to-blue-600 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-200"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
