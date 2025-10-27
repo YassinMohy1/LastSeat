@@ -97,6 +97,10 @@ export default function AdminDashboard() {
     invoicesDeleted: 0,
     uniqueAdmins: 0
   });
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [searchInvoiceNumber, setSearchInvoiceNumber] = useState('');
+  const [searchResult, setSearchResult] = useState<Invoice | null>(null);
+  const [searchLoading, setSearchLoading] = useState(false);
   const isMainAdmin = adminProfile?.role === 'main_admin';
 
   useEffect(() => {
@@ -370,6 +374,43 @@ export default function AdminDashboard() {
     }).format(amount);
   };
 
+  const searchInvoiceByNumber = async () => {
+    if (!searchInvoiceNumber.trim()) {
+      toast.error('الرجاء إدخال رقم الفاتورة');
+      return;
+    }
+
+    setSearchLoading(true);
+    setSearchResult(null);
+
+    try {
+      const { data, error } = await supabase
+        .from('invoices')
+        .select('*')
+        .eq('invoice_number', searchInvoiceNumber.trim())
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        setSearchResult(data);
+      } else {
+        toast.error('لم يتم العثور على الفاتورة');
+      }
+    } catch (error) {
+      console.error('Error searching invoice:', error);
+      toast.error('حدث خطأ أثناء البحث');
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  const closeSearchModal = () => {
+    setShowSearchModal(false);
+    setSearchInvoiceNumber('');
+    setSearchResult(null);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
@@ -463,7 +504,7 @@ export default function AdminDashboard() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-7 gap-3">
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
                   <Activity className="w-4 h-4 text-white mx-auto mb-1" />
                   <p className="text-2xl font-bold text-white">{auditStats.totalActions}</p>
@@ -494,6 +535,14 @@ export default function AdminDashboard() {
                   <p className="text-2xl font-bold text-white">{auditStats.uniqueAdmins}</p>
                   <p className="text-purple-100 text-xs">مدراء نشطين</p>
                 </div>
+                <button
+                  onClick={() => setShowSearchModal(true)}
+                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-3 text-center transition-all cursor-pointer border-2 border-white/30"
+                >
+                  <Search className="w-4 h-4 text-white mx-auto mb-1" />
+                  <p className="text-sm font-bold text-white">بحث</p>
+                  <p className="text-purple-100 text-xs">عن فاتورة</p>
+                </button>
               </div>
             </div>
 
@@ -915,6 +964,198 @@ export default function AdminDashboard() {
           )}
         </div>
       </main>
+
+      {/* Search Invoice Modal */}
+      {showSearchModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="px-6 py-5 bg-gradient-to-r from-purple-600 to-purple-700 flex items-center justify-between rounded-t-2xl">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 p-2.5 rounded-lg">
+                  <Search className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">بحث عن فاتورة</h3>
+                  <p className="text-purple-100 text-sm">أدخل رقم الفاتورة للعرض</p>
+                </div>
+              </div>
+              <button
+                onClick={closeSearchModal}
+                className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors"
+              >
+                <XCircle className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">رقم الفاتورة</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={searchInvoiceNumber}
+                    onChange={(e) => setSearchInvoiceNumber(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && searchInvoiceByNumber()}
+                    placeholder="مثال: INV-2025-0001"
+                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:ring-2 focus:ring-purple-600/20 focus:outline-none transition-all text-right"
+                  />
+                  <button
+                    onClick={searchInvoiceByNumber}
+                    disabled={searchLoading}
+                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {searchLoading ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        بحث...
+                      </>
+                    ) : (
+                      <>
+                        <Search className="w-5 h-5" />
+                        بحث
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {searchResult && (
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-5 border-2 border-purple-200">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h4 className="text-xl font-bold text-gray-900 mb-1">{searchResult.invoice_number}</h4>
+                        <div className="flex items-center gap-2">
+                          {getStatusBadge(searchResult.payment_status)}
+                          <span className="text-xs text-gray-500">
+                            تاريخ الإنشاء: {new Date(searchResult.created_at).toLocaleDateString('ar-EG')}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-left">
+                        <p className="text-2xl font-bold text-purple-600">{formatCurrency(Number(searchResult.amount))}</p>
+                        <p className="text-xs text-gray-500">{searchResult.currency}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-white/70 rounded-lg p-4">
+                        <h5 className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          معلومات العميل
+                        </h5>
+                        <div className="space-y-1">
+                          <p className="text-sm font-semibold text-gray-900">{searchResult.customer_name}</p>
+                          <p className="text-xs text-gray-600">{searchResult.customer_email}</p>
+                          {searchResult.customer_phone && (
+                            <p className="text-xs text-gray-600">{searchResult.customer_phone}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="bg-white/70 rounded-lg p-4">
+                        <h5 className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
+                          <FileText className="w-3.5 h-3.5" />
+                          تفاصيل الرحلة
+                        </h5>
+                        <div className="space-y-1">
+                          <p className="text-sm font-semibold text-gray-900">
+                            {searchResult.flight_from} ← {searchResult.flight_to}
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            {searchResult.passengers} راكب • {searchResult.cabin_class}
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            السفر: {new Date(searchResult.departure_date).toLocaleDateString('ar-EG')}
+                          </p>
+                          {searchResult.return_date && (
+                            <p className="text-xs text-gray-600">
+                              العودة: {new Date(searchResult.return_date).toLocaleDateString('ar-EG')}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="bg-white/70 rounded-lg p-4">
+                        <h5 className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
+                          <Users className="w-3.5 h-3.5" />
+                          المسؤول عن الفاتورة
+                        </h5>
+                        <div className="space-y-1">
+                          <p className="text-sm font-semibold text-purple-600">
+                            {searchResult.created_by_admin_email === 'system'
+                              ? 'النظام'
+                              : (searchResult.created_by_admin_email?.split('@')[0] || 'غير معروف')
+                            }
+                          </p>
+                          <p className="text-xs text-gray-600">
+                            {new Date(searchResult.created_at).toLocaleTimeString('ar-EG', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              day: 'numeric',
+                              month: 'short'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+
+                      {searchResult.payment_method && (
+                        <div className="bg-white/70 rounded-lg p-4">
+                          <h5 className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
+                            <DollarSign className="w-3.5 h-3.5" />
+                            طريقة الدفع
+                          </h5>
+                          <div className="space-y-1">
+                            <p className="text-sm font-semibold text-gray-900">{searchResult.payment_method}</p>
+                            {searchResult.paid_at && (
+                              <p className="text-xs text-green-600">
+                                تم الدفع: {new Date(searchResult.paid_at).toLocaleDateString('ar-EG')}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {searchResult.notes && (
+                      <div className="mt-4 bg-white/70 rounded-lg p-4">
+                        <h5 className="text-xs font-semibold text-gray-600 mb-2">ملاحظات</h5>
+                        <p className="text-sm text-gray-700">{searchResult.notes}</p>
+                      </div>
+                    )}
+
+                    <div className="mt-4 flex items-center gap-2">
+                      <button
+                        onClick={() => copyPaymentLink(searchResult.id, searchResult.payment_link)}
+                        className="flex-1 px-4 py-2.5 bg-brand-blue text-white rounded-lg font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                      >
+                        {copiedId === searchResult.id ? (
+                          <>
+                            <Check className="w-4 h-4" />
+                            تم النسخ
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4" />
+                            نسخ رابط الدفع
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => window.open(`/pay/${searchResult.payment_link}`, '_blank')}
+                        className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-all flex items-center gap-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        معاينة
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
