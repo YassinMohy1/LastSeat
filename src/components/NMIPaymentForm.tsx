@@ -59,6 +59,7 @@ export default function NMIPaymentForm({
 
   const paymentDataRef = useRef({ amount, currency, invoiceNumber, customerEmail, billingInfo });
   const billingInfoRef = useRef(billingInfo);
+  const isProcessingRef = useRef(false);
 
   useEffect(() => {
     billingInfoRef.current = billingInfo;
@@ -152,9 +153,17 @@ export default function NMIPaymentForm({
             }
           },
           callback: async (response: any) => {
+            if (isProcessingRef.current) {
+              console.log('Payment already being processed, ignoring duplicate callback');
+              return;
+            }
+
             try {
               if (response.token) {
+                isProcessingRef.current = true;
                 setPaymentSubmitted(true);
+
+                console.log('Processing payment with token:', response.token);
 
                 const result = await fetch(
                   `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-process-payment`,
@@ -197,6 +206,7 @@ export default function NMIPaymentForm({
               onError(err.message || 'Payment processing failed');
               setProcessing(false);
               setPaymentSubmitted(false);
+              isProcessingRef.current = false;
             }
           },
           validationCallback: (field: string, status: boolean, message: string) => {
@@ -221,7 +231,7 @@ export default function NMIPaymentForm({
     e.preventDefault();
 
     // Prevent duplicate submissions
-    if (processing || paymentSubmitted) {
+    if (processing || paymentSubmitted || isProcessingRef.current) {
       console.log('Payment already in progress');
       return;
     }
@@ -238,12 +248,14 @@ export default function NMIPaymentForm({
     }
 
     try {
+      console.log('Starting payment request...');
       setProcessing(true);
       window.CollectJS.startPaymentRequest();
     } catch (err: any) {
       console.error('Error starting payment request:', err);
       onError('Failed to process payment. Please try again.');
       setProcessing(false);
+      isProcessingRef.current = false;
     }
   };
 
