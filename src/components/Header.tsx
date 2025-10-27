@@ -105,7 +105,7 @@ export default function Header() {
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
             <img
-              src="https://media.discordapp.net/attachments/1322984185811435641/1432493287876329613/dd5d8791-0265-48d6-af76-661277510a1b.png"
+              src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png"
               alt="Last Seat Ticket"
               className="h-14 sm:h-16 w-auto object-contain"
             />
