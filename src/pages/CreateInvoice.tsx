@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -16,11 +16,10 @@ import {
 } from 'lucide-react';
 
 export default function CreateInvoice() {
-  const { user } = useAuth();
+  const { user, adminProfile } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const [formData, setFormData] = useState({
     customerName: '',
     customerEmail: '',
@@ -35,6 +34,23 @@ export default function CreateInvoice() {
     currency: 'USD',
     notes: ''
   });
+
+  useEffect(() => {
+    if (!adminProfile || (adminProfile.role !== 'admin' && adminProfile.role !== 'main_admin')) {
+      navigate('/login');
+    }
+  }, [adminProfile, navigate]);
+
+  if (!adminProfile) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-brand-blue"></div>
+          <p className="mt-4 text-gray-600">جاري التحميل...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
