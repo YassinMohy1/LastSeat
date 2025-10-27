@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Loader2, CreditCard, Lock } from 'lucide-react';
 
 declare global {
@@ -27,15 +27,50 @@ export default function NMIPaymentForm({
   onError
 }: NMIPaymentFormProps) {
   const [processing, setProcessing] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+
+  useEffect(() => {
+    const tokenizationKey = import.meta.env.VITE_NMI_TOKENIZATION_KEY;
+
+    if (!tokenizationKey || tokenizationKey === 'YOUR_PUBLIC_TOKENIZATION_KEY_HERE') {
+      onError('Payment system is not configured. Please contact support.');
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://secure.nmi.com/token/Collect.js';
+    script.setAttribute('data-tokenization-key', tokenizationKey);
+    script.async = true;
+
+    script.onload = () => {
+      console.log('Collect.js loaded successfully');
+      setScriptLoaded(true);
+    };
+
+    script.onerror = () => {
+      onError('Failed to load payment system. Please refresh the page.');
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, [onError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!scriptLoaded || !window.CollectJS) {
+      onError('Payment system is not ready. Please wait a moment and try again.');
+      return;
+    }
+
     setProcessing(true);
 
     try {
-      if (!window.CollectJS) {
-        throw new Error('Payment system not loaded. Please refresh the page.');
-      }
 
       window.CollectJS.configure({
         paymentSelector: '#nmi-payment-form',
@@ -103,7 +138,14 @@ export default function NMIPaymentForm({
         <h3 className="text-lg font-bold text-gray-900">بطاقة الائتمان / Visa</h3>
       </div>
 
-      <form id="nmi-payment-form" onSubmit={handleSubmit}>
+      {!scriptLoaded && (
+        <div className="text-center py-4">
+          <Loader2 className="w-6 h-6 animate-spin text-brand-blue mx-auto mb-2" />
+          <p className="text-sm text-gray-600">جاري تحميل نظام الدفع...</p>
+        </div>
+      )}
+
+      <form id="nmi-payment-form" onSubmit={handleSubmit} style={{ display: scriptLoaded ? 'block' : 'none' }}>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
