@@ -292,7 +292,7 @@ export default function FlightQuote() {
   };
 
   const originalPrice = estimatedPrice || estimatePrice();
-  const discountPercentage = 80;
+  const discountPercentage = 60;
   const displayPrice = Math.round(originalPrice * (1 - discountPercentage / 100));
 
   const handleSubmit = async (e: React.FormEvent) => {
