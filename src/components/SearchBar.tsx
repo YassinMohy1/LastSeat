@@ -176,11 +176,11 @@ export default function SearchBar() {
                     <label className="block text-xs font-semibold text-gray-700 mb-2">Number of Passengers</label>
                     <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
                       <span className="text-sm text-gray-700">Adults</span>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <button
                           type="button"
                           onClick={() => setAdults(Math.max(1, adults - 1))}
-                          className="w-7 h-7 rounded-full bg-brand-blue text-white font-bold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                          className="w-6 h-6 rounded-full bg-brand-blue text-white text-sm font-bold hover:bg-blue-700 transition-colors flex items-center justify-center"
                         >
                           -
                         </button>
@@ -188,7 +188,7 @@ export default function SearchBar() {
                         <button
                           type="button"
                           onClick={() => setAdults(Math.min(9, adults + 1))}
-                          className="w-7 h-7 rounded-full bg-brand-blue text-white font-bold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                          className="w-6 h-6 rounded-full bg-brand-blue text-white text-sm font-bold hover:bg-blue-700 transition-colors flex items-center justify-center"
                         >
                           +
                         </button>
