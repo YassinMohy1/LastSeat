@@ -70,7 +70,7 @@ export default function Header() {
             </div>
             <a
               href="tel:888-602-6667"
-              className="bg-white text-brand-blue px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-md text-xs sm:text-sm font-bold hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-lg flex-shrink-0"
+              className="bg-white text-brand-blue px-2 sm:px-3 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-bold hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-lg flex-shrink-0"
             >
               GET VOUCHER
             </a>
