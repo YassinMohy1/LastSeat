@@ -173,8 +173,20 @@ export default function FlightQuote() {
     return distance;
   };
 
+  const generateStablePrice = (from: string, to: string, cabin: string, tripType: string, passengers: number): number => {
+    const routeKey = `${from}-${to}-${cabin}-${tripType}`;
+    let hash = 0;
+    for (let i = 0; i < routeKey.length; i++) {
+      hash = ((hash << 5) - hash) + routeKey.charCodeAt(i);
+      hash = hash & hash;
+    }
+    const seed = Math.abs(hash) / 2147483647;
+    return seed;
+  };
+
   const estimatePrice = () => {
     const distance = calculateDistance(flightDetails.from, flightDetails.to);
+    const seed = generateStablePrice(flightDetails.from, flightDetails.to, flightDetails.cabin, flightDetails.tripType, flightDetails.passengers);
 
     let pricePerKm = 0.12;
     if (distance > 5000) pricePerKm = 0.10;
@@ -184,7 +196,7 @@ export default function FlightQuote() {
 
     if (basePrice < 200) basePrice = 200;
 
-    const routeVariability = 0.85 + (Math.random() * 0.3);
+    const routeVariability = 0.85 + (seed * 0.3);
     basePrice *= routeVariability;
 
     if (flightDetails.cabin === 'Business') basePrice *= 2.8;
@@ -192,12 +204,12 @@ export default function FlightQuote() {
 
     if (flightDetails.tripType === 'roundtrip') basePrice *= 1.85;
 
-    const seasonalMultiplier = 1.05 + (Math.random() * 0.15);
+    const seasonalMultiplier = 1.05 + (seed * 0.15);
     basePrice *= seasonalMultiplier;
 
     basePrice *= flightDetails.passengers;
 
-    const demandFactor = 0.95 + (Math.random() * 0.2);
+    const demandFactor = 0.95 + (seed * 0.2);
     basePrice *= demandFactor;
 
     return Math.round(basePrice);
@@ -280,7 +292,7 @@ export default function FlightQuote() {
   };
 
   const originalPrice = estimatedPrice || estimatePrice();
-  const discountPercentage = 77;
+  const discountPercentage = 80;
   const displayPrice = Math.round(originalPrice * (1 - discountPercentage / 100));
 
   const handleSubmit = async (e: React.FormEvent) => {
