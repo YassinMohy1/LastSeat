@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { useToast } from '../components/ToastContainer';
 import { Mail, Phone, MapPin, Calendar, MessageSquare, Eye, X, Check } from 'lucide-react';
 
 interface ContactInquiry {
@@ -16,6 +17,7 @@ interface ContactInquiry {
 }
 
 export default function InquiriesManagement() {
+  const toast = useToast();
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedInquiry, setSelectedInquiry] = useState<ContactInquiry | null>(null);
@@ -62,6 +64,7 @@ export default function InquiriesManagement() {
 
       if (error) throw error;
 
+      toast.success('Inquiry status updated successfully!');
       await fetchInquiries();
 
       if (selectedInquiry?.id === id) {
@@ -69,7 +72,7 @@ export default function InquiriesManagement() {
       }
     } catch (error) {
       console.error('Error updating inquiry:', error);
-      alert('Failed to update inquiry');
+      toast.error('Failed to update inquiry');
     } finally {
       setUpdatingStatus(false);
     }

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { AuthProvider } from './contexts/AuthContext';
+import { ToastProvider } from './components/ToastContainer';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
 import Login from './pages/Login';
@@ -17,8 +18,9 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <ToastProvider>
+      <AuthProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<Blog />} />
@@ -35,8 +37,9 @@ function App() {
 
           <Route path="/pay/:paymentLink" element={<CustomerPayment />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        </BrowserRouter>
+      </AuthProvider>
+    </ToastProvider>
   );
 }
 

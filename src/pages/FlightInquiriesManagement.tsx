@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { useToast } from '../components/ToastContainer';
 import {
   ArrowLeft,
   Plane,
@@ -39,6 +40,7 @@ interface FlightInquiry {
 export default function FlightInquiriesManagement() {
   const { adminProfile, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
   const [inquiries, setInquiries] = useState<FlightInquiry[]>([]);
   const [filteredInquiries, setFilteredInquiries] = useState<FlightInquiry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,10 +110,11 @@ export default function FlightInquiriesManagement() {
         .eq('id', id);
 
       if (error) throw error;
+      toast.success('Inquiry status updated successfully!');
       await fetchInquiries();
     } catch (error) {
       console.error('Error updating inquiry:', error);
-      alert('Failed to update status');
+      toast.error('Failed to update status');
     }
   };
 

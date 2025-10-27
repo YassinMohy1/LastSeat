@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plane, Calendar, Users, Phone, Mail, User, MessageSquare, ArrowLeft, CheckCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useToast } from '../components/ToastContainer';
 import AIAssistant from '../components/AIAssistant';
 
 export default function FlightQuote() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const toast = useToast();
   const [showAssistant, setShowAssistant] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -74,9 +76,10 @@ export default function FlightQuote() {
 
       if (error) throw error;
 
+      toast.success('Your inquiry has been submitted successfully! We will contact you shortly.');
       setSubmitted(true);
     } catch (err: any) {
-      alert('Failed to submit inquiry. Please try again or call us directly.');
+      toast.error('Failed to submit inquiry. Please try again or call us directly.');
       console.error(err);
     } finally {
       setLoading(false);

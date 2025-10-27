@@ -1,10 +1,12 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { useToast } from '../components/ToastContainer';
 import { DoorOpen, Mail, Lock, User, Phone, MapPin, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export default function Login() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -87,7 +89,7 @@ export default function Login() {
           throw new Error('Your account has been deactivated. Please contact support.');
         }
 
-        alert('Login Successfully! Welcome back!');
+        toast.success('Login Successfully! Welcome back!');
         window.location.href = '/';
       }
     } catch (err: any) {
@@ -142,7 +144,7 @@ export default function Login() {
 
         if (profileError) throw profileError;
 
-        alert('Account created successfully! You can now login.');
+        toast.success('Account created successfully! You can now login.');
         setActiveTab('login');
         setRegisterData({
           firstName: '',

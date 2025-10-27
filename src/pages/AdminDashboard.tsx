@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { useToast } from '../components/ToastContainer';
 import {
   LogOut,
   Plus,
@@ -51,6 +52,7 @@ interface Invoice {
 export default function AdminDashboard() {
   const { adminProfile, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -197,13 +199,14 @@ export default function AdminDashboard() {
 
   const handleSignOut = async () => {
     await signOut();
-    alert('تم تسجيل الخروج بنجاح');
+    toast.success('تم تسجيل الخروج بنجاح');
     window.location.href = '/login';
   };
 
   const copyPaymentLink = (invoiceId: string, paymentLink: string) => {
     const fullLink = `${window.location.origin}/pay/${paymentLink}`;
     navigator.clipboard.writeText(fullLink);
+    toast.success('Payment link copied to clipboard!');
     setCopiedId(invoiceId);
     setTimeout(() => setCopiedId(null), 2000);
   };
@@ -222,15 +225,17 @@ export default function AdminDashboard() {
 
       if (error) throw error;
 
+      toast.success('Invoice status updated successfully!');
       await fetchInvoices();
       setSelectedInvoice(null);
     } catch (error) {
       console.error('Error updating invoice:', error);
+      toast.error('Failed to update invoice status');
     }
   };
 
   const deleteInvoice = async (invoiceId: string) => {
-    if (!confirm('هل أنت متأكد من حذف هذه الفاتورة؟')) return;
+    if (!window.confirm('هل أنت متأكد من حذف هذه الفاتورة؟')) return;
 
     try {
       const { error } = await supabase
@@ -240,10 +245,12 @@ export default function AdminDashboard() {
 
       if (error) throw error;
 
+      toast.success('Invoice deleted successfully!');
       await fetchInvoices();
       setSelectedInvoice(null);
     } catch (error) {
       console.error('Error deleting invoice:', error);
+      toast.error('Failed to delete invoice');
     }
   };
 

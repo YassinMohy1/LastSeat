@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Calendar, Users, ChevronDown } from 'lucide-react';
 import { trackSearchFlight, trackButtonClick } from '../lib/analytics';
+import { useToast } from './ToastContainer';
 import CityAutocomplete from './CityAutocomplete';
 
 export default function SearchBar() {
+  const toast = useToast();
   const [tripType, setTripType] = useState<'roundtrip' | 'oneway'>('roundtrip');
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
@@ -37,19 +39,19 @@ export default function SearchBar() {
 
   const handleSearch = () => {
     if (!origin.trim()) {
-      alert('Please enter your departure location');
+      toast.warning('Please enter your departure location');
       return;
     }
     if (!destination.trim()) {
-      alert('Please enter your destination');
+      toast.warning('Please enter your destination');
       return;
     }
     if (!departDate) {
-      alert('Please select a departure date');
+      toast.warning('Please select a departure date');
       return;
     }
     if (tripType === 'roundtrip' && !returnDate) {
-      alert('Please select a return date');
+      toast.warning('Please select a return date');
       return;
     }
 
