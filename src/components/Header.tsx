@@ -1,4 +1,4 @@
-import { Phone, Menu, X, DoorOpen, Mail } from 'lucide-react';
+import { Phone, Menu, X, DoorOpen, Mail, Copy, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -9,9 +9,12 @@ export default function Header() {
   const [timeLeft, setTimeLeft] = useState(180);
   const [showPromo, setShowPromo] = useState(false);
   const [showPopup, setShowPopup] = useState(true);
+  const [promoCode, setPromoCode] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     checkAdminStatus();
+    generatePromoCode();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(() => {
       checkAdminStatus();
@@ -57,6 +60,18 @@ export default function Header() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const generatePromoCode = () => {
+    const prefix = 'SAVE50';
+    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+    setPromoCode(`${prefix}-${random}`);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(promoCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <>
       {showPopup && (
@@ -72,14 +87,32 @@ export default function Header() {
               </button>
               <div className="relative z-10">
                 <Mail className="w-12 h-12 mx-auto mb-3 animate-pulse" />
-                <h3 className="text-xl font-bold text-center mb-2">Unlock Exclusive Savings!</h3>
-                <p className="text-sm text-center text-white/90">Limited time offer on your next trip</p>
+                <h3 className="text-xl font-bold text-center mb-2">Get $50 Extra OFF!</h3>
+                <p className="text-sm text-center text-white/90">Call now and mention your exclusive code</p>
               </div>
             </div>
             <div className="p-6 text-center">
-              <div className="bg-gradient-to-r from-sky-50 to-blue-50 rounded-lg p-4 mb-4">
-                <p className="text-sm text-gray-600 mb-2">Offer expires in:</p>
-                <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg font-mono text-2xl font-bold text-brand-blue inline-block">
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 mb-4 border-2 border-dashed border-amber-300">
+                <p className="text-xs text-gray-600 mb-2 font-semibold">YOUR EXCLUSIVE CODE</p>
+                <div className="bg-white px-4 py-3 rounded-lg mb-2 flex items-center justify-center gap-2">
+                  <span className="font-mono text-xl font-bold text-brand-blue tracking-wider">{promoCode}</span>
+                  <button
+                    onClick={copyToClipboard}
+                    className="p-1.5 hover:bg-gray-100 rounded transition-colors"
+                    title="Copy code"
+                  >
+                    {copied ? (
+                      <Check className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <Copy className="w-4 h-4 text-gray-600" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-xs text-amber-700 font-semibold">Save an additional $50 on your booking!</p>
+              </div>
+              <div className="bg-gradient-to-r from-sky-50 to-blue-50 rounded-lg p-3 mb-4">
+                <p className="text-xs text-gray-600 mb-1">Offer expires in:</p>
+                <div className="bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-lg font-mono text-lg font-bold text-brand-blue inline-block">
                   {formatTime(timeLeft)}
                 </div>
               </div>
