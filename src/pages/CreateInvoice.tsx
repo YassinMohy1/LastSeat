@@ -15,6 +15,12 @@ import {
   Loader2
 } from 'lucide-react';
 
+interface StopDetail {
+  city: string;
+  airport: string;
+  duration: string;
+}
+
 export default function CreateInvoice() {
   const { user, adminProfile } = useAuth();
   const navigate = useNavigate();
@@ -45,6 +51,9 @@ export default function CreateInvoice() {
     returnStopsInfo: ''
   });
 
+  const [outboundStopsDetails, setOutboundStopsDetails] = useState<StopDetail[]>([]);
+  const [returnStopsDetails, setReturnStopsDetails] = useState<StopDetail[]>([]);
+
   useEffect(() => {
     if (!adminProfile || (adminProfile.role !== 'admin' && adminProfile.role !== 'main_admin')) {
       navigate('/login');
@@ -63,10 +72,33 @@ export default function CreateInvoice() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+
+    // Update stops details arrays when stops count changes
+    if (name === 'outboundStops') {
+      const count = parseInt(value);
+      setOutboundStopsDetails(Array(count).fill({ city: '', airport: '', duration: '' }));
+    } else if (name === 'returnStops') {
+      const count = parseInt(value);
+      setReturnStopsDetails(Array(count).fill({ city: '', airport: '', duration: '' }));
+    }
+  };
+
+  const updateStopDetail = (type: 'outbound' | 'return', index: number, field: keyof StopDetail, value: string) => {
+    if (type === 'outbound') {
+      const updated = [...outboundStopsDetails];
+      updated[index] = { ...updated[index], [field]: value };
+      setOutboundStopsDetails(updated);
+    } else {
+      const updated = [...returnStopsDetails];
+      updated[index] = { ...updated[index], [field]: value };
+      setReturnStopsDetails(updated);
+    }
   };
 
   const generateInvoiceNumber = () => {
@@ -118,6 +150,8 @@ export default function CreateInvoice() {
             return_duration: formData.returnDuration || null,
             return_stops: parseInt(formData.returnStops) || 0,
             return_stops_info: formData.returnStopsInfo || null,
+            outbound_stops_details: outboundStopsDetails.length > 0 ? outboundStopsDetails : [],
+            return_stops_details: returnStopsDetails.length > 0 ? returnStopsDetails : [],
             created_by_admin_id: adminProfile?.id,
             created_by_admin_email: adminProfile?.email
           }
@@ -380,18 +414,62 @@ export default function CreateInvoice() {
                   </select>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">معلومات المحطات (اختياري)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">معلومات المحطات (نص مختصر)</label>
                   <input
                     type="text"
                     name="outboundStopsInfo"
                     value={formData.outboundStopsInfo}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
-                    placeholder="مثال: 2h 15m in Dubai (DXB)"
+                    placeholder="مثال: 2 Stops"
                     disabled={formData.outboundStops === '0'}
                   />
                 </div>
               </div>
+
+              {/* Detailed Stops Information */}
+              {parseInt(formData.outboundStops) > 0 && (
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h4 className="text-sm font-bold text-gray-900 mb-3">تفاصيل المحطات (ستظهر في Tooltip)</h4>
+                  {outboundStopsDetails.map((stop, index) => (
+                    <div key={index} className="mb-3 p-3 bg-white rounded border border-blue-100">
+                      <p className="text-xs font-semibold text-blue-600 mb-2">محطة {index + 1}</p>
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">المدينة</label>
+                          <input
+                            type="text"
+                            value={stop.city}
+                            onChange={(e) => updateStopDetail('outbound', index, 'city', e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:border-brand-blue focus:outline-none"
+                            placeholder="Dubai"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">كود المطار</label>
+                          <input
+                            type="text"
+                            value={stop.airport}
+                            onChange={(e) => updateStopDetail('outbound', index, 'airport', e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:border-brand-blue focus:outline-none"
+                            placeholder="DXB"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-gray-600 mb-1">مدة الانتظار</label>
+                          <input
+                            type="text"
+                            value={stop.duration}
+                            onChange={(e) => updateStopDetail('outbound', index, 'duration', e.target.value)}
+                            className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:border-brand-blue focus:outline-none"
+                            placeholder="2h 30m"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Flight Details - Return */}
@@ -448,18 +526,62 @@ export default function CreateInvoice() {
                     </select>
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">معلومات المحطات (اختياري)</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">معلومات المحطات (نص مختصر)</label>
                     <input
                       type="text"
                       name="returnStopsInfo"
                       value={formData.returnStopsInfo}
                       onChange={handleChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
-                      placeholder="مثال: 3h 45m in Istanbul (IST)"
+                      placeholder="مثال: 1 Stop"
                       disabled={formData.returnStops === '0'}
                     />
                   </div>
                 </div>
+
+                {/* Detailed Stops Information for Return */}
+                {parseInt(formData.returnStops) > 0 && (
+                  <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="text-sm font-bold text-gray-900 mb-3">تفاصيل المحطات (ستظهر في Tooltip)</h4>
+                    {returnStopsDetails.map((stop, index) => (
+                      <div key={index} className="mb-3 p-3 bg-white rounded border border-blue-100">
+                        <p className="text-xs font-semibold text-blue-600 mb-2">محطة {index + 1}</p>
+                        <div className="grid grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">المدينة</label>
+                            <input
+                              type="text"
+                              value={stop.city}
+                              onChange={(e) => updateStopDetail('return', index, 'city', e.target.value)}
+                              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:border-brand-blue focus:outline-none"
+                              placeholder="Dubai"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">كود المطار</label>
+                            <input
+                              type="text"
+                              value={stop.airport}
+                              onChange={(e) => updateStopDetail('return', index, 'airport', e.target.value)}
+                              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:border-brand-blue focus:outline-none"
+                              placeholder="DXB"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-600 mb-1">مدة الانتظار</label>
+                            <input
+                              type="text"
+                              value={stop.duration}
+                              onChange={(e) => updateStopDetail('return', index, 'duration', e.target.value)}
+                              className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:border-brand-blue focus:outline-none"
+                              placeholder="30m"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

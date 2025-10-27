@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import NMIPaymentForm from '../components/NMIPaymentForm';
 import TravelCarePlan from '../components/TravelCarePlan';
+import FlightRouteDisplay from '../components/FlightRouteDisplay';
 import {
   Plane,
   Calendar,
@@ -15,6 +16,12 @@ import {
   Check,
   X
 } from 'lucide-react';
+
+interface StopDetail {
+  city: string;
+  airport: string;
+  duration: string;
+}
 
 interface Invoice {
   id: string;
@@ -32,16 +39,18 @@ interface Invoice {
   currency: string;
   payment_status: string;
   notes: string | null;
-  outbound_departure_time: string | null;
-  outbound_arrival_time: string | null;
-  outbound_duration: string | null;
-  outbound_stops: number | null;
-  outbound_stops_info: string | null;
-  return_departure_time: string | null;
-  return_arrival_time: string | null;
-  return_duration: string | null;
-  return_stops: number | null;
-  return_stops_info: string | null;
+  outbound_departure_time?: string | null;
+  outbound_arrival_time?: string | null;
+  outbound_duration?: string | null;
+  outbound_stops?: number | null;
+  outbound_stops_info?: string | null;
+  outbound_stops_details?: StopDetail[] | null;
+  return_departure_time?: string | null;
+  return_arrival_time?: string | null;
+  return_duration?: string | null;
+  return_stops?: number | null;
+  return_stops_info?: string | null;
+  return_stops_details?: StopDetail[] | null;
 }
 
 type TravelCarePlan = 'none' | 'basic' | 'premium';
@@ -353,100 +362,34 @@ export default function CustomerPayment() {
           <div className="mb-8">
             <h3 className="text-xl font-semibold text-brand-blue mb-4">Flight Details</h3>
 
-            <div className="bg-gray-50 rounded-lg p-6 mb-4">
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <p className="text-sm text-gray-600">{new Date(invoice.departure_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {invoice.outbound_departure_time || '12:30 PM'}
-                  </p>
-                  <p className="text-gray-600">{invoice.flight_from}</p>
-                </div>
-
-                <div className="flex-1 px-8">
-                  <div className="relative">
-                    <div className="h-0.5 bg-gray-300"></div>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4">
-                      <Plane className="w-6 h-6 text-brand-blue transform rotate-90" />
-                    </div>
-                  </div>
-                  {invoice.outbound_stops !== null && invoice.outbound_stops !== undefined ? (
-                    <>
-                      <p className="text-center text-sm text-orange-500 mt-2">
-                        {invoice.outbound_stops === 0
-                          ? 'Direct'
-                          : `${invoice.outbound_stops} Stop${invoice.outbound_stops > 1 ? 's' : ''}`}
-                      </p>
-                      {invoice.outbound_duration && (
-                        <p className="text-center text-xs text-gray-500">{invoice.outbound_duration}</p>
-                      )}
-                      {invoice.outbound_stops_info && (
-                        <p className="text-center text-xs text-gray-500 mt-1">{invoice.outbound_stops_info}</p>
-                      )}
-                    </>
-                  ) : (
-                    <p className="text-center text-sm text-orange-500 mt-2">1 Stop</p>
-                  )}
-                </div>
-
-                <div className="text-right">
-                  <p className="text-sm text-gray-600">{new Date(invoice.departure_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {invoice.outbound_arrival_time || '11:50 PM'}
-                  </p>
-                  <p className="text-gray-600">{invoice.flight_to}</p>
-                </div>
-              </div>
-            </div>
+            <FlightRouteDisplay
+              departureDate={invoice.departure_date}
+              departureTime={invoice.outbound_departure_time || '12:30 PM'}
+              arrivalTime={invoice.outbound_arrival_time || '11:50 PM'}
+              from={invoice.flight_from}
+              to={invoice.flight_to}
+              stops={invoice.outbound_stops ?? 0}
+              stopsInfo={invoice.outbound_stops_info || undefined}
+              stopsDetails={invoice.outbound_stops_details || undefined}
+              duration={invoice.outbound_duration || undefined}
+              type="outbound"
+            />
 
             {invoice.return_date && (
               <>
                 <h3 className="text-xl font-semibold text-brand-blue mb-4 mt-8">Return Flight</h3>
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <p className="text-sm text-gray-600">{new Date(invoice.return_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {invoice.return_departure_time || '12:30 PM'}
-                      </p>
-                      <p className="text-gray-600">{invoice.flight_to}</p>
-                    </div>
-
-                    <div className="flex-1 px-8">
-                      <div className="relative">
-                        <div className="h-0.5 bg-gray-300"></div>
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4">
-                          <Plane className="w-6 h-6 text-brand-blue transform -rotate-90" />
-                        </div>
-                      </div>
-                      {invoice.return_stops !== null && invoice.return_stops !== undefined ? (
-                        <>
-                          <p className="text-center text-sm text-orange-500 mt-2">
-                            {invoice.return_stops === 0
-                              ? 'Direct'
-                              : `${invoice.return_stops} Stop${invoice.return_stops > 1 ? 's' : ''}`}
-                          </p>
-                          {invoice.return_duration && (
-                            <p className="text-center text-xs text-gray-500">{invoice.return_duration}</p>
-                          )}
-                          {invoice.return_stops_info && (
-                            <p className="text-center text-xs text-gray-500 mt-1">{invoice.return_stops_info}</p>
-                          )}
-                        </>
-                      ) : (
-                        <p className="text-center text-sm text-orange-500 mt-2">1 Stop</p>
-                      )}
-                    </div>
-
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600">{new Date(invoice.return_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                      <p className="text-2xl font-bold text-gray-900">
-                        {invoice.return_arrival_time || '1:10 AM'}
-                      </p>
-                      <p className="text-gray-600">{invoice.flight_from}</p>
-                    </div>
-                  </div>
-                </div>
+                <FlightRouteDisplay
+                  departureDate={invoice.return_date}
+                  departureTime={invoice.return_departure_time || '12:30 PM'}
+                  arrivalTime={invoice.return_arrival_time || '1:10 AM'}
+                  from={invoice.flight_to}
+                  to={invoice.flight_from}
+                  stops={invoice.return_stops ?? 0}
+                  stopsInfo={invoice.return_stops_info || undefined}
+                  stopsDetails={invoice.return_stops_details || undefined}
+                  duration={invoice.return_duration || undefined}
+                  type="return"
+                />
               </>
             )}
           </div>
