@@ -176,7 +176,7 @@ export default function SearchBar() {
                     <label className="block text-xs font-semibold text-gray-700 mb-2">Number of Passengers</label>
                     <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
                       <span className="text-sm text-gray-700">Adults</span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => setAdults(Math.max(1, adults - 1))}
