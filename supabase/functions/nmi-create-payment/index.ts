@@ -62,7 +62,9 @@ Deno.serve(async (req: Request) => {
     });
 
     const responseText = await response.text();
-    
+
+    console.log('NMI Raw Response:', responseText);
+
     const params = new URLSearchParams(responseText);
     const formUrl = params.get('form_url');
     const tokenId = params.get('token-id');
@@ -70,7 +72,13 @@ Deno.serve(async (req: Request) => {
 
     if (responseCode !== '1' || !formUrl || !tokenId) {
       const errorMessage = params.get('responsetext') || 'Payment initialization failed';
-      throw new Error(errorMessage);
+      const errorDetails = {
+        response: responseCode,
+        responsetext: params.get('responsetext'),
+        rawResponse: responseText.substring(0, 500)
+      };
+      console.error('NMI Error Details:', errorDetails);
+      throw new Error(`${errorMessage} (Response: ${responseCode})`);
     }
 
     return new Response(
