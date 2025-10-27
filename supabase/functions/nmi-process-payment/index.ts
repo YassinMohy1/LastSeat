@@ -79,13 +79,25 @@ Deno.serve(async (req: Request) => {
     });
 
     const responseText = await response.text();
-    console.log('NMI Response:', responseText);
+    console.log('NMI Raw Response:', responseText);
 
     const params = new URLSearchParams(responseText);
     const responseCode = params.get('response');
     const responseText2 = params.get('responsetext');
     const transactionId = params.get('transactionid');
     const threeDsUrl = params.get('three_ds_redirect_url');
+
+    // Log 3DS related fields for debugging
+    console.log('3DS Debug Info:', {
+      responseCode,
+      threeDsUrl,
+      cavv: params.get('cavv'),
+      cavv_result: params.get('cavv_result'),
+      xid: params.get('xid'),
+      eci: params.get('eci'),
+      cardholder_auth: params.get('cardholder_auth'),
+      three_ds_version: params.get('three_ds_version')
+    });
 
     // Check if 3DS authentication is required
     if (responseCode === '2' && threeDsUrl) {
