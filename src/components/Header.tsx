@@ -1,4 +1,4 @@
-import { Phone, Menu, X, DoorOpen } from 'lucide-react';
+import { Phone, Menu, X, DoorOpen, Mail } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -6,6 +6,8 @@ import { supabase } from '../lib/supabase';
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(180);
+  const [showPromo, setShowPromo] = useState(true);
 
   useEffect(() => {
     checkAdminStatus();
@@ -18,6 +20,19 @@ export default function Header() {
       authListener?.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      setShowPromo(false);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
 
   const checkAdminStatus = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -35,14 +50,49 @@ export default function Header() {
     }
   };
 
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <header className="bg-white shadow-md fixed w-full top-0 z-50">
+      {showPromo && (
+        <div className="bg-gradient-to-r from-brand-blue via-sky-600 to-brand-blue text-white py-2.5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]"></div>
+          <div className="container mx-auto px-3 flex justify-center items-center gap-4 relative z-10">
+            <Mail className="w-4 h-4 animate-pulse" />
+            <span className="text-sm font-semibold">Unlock savings on your next trip!</span>
+            <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md font-mono text-sm font-bold">
+              {formatTime(timeLeft)}
+            </div>
+            <button
+              className="bg-white text-brand-blue px-4 py-1.5 rounded-md text-sm font-bold hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-lg"
+            >
+              SAVE NOW
+            </button>
+            <button
+              onClick={() => setShowPromo(false)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="bg-gradient-to-r from-brand-blue to-brand-blue/90 text-white py-2">
         <div className="container mx-auto px-3 flex justify-between items-center">
-          <div className="flex items-center gap-1.5">
-            <Phone className="w-3.5 h-3.5" />
-            <a href="tel:888-602-6667" className="text-white text-xs font-semibold hover:text-white/80 transition">
-              888-602-6667
+          <div className="flex items-center gap-1.5 group">
+            <Phone className="w-3.5 h-3.5 animate-pulse" />
+            <a
+              href="tel:888-602-6667"
+              className="text-white text-xs font-semibold hover:text-white/80 transition relative"
+            >
+              <span className="relative inline-block animate-[pulse_2s_ease-in-out_infinite]">
+                888-602-6667
+              </span>
             </a>
           </div>
           <div className="text-[10px] hidden sm:block">
