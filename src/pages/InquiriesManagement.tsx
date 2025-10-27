@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ToastContainer';
-import { Mail, Phone, MapPin, Calendar, MessageSquare, Eye, X, Check } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, MessageSquare, Eye, X, Check, ArrowLeft } from 'lucide-react';
 
 interface ContactInquiry {
   id: string;
@@ -17,6 +18,7 @@ interface ContactInquiry {
 }
 
 export default function InquiriesManagement() {
+  const navigate = useNavigate();
   const toast = useToast();
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -128,8 +130,19 @@ export default function InquiriesManagement() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Inquiries</h1>
-        <p className="text-gray-600">Manage and respond to customer inquiries</p>
+        <div className="flex items-center gap-4 mb-4">
+          <button
+            onClick={() => navigate('/admin/dashboard')}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Back to Dashboard"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-600" />
+          </button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Inquiries</h1>
+            <p className="text-gray-600">Manage and respond to customer inquiries</p>
+          </div>
+        </div>
       </div>
 
       <div className="mb-6 flex gap-3 flex-wrap">

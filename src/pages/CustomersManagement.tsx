@@ -32,7 +32,7 @@ export default function CustomersManagement() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
-    if (!adminProfile || adminProfile.role !== 'admin') {
+    if (!adminProfile || (adminProfile.role !== 'admin' && adminProfile.role !== 'main_admin')) {
       navigate('/login');
       return;
     }

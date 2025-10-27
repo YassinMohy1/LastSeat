@@ -51,7 +51,7 @@ export default function FlightInquiriesManagement() {
   useEffect(() => {
     if (authLoading) return;
 
-    if (!adminProfile || adminProfile.role !== 'admin') {
+    if (!adminProfile || (adminProfile.role !== 'admin' && adminProfile.role !== 'main_admin')) {
       navigate('/login', { replace: true });
       return;
     }
