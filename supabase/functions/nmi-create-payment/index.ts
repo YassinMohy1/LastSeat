@@ -16,7 +16,7 @@ Deno.serve(async (req: Request) => {
 
   try {
     const nmiSecurityKey = Deno.env.get('NMI_PRIVATE_KEY');
-    const nmiApiUrl = Deno.env.get('NMI_API_URL') || 'https://secure.safewebservices.com/api/v2/three-step';
+    const nmiApiUrl = Deno.env.get('NMI_API_URL') || 'https://secure.networkmerchants.com/api/transact.php';
 
     if (!nmiSecurityKey) {
       return new Response(
