@@ -54,9 +54,11 @@ export default function Header() {
       <nav className="container mx-auto px-3 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
-            <div className="text-lg sm:text-xl font-bold text-brand-blue">
-              Last Seat Ticket
-            </div>
+            <img
+              src="https://media.discordapp.net/attachments/1322984185811435641/1430450673534767114/image.png?ex=690112c1&is=68ffc141&hm=004f10311a9fb51edb09be900401ef5c2c138fd3c3a9905218b33121b5d6777c&=&format=webp&quality=lossless&width=621&height=484"
+              alt="Last Seat Ticket"
+              className="h-10 sm:h-12 w-auto object-contain"
+            />
           </Link>
 
           <button
