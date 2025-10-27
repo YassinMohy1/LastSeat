@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { Plane, Plus, Edit2, Trash2, Save, X, DollarSign, Percent } from 'lucide-react';
+import { Plane, Plus, Edit2, Trash2, Save, X, DollarSign, Percent, ArrowLeft } from 'lucide-react';
 
 interface FlightPrice {
   id: string;
@@ -17,6 +18,7 @@ interface FlightPrice {
 }
 
 const FlightPricesManagement: React.FC = () => {
+  const navigate = useNavigate();
   const [prices, setPrices] = useState<FlightPrice[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -179,6 +181,13 @@ const FlightPricesManagement: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate('/admin/dashboard')}
+            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Back to Dashboard"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
           <Plane className="h-8 w-8 text-orange-600" />
           <h1 className="text-3xl font-bold text-gray-900">Flight Prices Management</h1>
         </div>
