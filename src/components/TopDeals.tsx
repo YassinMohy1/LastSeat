@@ -247,13 +247,13 @@ export default function TopDeals() {
   );
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-gray-50" id="offers">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+    <section className="py-12 bg-gradient-to-b from-white to-gray-50" id="offers">
+      <div className="container mx-auto px-3">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Today's Top Flight Deals
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-sm sm:text-base md:text-xl text-gray-600">
             Exclusive offers available now. Call to book before they're gone!
           </p>
         </div>
@@ -261,23 +261,23 @@ export default function TopDeals() {
         <div className="relative">
           <button
             onClick={goToPrevPage}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition hidden lg:flex items-center justify-center"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition hidden lg:flex items-center justify-center"
             aria-label="Previous deals"
           >
-            <ChevronLeft className="w-6 h-6 text-gray-800" />
+            <ChevronLeft className="w-5 h-5 text-gray-800" />
           </button>
 
           <button
             onClick={goToNextPage}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition hidden lg:flex items-center justify-center"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition hidden lg:flex items-center justify-center"
             aria-label="Next deals"
           >
-            <ChevronRight className="w-6 h-6 text-gray-800" />
+            <ChevronRight className="w-5 h-5 text-gray-800" />
           </button>
 
           <div
             ref={containerRef}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -285,9 +285,9 @@ export default function TopDeals() {
             {currentDeals.map((deal, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl flex flex-col"
+              className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300 hover:shadow-2xl flex flex-col"
             >
-              <div className="relative h-48 overflow-hidden flex-shrink-0">
+              <div className="relative h-40 overflow-hidden flex-shrink-0">
                 <img
                   src={deal.image}
                   alt={deal.destination}
@@ -297,36 +297,36 @@ export default function TopDeals() {
                     target.src = 'https://images.pexels.com/photos/1008155/pexels-photo-1008155.jpeg?auto=compress&cs=tinysrgb&w=800';
                   }}
                 />
-                <div className="absolute top-3 right-3 bg-brand-red text-white px-3 py-1 rounded-full text-sm font-bold">
+                <div className="absolute top-2 right-2 bg-brand-red text-white px-2 py-1 rounded-full text-xs font-bold">
                   {deal.savings}
                 </div>
               </div>
 
-              <div className="p-5 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-brand-blue" />
+              <div className="p-4 flex flex-col flex-grow">
+                <h3 className="text-base font-bold text-gray-900 mb-2 flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4 text-brand-blue" />
                   {deal.destination}
                 </h3>
 
-                <div className="space-y-2 mb-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Plane className="w-4 h-4" />
+                <div className="space-y-1 mb-3 text-xs text-gray-600">
+                  <div className="flex items-center gap-1.5">
+                    <Plane className="w-3.5 h-3.5" />
                     {deal.airline}
                   </div>
                 </div>
 
-                <div className="mb-4 mt-auto">
-                  <div className="text-sm text-gray-500">Starting from</div>
-                  <div className="text-3xl font-bold text-brand-blue">
+                <div className="mb-3 mt-auto">
+                  <div className="text-xs text-gray-500">Starting from</div>
+                  <div className="text-2xl font-bold text-brand-blue">
                     {deal.price}
                   </div>
                 </div>
 
                 <button
                   onClick={handleCallNow}
-                  className="w-full bg-gradient-to-r from-brand-red to-brand-red/90 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:from-brand-red/90 hover:to-brand-red/80 transition shadow-md"
+                  className="w-full bg-gradient-to-r from-brand-red to-brand-red/90 text-white py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-1.5 hover:from-brand-red/90 hover:to-brand-red/80 transition shadow-md"
                 >
-                  <Phone className="w-5 h-5" />
+                  <Phone className="w-4 h-4" />
                   Call Now to Book
                 </button>
               </div>
@@ -335,25 +335,25 @@ export default function TopDeals() {
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-3 mt-10">
+        <div className="flex items-center justify-center gap-2 mt-6">
           {Array.from({ length: totalPages }).map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentPage(idx)}
-              className={`h-3 rounded-full transition-all ${
+              className={`h-2 rounded-full transition-all ${
                 idx === currentPage
-                  ? 'w-8 bg-brand-blue'
-                  : 'w-3 bg-gray-300 hover:bg-gray-400'
+                  ? 'w-6 bg-brand-blue'
+                  : 'w-2 bg-gray-300 hover:bg-gray-400'
               }`}
               aria-label={`Go to page ${idx + 1}`}
             />
           ))}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-6">
           <button
             onClick={handleCallNow}
-            className="bg-gradient-to-r from-brand-blue to-brand-blue/90 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-brand-blue/90 hover:to-brand-blue/80 transition shadow-lg"
+            className="bg-gradient-to-r from-brand-blue to-brand-blue/90 text-white px-6 py-3 rounded-lg font-bold text-sm sm:text-base hover:from-brand-blue/90 hover:to-brand-blue/80 transition shadow-lg"
           >
             View All Deals - Call 888-602-6667
           </button>

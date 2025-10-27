@@ -37,24 +37,24 @@ export default function Header() {
 
   return (
     <header className="bg-white shadow-md fixed w-full top-0 z-50">
-      <div className="bg-gradient-to-r from-brand-blue to-brand-blue/90 text-white py-1.5">
-        <div className="container mx-auto px-4 flex justify-between items-center">
+      <div className="bg-gradient-to-r from-brand-blue to-brand-blue/90 text-white py-2">
+        <div className="container mx-auto px-3 flex justify-between items-center">
           <div className="flex items-center gap-1.5">
-            <Phone className="w-3 h-3" />
+            <Phone className="w-3.5 h-3.5" />
             <a href="tel:888-602-6667" className="text-white text-xs font-semibold hover:text-white/80 transition">
               888-602-6667
             </a>
           </div>
-          <div className="text-xs">
-            Available 24/7 for Your Travel Needs
+          <div className="text-[10px] hidden sm:block">
+            Available 24/7
           </div>
         </div>
       </div>
 
-      <nav className="container mx-auto px-4 py-4">
+      <nav className="container mx-auto px-3 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
-            <div className="text-2xl font-bold text-brand-blue">
+            <div className="text-lg sm:text-xl font-bold text-brand-blue">
               Last Seat Ticket
             </div>
           </Link>
@@ -66,7 +66,7 @@ export default function Header() {
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
 
-          <ul className="hidden lg:flex gap-6 items-center text-sm">
+          <ul className="hidden lg:flex gap-4 items-center text-xs">
             <li><Link to="/" className="hover:text-brand-blue transition">Home</Link></li>
             <li><a href="/#how-to-book" className="hover:text-brand-blue transition">How to Book</a></li>
             <li><Link to="/blog" className="hover:text-brand-blue transition">Blog</Link></li>
@@ -78,18 +78,18 @@ export default function Header() {
               {isAdmin ? (
                 <Link
                   to="/admin/dashboard"
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-blue/10 text-brand-blue rounded-lg hover:bg-brand-blue/20 transition-all duration-300"
+                  className="flex items-center gap-1 px-2 py-1 bg-brand-blue/10 text-brand-blue rounded-lg hover:bg-brand-blue/20 transition-all duration-300"
                 >
-                  <DoorOpen className="w-4 h-4" />
-                  <span className="text-sm font-medium">Admin Dashboard</span>
+                  <DoorOpen className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium">Dashboard</span>
                 </Link>
               ) : (
                 <Link
                   to="/admin/login"
-                  className="flex items-center gap-1.5 px-3 py-1.5 border border-brand-blue/30 text-brand-blue rounded-lg hover:bg-brand-blue/5 transition-all duration-300"
+                  className="flex items-center gap-1 px-2 py-1 border border-brand-blue/30 text-brand-blue rounded-lg hover:bg-brand-blue/5 transition-all duration-300"
                 >
-                  <DoorOpen className="w-4 h-4" />
-                  <span className="text-sm font-medium">Login</span>
+                  <DoorOpen className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium">Login</span>
                 </Link>
               )}
             </li>
@@ -97,7 +97,7 @@ export default function Header() {
         </div>
 
         {mobileMenuOpen && (
-          <ul className="lg:hidden mt-4 space-y-3 pb-4 text-sm">
+          <ul className="lg:hidden mt-3 space-y-2 pb-3 text-sm">
             <li><Link to="/" className="block hover:text-brand-blue transition">Home</Link></li>
             <li><a href="/#how-to-book" className="block hover:text-brand-blue transition">How to Book</a></li>
             <li><Link to="/blog" className="block hover:text-brand-blue transition">Blog</Link></li>
@@ -109,18 +109,18 @@ export default function Header() {
               {isAdmin ? (
                 <Link
                   to="/admin/dashboard"
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-blue/10 text-brand-blue rounded-lg hover:bg-brand-blue/20 transition-all duration-300 w-fit"
+                  className="flex items-center gap-1 px-2 py-1 bg-brand-blue/10 text-brand-blue rounded-lg hover:bg-brand-blue/20 transition-all duration-300 w-fit"
                 >
-                  <DoorOpen className="w-4 h-4" />
-                  <span className="text-sm font-medium">Admin Dashboard</span>
+                  <DoorOpen className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium">Dashboard</span>
                 </Link>
               ) : (
                 <Link
                   to="/admin/login"
-                  className="flex items-center gap-1.5 px-3 py-1.5 border border-brand-blue/30 text-brand-blue rounded-lg hover:bg-brand-blue/5 transition-all duration-300 w-fit"
+                  className="flex items-center gap-1 px-2 py-1 border border-brand-blue/30 text-brand-blue rounded-lg hover:bg-brand-blue/5 transition-all duration-300 w-fit"
                 >
-                  <DoorOpen className="w-4 h-4" />
-                  <span className="text-sm font-medium">Login</span>
+                  <DoorOpen className="w-3.5 h-3.5" />
+                  <span className="text-xs font-medium">Login</span>
                 </Link>
               )}
             </li>
