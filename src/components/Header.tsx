@@ -182,12 +182,12 @@ export default function Header() {
             <div className="flex flex-col items-end">
               <a
                 href="tel:888-602-6667"
-                className="flex items-center gap-1.5 text-brand-blue hover:text-brand-blue/80 transition text-xs font-semibold group"
+                className="flex items-center gap-1.5 text-brand-blue hover:text-brand-blue/80 transition text-xs font-semibold group hover:scale-105 duration-300"
               >
-                <Phone className="w-3.5 h-3.5 animate-pulse" />
-                <span className="animate-[pulse_2s_ease-in-out_infinite]">888-602-6667</span>
+                <Phone className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform duration-300" />
+                <span className="font-bold">888-602-6667</span>
               </a>
-              <span className="text-[10px] text-gray-500 animate-bounce">Available 24/7</span>
+              <span className="text-[10px] text-gray-500 animate-pulse">Available 24/7</span>
             </div>
             {isAdmin ? (
               <Link

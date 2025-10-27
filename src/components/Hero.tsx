@@ -13,7 +13,7 @@ export default function Hero() {
         <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=68ffac37&is=68fe5ab7&hm=af607192c54b40c6ef2a4bdcd429d16c4224c13bf6c532f2f4805203cbc5bf74&" type="video/mp4" />
       </video>
 
-      <div className="absolute inset-0 bg-black/30"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
 
       <div className="container mx-auto relative z-10">
         <div className="text-center mb-6 animate-fadeIn">
