@@ -144,25 +144,6 @@ export default function Header() {
       )}
       <header className="bg-white shadow-md fixed w-full top-0 z-50">
 
-      <div className="bg-gradient-to-r from-brand-blue to-brand-blue/90 text-white py-2">
-        <div className="container mx-auto px-3 flex justify-between items-center">
-          <div className="flex items-center gap-1.5 group">
-            <Phone className="w-3.5 h-3.5 animate-pulse" />
-            <a
-              href="tel:888-602-6667"
-              className="text-white text-xs font-semibold hover:text-white/80 transition relative"
-            >
-              <span className="relative inline-block animate-[pulse_2s_ease-in-out_infinite]">
-                888-602-6667
-              </span>
-            </a>
-          </div>
-          <div className="text-[10px] hidden sm:block">
-            Available 24/7
-          </div>
-        </div>
-      </div>
-
       <nav className="container mx-auto px-3 py-1.5">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-6">
@@ -198,13 +179,16 @@ export default function Header() {
           </button>
 
           <div className="hidden lg:flex items-center gap-4">
-            <a
-              href="tel:888-602-6667"
-              className="flex items-center gap-1.5 text-brand-blue hover:text-brand-blue/80 transition text-xs font-semibold"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>888-602-6667</span>
-            </a>
+            <div className="flex flex-col items-end">
+              <a
+                href="tel:888-602-6667"
+                className="flex items-center gap-1.5 text-brand-blue hover:text-brand-blue/80 transition text-xs font-semibold group"
+              >
+                <Phone className="w-3.5 h-3.5 animate-pulse" />
+                <span className="animate-[pulse_2s_ease-in-out_infinite]">888-602-6667</span>
+              </a>
+              <span className="text-[10px] text-gray-500 animate-bounce">Available 24/7</span>
+            </div>
             {isAdmin ? (
               <Link
                 to="/admin/dashboard"
