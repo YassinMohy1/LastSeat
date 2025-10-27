@@ -105,9 +105,14 @@ export default function Header() {
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
             <img
-              src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png"
+              src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png?ex=690141eb&is=68fff06b&hm=eaecebb87b6bbf8f9aee13084555faa83c81bb3d679c2ff3b5275498ea57d6f5&"
               alt="Last Seat Ticket"
               className="h-14 sm:h-16 w-auto object-contain"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                console.error('Failed to load logo');
+              }}
             />
           </Link>
 
