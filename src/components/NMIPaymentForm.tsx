@@ -61,10 +61,18 @@ export default function NMIPaymentForm({
   const billingInfoRef = useRef(billingInfo);
   const isProcessingRef = useRef(false);
   const lastTokenRef = useRef<string | null>(null);
+  const onSuccessRef = useRef(onSuccess);
+  const onErrorRef = useRef(onError);
+  const collectJSInitialized = useRef(false);
 
   useEffect(() => {
     billingInfoRef.current = billingInfo;
   }, [billingInfo]);
+
+  useEffect(() => {
+    onSuccessRef.current = onSuccess;
+    onErrorRef.current = onError;
+  }, [onSuccess, onError]);
 
   useEffect(() => {
     paymentDataRef.current = {
@@ -80,7 +88,7 @@ export default function NMIPaymentForm({
     const tokenizationKey = import.meta.env.VITE_NMI_TOKENIZATION_KEY;
 
     if (!tokenizationKey || tokenizationKey === 'YOUR_PUBLIC_TOKENIZATION_KEY_HERE') {
-      onError('Payment system is not configured. Please contact support.');
+      onErrorRef.current('Payment system is not configured. Please contact support.');
       return;
     }
 
@@ -104,7 +112,7 @@ export default function NMIPaymentForm({
     };
 
     script.onerror = () => {
-      onError('Failed to load payment system. Please refresh the page.');
+      onErrorRef.current('Failed to load payment system. Please refresh the page.');
     };
 
     document.head.appendChild(script);
@@ -118,7 +126,10 @@ export default function NMIPaymentForm({
   }, [onError]);
 
   useEffect(() => {
-    if (scriptLoaded && window.CollectJS && !configured) {
+    if (scriptLoaded && window.CollectJS && !configured && !collectJSInitialized.current) {
+      console.log('Configuring CollectJS for the first time...');
+      collectJSInitialized.current = true;
+
       try {
         window.CollectJS.configure({
           variant: 'inline',
@@ -207,13 +218,13 @@ export default function NMIPaymentForm({
                   throw new Error(data.error || 'Payment failed');
                 }
 
-                onSuccess();
+                onSuccessRef.current();
               } else {
                 throw new Error('Failed to tokenize payment information');
               }
             } catch (err: any) {
               console.error('Payment processing error:', err);
-              onError(err.message || 'Payment processing failed');
+              onErrorRef.current(err.message || 'Payment processing failed');
               setProcessing(false);
               setPaymentSubmitted(false);
               isProcessingRef.current = false;
@@ -232,10 +243,10 @@ export default function NMIPaymentForm({
         console.log('CollectJS configured successfully');
       } catch (err: any) {
         console.error('CollectJS configuration error:', err);
-        onError('Failed to initialize payment fields');
+        onErrorRef.current('Failed to initialize payment fields');
       }
     }
-  }, [scriptLoaded, configured, onSuccess, onError]);
+  }, [scriptLoaded, configured]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
