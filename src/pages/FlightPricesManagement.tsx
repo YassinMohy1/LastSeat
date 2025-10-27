@@ -27,7 +27,7 @@ const FlightPricesManagement: React.FC = () => {
     cabin_class: 'Economy',
     trip_type: 'roundtrip',
     original_price: '',
-    discount_percentage: '60',
+    discount_percentage: '70',
   });
 
   useEffect(() => {
@@ -94,7 +94,7 @@ const FlightPricesManagement: React.FC = () => {
         cabin_class: 'Economy',
         trip_type: 'roundtrip',
         original_price: '',
-        discount_percentage: '60',
+        discount_percentage: '70',
       });
       fetchPrices();
     } catch (error) {
