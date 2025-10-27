@@ -50,9 +50,6 @@ Deno.serve(async (req: Request) => {
       order_description: `Flight Booking - ${invoiceNumber}`,
       email: customerEmail || '',
       type: 'sale',
-      // Enable 3D Secure authentication
-      threeds_version: '2',
-      cardholder_auth: 'verified_by_merchant',
     });
 
     console.log('Processing NMI payment with token:', paymentToken);
@@ -72,36 +69,14 @@ Deno.serve(async (req: Request) => {
     const responseCode = params.get('response');
     const responseText2 = params.get('responsetext');
     const transactionId = params.get('transactionid');
-    const threeDsUrl = params.get('form_url'); // 3DS authentication URL
-    const cavv = params.get('cavv');
-    const xid = params.get('xid');
-    const eci = params.get('eci');
-
-    // Check if 3D Secure authentication is required
-    if (responseCode === '2' && threeDsUrl) {
-      console.log('3D Secure authentication required:', { threeDsUrl });
-      return new Response(
-        JSON.stringify({
-          requiresAuth: true,
-          authUrl: threeDsUrl,
-          transactionId: transactionId,
-          message: 'Authentication required',
-        }),
-        {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
 
     if (responseCode === '1') {
-      console.log('Payment successful:', { transactionId, invoiceNumber, cavv, xid, eci });
+      console.log('Payment successful:', { transactionId, invoiceNumber });
       return new Response(
         JSON.stringify({
           success: true,
           transactionId: transactionId,
           message: 'Payment processed successfully',
-          threeDsAuthenticated: !!(cavv && xid),
         }),
         {
           status: 200,
