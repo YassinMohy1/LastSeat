@@ -101,13 +101,13 @@ export default function Header() {
         </div>
       </div>
 
-      <nav className="container mx-auto px-3 py-3">
+      <nav className="container mx-auto px-3 py-2">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
             <img
               src="https://cdn.discordapp.com/attachments/1322984185811435641/1432487733947011153/white_logooo_page-0001-removebg-preview.png?ex=69013baa&is=68ffea2a&hm=6ec4de08b2ce16bb82d4f93695125cd8ec72ea18ae9d51f4395ca83ad85bb47c&"
               alt="Last Seat Ticket"
-              className="h-10 sm:h-12 w-auto object-contain"
+              className="h-14 sm:h-16 w-auto object-contain"
             />
           </Link>
 
