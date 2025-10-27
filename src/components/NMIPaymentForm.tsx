@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Loader2, CreditCard, Lock } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Loader2, CreditCard, Lock, X } from 'lucide-react';
 
 declare global {
   interface Window {
@@ -29,6 +29,9 @@ export default function NMIPaymentForm({
 }: NMIPaymentFormProps) {
   const [processing, setProcessing] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [show3DsModal, setShow3DsModal] = useState(false);
+  const [authUrl, setAuthUrl] = useState<string | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     const tokenizationKey = import.meta.env.VITE_NMI_TOKENIZATION_KEY;
@@ -130,10 +133,19 @@ export default function NMIPaymentForm({
 
                 const data = await result.json();
 
+                // Check if 3D Secure authentication is required
+                if (data.requiresAuth && data.authUrl) {
+                  console.log('3DS authentication required, opening modal');
+                  setAuthUrl(data.authUrl);
+                  setShow3DsModal(true);
+                  return;
+                }
+
                 if (!result.ok || !data.success) {
                   throw new Error(data.error || 'Payment failed');
                 }
 
+                console.log('Payment successful:', data);
                 onSuccess();
               } else {
                 throw new Error('Failed to tokenize payment information');
@@ -159,6 +171,35 @@ export default function NMIPaymentForm({
       }
     }
   }, [scriptLoaded, amount, currency, invoiceNumber, customerEmail, onSuccess, onError]);
+
+  // Listen for 3DS authentication completion
+  useEffect(() => {
+    const handle3DsMessage = (event: MessageEvent) => {
+      // Check if message is from NMI 3DS iframe
+      if (event.data && typeof event.data === 'string') {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.event === '3ds-authentication') {
+            console.log('3DS authentication completed:', data);
+            setShow3DsModal(false);
+            setAuthUrl(null);
+
+            if (data.success) {
+              onSuccess();
+            } else {
+              onError('Authentication failed. Please try again.');
+              setProcessing(false);
+            }
+          }
+        } catch (e) {
+          // Not a JSON message, ignore
+        }
+      }
+    };
+
+    window.addEventListener('message', handle3DsMessage);
+    return () => window.removeEventListener('message', handle3DsMessage);
+  }, [onSuccess, onError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -241,6 +282,46 @@ export default function NMIPaymentForm({
           </button>
         </div>
       </form>
+
+      {/* 3D Secure Authentication Modal */}
+      {show3DsModal && authUrl && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div className="flex items-center gap-2">
+                <Lock className="w-5 h-5 text-green-600" />
+                <h3 className="text-lg font-bold text-gray-900">تأكيد الدفع من البنك</h3>
+              </div>
+              <button
+                onClick={() => {
+                  setShow3DsModal(false);
+                  setAuthUrl(null);
+                  setProcessing(false);
+                  onError('Authentication cancelled');
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-hidden p-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-gray-700">
+                  البنك بتاعك بيطلب منك تأكيد الدفع. الرجاء إدخال الكود اللي وصلك على موبايلك أو من تطبيق البنك.
+                </p>
+              </div>
+
+              <iframe
+                ref={iframeRef}
+                src={authUrl}
+                className="w-full h-[500px] border border-gray-200 rounded-lg"
+                title="3D Secure Authentication"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
