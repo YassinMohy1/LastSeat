@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import NMIPaymentForm from '../components/NMIPaymentForm';
 import {
   Plane,
   Calendar,
@@ -39,6 +40,7 @@ export default function CustomerPayment() {
   const [paymentUrl, setPaymentUrl] = useState('');
   const [bankTransferSuccess, setBankTransferSuccess] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
     fetchInvoice();
@@ -64,62 +66,23 @@ export default function CustomerPayment() {
   };
 
   const handlePaymentMethodSelect = async (method: 'visa' | 'bank') => {
-    if (method === 'visa') {
-      setProcessingPayment(true);
-      setError('');
-      try {
-        const redirectUrl = `${window.location.origin}/payment-success?invoice=${invoice!.invoice_number}`;
+    setPaymentMethod(method);
+  };
 
-        console.log('Initiating NMI payment...', {
-          amount: invoice!.amount,
-          invoice: invoice!.invoice_number
-        });
-
-        const response = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-create-payment`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({
-              amount: invoice!.amount,
-              currency: invoice!.currency,
-              description: `Flight Booking - ${invoice!.invoice_number}`,
-              customerEmail: invoice!.customer_email,
-              invoiceNumber: invoice!.invoice_number,
-              redirectUrl: redirectUrl,
-            }),
-          }
-        );
-
-        console.log('Response status:', response.status);
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ error: 'خطأ في الاتصال بخدمة الدفع' }));
-          console.error('Payment initialization failed:', errorData);
-          throw new Error(errorData.error || 'فشل تهيئة الدفع. الرجاء المحاولة مرة أخرى.');
-        }
-
-        const data = await response.json();
-        console.log('Payment data received:', data);
-
-        if (data.formUrl) {
-          console.log('Redirecting to:', data.formUrl);
-          window.location.href = data.formUrl;
-        } else {
-          throw new Error('فشل الحصول على رابط الدفع. الرجاء المحاولة مرة أخرى.');
-        }
-      } catch (err: any) {
-        console.error('Payment error:', err);
-        const errorMessage = err.message || 'فشل تهيئة الدفع. الرجاء المحاولة مرة أخرى أو اتصل بنا.';
-        setError(errorMessage);
-        setProcessingPayment(false);
-      }
-    } else {
-      setPaymentMethod(method);
+  const handlePaymentSuccess = async () => {
+    try {
+      await supabase
+        .from('invoices')
+        .update({ payment_status: 'paid' })
+        .eq('id', invoice!.id);
+      setPaymentSuccess(true);
+    } catch (err: any) {
+      console.error('Error updating payment status:', err);
     }
+  };
+
+  const handlePaymentError = (errorMessage: string) => {
+    setError(errorMessage);
   };
 
   const handleBankTransferConfirm = async () => {
@@ -283,6 +246,32 @@ export default function CustomerPayment() {
                         </div>
                       </div>
                     </button>
+                  </div>
+                ) : paymentMethod === 'visa' ? (
+                  <div>
+                    <button
+                      onClick={() => setPaymentMethod(null)}
+                      className="text-sm text-brand-blue hover:underline mb-4"
+                    >
+                      ← تغيير طريقة الدفع
+                    </button>
+
+                    {paymentSuccess ? (
+                      <div className="text-center py-8">
+                        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">تم الدفع بنجاح!</h3>
+                        <p className="text-gray-600">شكراً لك. سيتم التواصل معك قريباً لتأكيد الحجز.</p>
+                      </div>
+                    ) : (
+                      <NMIPaymentForm
+                        amount={invoice.amount}
+                        currency={invoice.currency}
+                        invoiceNumber={invoice.invoice_number}
+                        customerEmail={invoice.customer_email}
+                        onSuccess={handlePaymentSuccess}
+                        onError={handlePaymentError}
+                      />
+                    )}
                   </div>
                 ) : paymentMethod === 'bank' ? (
                   <div>
