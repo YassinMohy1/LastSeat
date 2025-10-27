@@ -12,6 +12,9 @@ export default function FlightQuote() {
   const [showAssistant, setShowAssistant] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+  const [priceLoading, setPriceLoading] = useState(true);
+  const [priceSource, setPriceSource] = useState<'amadeus' | 'estimated'>('estimated');
 
   const flightDetails = {
     from: searchParams.get('from') || '',
@@ -36,6 +39,60 @@ export default function FlightQuote() {
     }
   }, [flightDetails, navigate]);
 
+  useEffect(() => {
+    const fetchPrice = async () => {
+      if (!flightDetails.from || !flightDetails.to || !flightDetails.departDate) {
+        return;
+      }
+
+      setPriceLoading(true);
+
+      try {
+        const cabinMap: Record<string, string> = {
+          'Economy': 'ECONOMY',
+          'Business': 'BUSINESS',
+          'First Class': 'FIRST'
+        };
+
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-flight-price`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              origin: flightDetails.from,
+              destination: flightDetails.to,
+              departureDate: flightDetails.departDate,
+              returnDate: flightDetails.returnDate || undefined,
+              adults: flightDetails.passengers,
+              cabin: cabinMap[flightDetails.cabin] || 'ECONOMY',
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (data.price) {
+          setEstimatedPrice(data.price);
+          setPriceSource(data.source || 'amadeus');
+        } else {
+          setEstimatedPrice(estimatePrice());
+          setPriceSource('estimated');
+        }
+      } catch (err) {
+        console.error('Error fetching price:', err);
+        setEstimatedPrice(estimatePrice());
+        setPriceSource('estimated');
+      } finally {
+        setPriceLoading(false);
+      }
+    };
+
+    fetchPrice();
+  }, [flightDetails]);
+
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
@@ -50,6 +107,8 @@ export default function FlightQuote() {
     basePrice *= flightDetails.passengers;
     return Math.round(basePrice);
   };
+
+  const displayPrice = estimatedPrice || estimatePrice();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -315,8 +374,16 @@ export default function FlightQuote() {
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Estimated Price</h3>
                 <div className="text-center py-6 bg-gradient-to-br from-brand-blue to-blue-600 rounded-lg text-white mb-6">
                   <div className="text-sm mb-2">Starting from</div>
-                  <div className="text-4xl font-bold">${estimatePrice()}</div>
-                  <div className="text-xs mt-2 opacity-80">per person</div>
+                  {priceLoading ? (
+                    <div className="text-2xl font-bold">Loading...</div>
+                  ) : (
+                    <>
+                      <div className="text-4xl font-bold">${displayPrice}</div>
+                      <div className="text-xs mt-2 opacity-80">
+                        {priceSource === 'amadeus' ? 'Real-time pricing' : 'Estimated pricing'}
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <div className="space-y-3 mb-6">

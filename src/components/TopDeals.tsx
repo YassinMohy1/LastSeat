@@ -4,195 +4,195 @@ import { useState, useEffect, useRef } from 'react';
 const deals = [
   {
     destination: 'London',
-    price: '$459',
+    price: '$385',
     image: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=800',
     dates: 'Nov - Dec 2025',
-    airline: 'Multiple Airlines',
-    savings: 'Save $200'
-  },
-  {
-    destination: 'Tokyo',
-    price: '$599',
-    image: 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Year Round',
     airline: 'Multiple Airlines',
     savings: 'Save $180'
   },
   {
+    destination: 'Tokyo',
+    price: '$520',
+    image: 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Year Round',
+    airline: 'Multiple Airlines',
+    savings: 'Save $200'
+  },
+  {
     destination: 'Paris',
-    price: '$429',
+    price: '$365',
     image: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=800',
     dates: 'Oct - Jan 2026',
     airline: 'Multiple Airlines',
-    savings: 'Save $150'
+    savings: 'Save $165'
   },
   {
     destination: 'Dubai',
-    price: '$689',
+    price: '$495',
     image: 'https://images.pexels.com/photos/2044434/pexels-photo-2044434.jpeg?auto=compress&cs=tinysrgb&w=800',
     dates: 'Dec - Mar 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $190'
+  },
+  {
+    destination: 'Manila',
+    price: '$485',
+    image: 'https://images.pexels.com/photos/2166553/pexels-photo-2166553.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Nov 2025 - Feb 2026',
     airline: 'Multiple Airlines',
     savings: 'Save $220'
   },
   {
-    destination: 'Manila',
-    price: '$549',
-    image: 'https://images.pexels.com/photos/2166553/pexels-photo-2166553.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Nov 2025 - Feb 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $250'
-  },
-  {
     destination: 'Barcelona',
-    price: '$399',
+    price: '$345',
     image: 'https://images.pexels.com/photos/1388030/pexels-photo-1388030.jpeg?auto=compress&cs=tinysrgb&w=800',
     dates: 'Oct - Dec 2025',
     airline: 'Multiple Airlines',
-    savings: 'Save $190'
+    savings: 'Save $155'
   },
   {
     destination: 'Cancun',
-    price: '$299',
+    price: '$225',
     image: 'https://images.pexels.com/photos/3225531/pexels-photo-3225531.jpeg?auto=compress&cs=tinysrgb&w=800',
     dates: 'Nov 2025 - Apr 2026',
     airline: 'Multiple Airlines',
-    savings: 'Save $140'
+    savings: 'Save $120'
   },
   {
     destination: 'Bangkok',
-    price: '$629',
+    price: '$535',
     image: 'https://images.pexels.com/photos/3881104/pexels-photo-3881104.jpeg?auto=compress&cs=tinysrgb&w=800',
     dates: 'Dec 2025 - Mar 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $280'
-  },
-  {
-    destination: 'Rome',
-    price: '$479',
-    image: 'https://images.pexels.com/photos/1797161/pexels-photo-1797161.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Oct - Dec 2025',
-    airline: 'Multiple Airlines',
-    savings: 'Save $210'
-  },
-  {
-    destination: 'Bali',
-    price: '$699',
-    image: 'https://images.pexels.com/photos/2474690/pexels-photo-2474690.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Nov 2025 - Apr 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $300'
-  },
-  {
-    destination: 'Iceland',
-    price: '$449',
-    image: 'https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Nov 2025 - Jan 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $170'
-  },
-  {
-    destination: 'Punta Cana',
-    price: '$379',
-    image: 'https://images.pexels.com/photos/6069831/pexels-photo-6069831.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Dec 2025 - Mar 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $160'
-  },
-  {
-    destination: 'Maldives',
-    price: '$799',
-    image: 'https://images.pexels.com/photos/3250613/pexels-photo-3250613.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Nov 2025 - Mar 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $320'
-  },
-  {
-    destination: 'Santorini',
-    price: '$559',
-    image: 'https://images.pexels.com/photos/3264723/pexels-photo-3264723.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'May - Sep 2026',
     airline: 'Multiple Airlines',
     savings: 'Save $240'
   },
   {
-    destination: 'Prague',
-    price: '$449',
-    image: 'https://images.pexels.com/photos/161851/prague-czech-republic-city-architecture-161851.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Oct 2025 - Jan 2026',
+    destination: 'Rome',
+    price: '$395',
+    image: 'https://images.pexels.com/photos/1797161/pexels-photo-1797161.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Oct - Dec 2025',
     airline: 'Multiple Airlines',
-    savings: 'Save $190'
+    savings: 'Save $175'
   },
   {
-    destination: 'Sydney',
-    price: '$879',
-    image: 'https://images.pexels.com/photos/995765/pexels-photo-995765.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Dec 2025 - Feb 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $350'
-  },
-  {
-    destination: 'Amsterdam',
-    price: '$419',
-    image: 'https://images.pexels.com/photos/2031706/pexels-photo-2031706.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Year Round',
-    airline: 'Multiple Airlines',
-    savings: 'Save $180'
-  },
-  {
-    destination: 'Lisbon',
-    price: '$469',
-    image: 'https://images.pexels.com/photos/2570063/pexels-photo-2570063.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Sep 2025 - Nov 2025',
-    airline: 'Multiple Airlines',
-    savings: 'Save $200'
-  },
-  {
-    destination: 'Singapore',
-    price: '$729',
-    image: 'https://images.pexels.com/photos/3152124/pexels-photo-3152124.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Nov 2025 - Mar 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $290'
-  },
-  {
-    destination: 'Istanbul',
-    price: '$539',
-    image: 'https://images.pexels.com/photos/3401920/pexels-photo-3401920.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Oct 2025 - Dec 2025',
-    airline: 'Multiple Airlines',
-    savings: 'Save $230'
-  },
-  {
-    destination: 'New Zealand',
-    price: '$899',
-    image: 'https://images.pexels.com/photos/2467285/pexels-photo-2467285.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Nov 2025 - Feb 2026',
-    airline: 'Multiple Airlines',
-    savings: 'Save $380'
-  },
-  {
-    destination: 'Morocco',
-    price: '$589',
-    image: 'https://images.pexels.com/photos/2403209/pexels-photo-2403209.jpeg?auto=compress&cs=tinysrgb&w=800',
-    dates: 'Oct 2025 - Jan 2026',
+    destination: 'Bali',
+    price: '$595',
+    image: 'https://images.pexels.com/photos/2474690/pexels-photo-2474690.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Nov 2025 - Apr 2026',
     airline: 'Multiple Airlines',
     savings: 'Save $260'
   },
   {
+    destination: 'Iceland',
+    price: '$385',
+    image: 'https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Nov 2025 - Jan 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $145'
+  },
+  {
+    destination: 'Punta Cana',
+    price: '$295',
+    image: 'https://images.pexels.com/photos/6069831/pexels-photo-6069831.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Dec 2025 - Mar 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $135'
+  },
+  {
+    destination: 'Maldives',
+    price: '$685',
+    image: 'https://images.pexels.com/photos/3250613/pexels-photo-3250613.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Nov 2025 - Mar 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $280'
+  },
+  {
+    destination: 'Santorini',
+    price: '$465',
+    image: 'https://images.pexels.com/photos/3264723/pexels-photo-3264723.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'May - Sep 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $210'
+  },
+  {
+    destination: 'Prague',
+    price: '$375',
+    image: 'https://images.pexels.com/photos/161851/prague-czech-republic-city-architecture-161851.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Oct 2025 - Jan 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $160'
+  },
+  {
+    destination: 'Sydney',
+    price: '$775',
+    image: 'https://images.pexels.com/photos/995765/pexels-photo-995765.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Dec 2025 - Feb 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $310'
+  },
+  {
+    destination: 'Amsterdam',
+    price: '$355',
+    image: 'https://images.pexels.com/photos/2031706/pexels-photo-2031706.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Year Round',
+    airline: 'Multiple Airlines',
+    savings: 'Save $155'
+  },
+  {
+    destination: 'Lisbon',
+    price: '$395',
+    image: 'https://images.pexels.com/photos/2570063/pexels-photo-2570063.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Sep 2025 - Nov 2025',
+    airline: 'Multiple Airlines',
+    savings: 'Save $170'
+  },
+  {
+    destination: 'Singapore',
+    price: '$625',
+    image: 'https://images.pexels.com/photos/3152124/pexels-photo-3152124.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Nov 2025 - Mar 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $250'
+  },
+  {
+    destination: 'Istanbul',
+    price: '$455',
+    image: 'https://images.pexels.com/photos/3401920/pexels-photo-3401920.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Oct 2025 - Dec 2025',
+    airline: 'Multiple Airlines',
+    savings: 'Save $195'
+  },
+  {
+    destination: 'New Zealand',
+    price: '$795',
+    image: 'https://images.pexels.com/photos/2467285/pexels-photo-2467285.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Nov 2025 - Feb 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $340'
+  },
+  {
+    destination: 'Morocco',
+    price: '$485',
+    image: 'https://images.pexels.com/photos/2403209/pexels-photo-2403209.jpeg?auto=compress&cs=tinysrgb&w=800',
+    dates: 'Oct 2025 - Jan 2026',
+    airline: 'Multiple Airlines',
+    savings: 'Save $220'
+  },
+  {
     destination: 'Switzerland',
-    price: '$619',
+    price: '$525',
     image: 'https://images.pexels.com/photos/1647962/pexels-photo-1647962.jpeg?auto=compress&cs=tinysrgb&w=800',
     dates: 'Dec 2025 - Mar 2026',
     airline: 'Multiple Airlines',
-    savings: 'Save $270'
+    savings: 'Save $230'
   },
   {
     destination: 'New York',
-    price: '$329',
+    price: '$195',
     image: 'https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=800',
     dates: 'Year Round',
     airline: 'Multiple Airlines',
-    savings: 'Save $150'
+    savings: 'Save $95'
   }
 ];
 
