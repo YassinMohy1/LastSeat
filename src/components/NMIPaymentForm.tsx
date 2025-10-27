@@ -37,28 +37,127 @@ export default function NMIPaymentForm({
       return;
     }
 
+    if (document.querySelector('script[src*="Collect.js"]')) {
+      if (window.CollectJS) {
+        setScriptLoaded(true);
+        return;
+      }
+    }
+
     const script = document.createElement('script');
     script.src = 'https://secure.nmi.com/token/Collect.js';
     script.setAttribute('data-tokenization-key', tokenizationKey);
-    script.async = true;
+    script.async = false;
 
     script.onload = () => {
       console.log('Collect.js loaded successfully');
-      setScriptLoaded(true);
+      setTimeout(() => {
+        setScriptLoaded(true);
+      }, 200);
     };
 
     script.onerror = () => {
       onError('Failed to load payment system. Please refresh the page.');
     };
 
-    document.body.appendChild(script);
+    document.head.appendChild(script);
 
     return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
+      const existingScript = document.querySelector('script[src*="Collect.js"]');
+      if (existingScript && existingScript.parentNode) {
+        existingScript.parentNode.removeChild(existingScript);
       }
     };
   }, [onError]);
+
+  useEffect(() => {
+    if (scriptLoaded && window.CollectJS) {
+      try {
+        window.CollectJS.configure({
+          variant: 'inline',
+          styleSniffer: false,
+          googleFont: 'Roboto:400',
+          customCss: {
+            'border': '1px solid #d1d5db',
+            'border-radius': '0.5rem',
+            'padding': '0.75rem',
+            'font-size': '1rem',
+            'color': '#111827',
+            'background-color': '#ffffff',
+            '::placeholder': {
+              'color': '#9ca3af'
+            },
+            ':focus': {
+              'border-color': '#2563eb',
+              'outline': 'none'
+            }
+          },
+          fields: {
+            ccnumber: {
+              placeholder: '1234 5678 9012 3456',
+              selector: '#ccnumber'
+            },
+            ccexp: {
+              placeholder: 'MM / YY',
+              selector: '#ccexp'
+            },
+            cvv: {
+              placeholder: 'CVV',
+              selector: '#cvv'
+            }
+          },
+          callback: async (response: any) => {
+            try {
+              if (response.token) {
+                const result = await fetch(
+                  `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-process-payment`,
+                  {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                    },
+                    body: JSON.stringify({
+                      paymentToken: response.token,
+                      amount,
+                      currency,
+                      invoiceNumber,
+                      customerEmail,
+                    }),
+                  }
+                );
+
+                const data = await result.json();
+
+                if (!result.ok || !data.success) {
+                  throw new Error(data.error || 'Payment failed');
+                }
+
+                onSuccess();
+              } else {
+                throw new Error('Failed to tokenize payment information');
+              }
+            } catch (err: any) {
+              console.error('Payment processing error:', err);
+              onError(err.message || 'Payment processing failed');
+              setProcessing(false);
+            }
+          },
+          validationCallback: (field: string, status: boolean, message: string) => {
+            if (!status) {
+              console.log(`Field ${field} validation: ${message}`);
+            }
+          },
+          fieldsAvailableCallback: () => {
+            console.log('Payment fields are ready');
+          }
+        });
+      } catch (err: any) {
+        console.error('CollectJS configuration error:', err);
+        onError('Failed to initialize payment fields');
+      }
+    }
+  }, [scriptLoaded, amount, currency, invoiceNumber, customerEmail, onSuccess, onError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,66 +168,6 @@ export default function NMIPaymentForm({
     }
 
     setProcessing(true);
-
-    try {
-
-      window.CollectJS.configure({
-        paymentSelector: '#nmi-payment-form',
-        variant: 'inline',
-        styleSniffer: false,
-        callback: async (response: any) => {
-          try {
-            if (response.token) {
-              const result = await fetch(
-                `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-process-payment`,
-                {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-                  },
-                  body: JSON.stringify({
-                    paymentToken: response.token,
-                    amount,
-                    currency,
-                    invoiceNumber,
-                    customerEmail,
-                  }),
-                }
-              );
-
-              const data = await result.json();
-
-              if (!result.ok || !data.success) {
-                throw new Error(data.error || 'Payment failed');
-              }
-
-              onSuccess();
-            } else {
-              throw new Error('Failed to tokenize payment information');
-            }
-          } catch (err: any) {
-            console.error('Payment processing error:', err);
-            onError(err.message || 'Payment processing failed');
-            setProcessing(false);
-          }
-        },
-        validationCallback: (field: string, status: boolean, message: string) => {
-          if (!status) {
-            console.log(`Field ${field} validation error: ${message}`);
-          }
-        },
-        fieldsAvailableCallback: () => {
-          console.log('Payment fields are ready');
-        },
-        price: amount.toFixed(2),
-        currency: currency.toUpperCase(),
-      });
-    } catch (err: any) {
-      console.error('Payment initialization error:', err);
-      onError(err.message || 'Failed to initialize payment');
-      setProcessing(false);
-    }
   };
 
   return (
@@ -151,7 +190,7 @@ export default function NMIPaymentForm({
             <label className="block text-sm font-medium text-gray-700 mb-2">
               رقم البطاقة
             </label>
-            <div id="ccnumber" className="border border-gray-300 rounded-lg p-3 bg-white"></div>
+            <div id="ccnumber"></div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -159,13 +198,13 @@ export default function NMIPaymentForm({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 تاريخ الانتهاء
               </label>
-              <div id="ccexp" className="border border-gray-300 rounded-lg p-3 bg-white"></div>
+              <div id="ccexp"></div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 CVV
               </label>
-              <div id="cvv" className="border border-gray-300 rounded-lg p-3 bg-white"></div>
+              <div id="cvv"></div>
             </div>
           </div>
 
