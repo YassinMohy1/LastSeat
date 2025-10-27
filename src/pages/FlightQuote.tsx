@@ -33,6 +33,84 @@ export default function FlightQuote() {
     message: ''
   });
 
+  const getAirportCoordinates = (cityCode: string): { lat: number; lng: number } | null => {
+    const airports: Record<string, { lat: number; lng: number }> = {
+      'JFK': { lat: 40.6413, lng: -73.7781 },
+      'LAX': { lat: 33.9416, lng: -118.4085 },
+      'LHR': { lat: 51.4700, lng: -0.4543 },
+      'DXB': { lat: 25.2532, lng: 55.3657 },
+      'CDG': { lat: 49.0097, lng: 2.5479 },
+      'SIN': { lat: 1.3644, lng: 103.9915 },
+      'HND': { lat: 35.5494, lng: 139.7798 },
+      'AMS': { lat: 52.3105, lng: 4.7683 },
+      'FRA': { lat: 50.0379, lng: 8.5622 },
+      'ICN': { lat: 37.4602, lng: 126.4407 },
+      'CAI': { lat: 30.1219, lng: 31.4056 },
+      'JED': { lat: 21.6796, lng: 39.1567 },
+      'RUH': { lat: 24.9578, lng: 46.6988 },
+      'DOH': { lat: 25.2731, lng: 51.6083 },
+      'IST': { lat: 41.2753, lng: 28.7519 },
+      'ORD': { lat: 41.9742, lng: -87.9073 },
+      'ATL': { lat: 33.6407, lng: -84.4277 },
+      'DFW': { lat: 32.8998, lng: -97.0403 },
+      'SFO': { lat: 37.6213, lng: -122.3790 },
+      'MIA': { lat: 25.7959, lng: -80.2870 },
+      'BOS': { lat: 42.3656, lng: -71.0096 },
+      'SEA': { lat: 47.4502, lng: -122.3088 },
+      'LAS': { lat: 36.0840, lng: -115.1537 },
+      'MCO': { lat: 28.4312, lng: -81.3081 },
+      'EWR': { lat: 40.6895, lng: -74.1745 },
+    };
+
+    const code = cityCode.substring(0, 3).toUpperCase();
+    return airports[code] || null;
+  };
+
+  const calculateDistance = (from: string, to: string): number => {
+    const coord1 = getAirportCoordinates(from);
+    const coord2 = getAirportCoordinates(to);
+
+    if (!coord1 || !coord2) {
+      return 1000;
+    }
+
+    const R = 6371;
+    const dLat = (coord2.lat - coord1.lat) * Math.PI / 180;
+    const dLon = (coord2.lng - coord1.lng) * Math.PI / 180;
+    const a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(coord1.lat * Math.PI / 180) * Math.cos(coord2.lat * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+
+    return distance;
+  };
+
+  const estimatePrice = () => {
+    const distance = calculateDistance(flightDetails.from, flightDetails.to);
+
+    let pricePerKm = 0.12;
+    if (distance > 5000) pricePerKm = 0.10;
+    if (distance > 10000) pricePerKm = 0.08;
+
+    let basePrice = distance * pricePerKm;
+
+    if (basePrice < 200) basePrice = 200;
+
+    if (flightDetails.cabin === 'Business') basePrice *= 2.8;
+    if (flightDetails.cabin === 'First Class') basePrice *= 5;
+
+    if (flightDetails.tripType === 'roundtrip') basePrice *= 1.85;
+
+    const seasonalMultiplier = 1.1;
+    basePrice *= seasonalMultiplier;
+
+    basePrice *= flightDetails.passengers;
+
+    return Math.round(basePrice);
+  };
+
   useEffect(() => {
     if (!flightDetails.from || !flightDetails.to || !flightDetails.departDate) {
       navigate('/');
@@ -47,6 +125,7 @@ export default function FlightQuote() {
       }
 
       setPriceLoading(true);
+      setEstimatedPrice(estimatePrice());
 
       try {
         const cabinMap: Record<string, string> = {
@@ -56,7 +135,7 @@ export default function FlightQuote() {
         };
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-flight-price`,
@@ -85,16 +164,14 @@ export default function FlightQuote() {
 
         const data = await response.json();
 
-        if (data.price) {
+        if (data.price && data.source === 'amadeus') {
           setEstimatedPrice(data.price);
-          setPriceSource(data.source || 'amadeus');
+          setPriceSource('amadeus');
         } else {
-          setEstimatedPrice(estimatePrice());
           setPriceSource('estimated');
         }
       } catch (err) {
         console.error('Error fetching price:', err);
-        setEstimatedPrice(estimatePrice());
         setPriceSource('estimated');
       } finally {
         setPriceLoading(false);
@@ -108,15 +185,6 @@ export default function FlightQuote() {
     if (!dateStr) return '';
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  };
-
-  const estimatePrice = () => {
-    let basePrice = 350;
-    if (flightDetails.cabin === 'Business') basePrice *= 2.5;
-    if (flightDetails.cabin === 'First Class') basePrice *= 4;
-    if (flightDetails.tripType === 'roundtrip') basePrice *= 1.8;
-    basePrice *= flightDetails.passengers;
-    return Math.round(basePrice);
   };
 
   const displayPrice = estimatedPrice || estimatePrice();
