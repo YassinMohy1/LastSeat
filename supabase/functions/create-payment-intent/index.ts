@@ -29,7 +29,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const { amount, description, customerEmail } = await req.json();
+    const { amount, currency, description, customerEmail } = await req.json();
 
     if (!amount || amount <= 0) {
       return new Response(
@@ -49,7 +49,7 @@ Deno.serve(async (req: Request) => {
       },
       body: new URLSearchParams({
         amount: (amount * 100).toString(),
-        currency: 'usd',
+        currency: (currency || 'usd').toLowerCase(),
         description: description || 'Flight Booking',
         receipt_email: customerEmail || '',
         'metadata[source]': 'last-seat-ticket',

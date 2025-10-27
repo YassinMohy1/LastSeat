@@ -170,14 +170,21 @@ export default function CustomerPayment() {
             body: JSON.stringify({
               amount: invoice!.amount,
               currency: invoice!.currency.toLowerCase(),
+              description: `Flight Booking - ${invoice!.invoice_number}`,
+              customerEmail: invoice!.customer_email,
             }),
           }
         );
 
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'فشل تهيئة الدفع');
+        }
+
         const data = await response.json();
         setClientSecret(data.clientSecret);
-      } catch (err) {
-        setError('فشل تهيئة الدفع');
+      } catch (err: any) {
+        setError(err.message || 'فشل تهيئة الدفع');
       }
     }
   };
