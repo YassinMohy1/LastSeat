@@ -279,7 +279,9 @@ export default function FlightQuote() {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
-  const displayPrice = estimatedPrice || estimatePrice();
+  const originalPrice = estimatedPrice || estimatePrice();
+  const discountPercentage = 60;
+  const displayPrice = Math.round(originalPrice * (1 - discountPercentage / 100));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -523,15 +525,25 @@ export default function FlightQuote() {
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24">
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Estimated Price</h3>
+
+                <div className="mb-4 bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-lg text-center">
+                  <div className="text-sm font-semibold">LIMITED TIME OFFER</div>
+                  <div className="text-2xl font-bold">{discountPercentage}% OFF</div>
+                </div>
+
                 <div className="text-center py-6 bg-gradient-to-br from-brand-blue to-blue-600 rounded-lg text-white mb-6">
                   <div className="text-sm mb-2">Starting from</div>
                   {priceLoading ? (
                     <div className="text-2xl font-bold">Loading...</div>
                   ) : (
                     <>
-                      <div className="text-4xl font-bold">${displayPrice}</div>
+                      <div className="text-lg text-red-200 line-through mb-1">${originalPrice}</div>
+                      <div className="text-5xl font-bold">${displayPrice}</div>
                       <div className="text-xs mt-2 opacity-80">
                         {priceSource === 'amadeus' ? 'Real-time pricing' : 'Estimated pricing'}
+                      </div>
+                      <div className="text-sm mt-2 bg-white/20 inline-block px-3 py-1 rounded-full">
+                        You save ${originalPrice - displayPrice}
                       </div>
                     </>
                   )}
