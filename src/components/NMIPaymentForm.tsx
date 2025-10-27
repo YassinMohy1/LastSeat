@@ -58,10 +58,21 @@ export default function NMIPaymentForm({
   });
 
   const paymentDataRef = useRef({ amount, currency, invoiceNumber, customerEmail, billingInfo });
+  const billingInfoRef = useRef(billingInfo);
 
   useEffect(() => {
-    paymentDataRef.current = { amount, currency, invoiceNumber, customerEmail, billingInfo };
-  }, [amount, currency, invoiceNumber, customerEmail, billingInfo]);
+    billingInfoRef.current = billingInfo;
+  }, [billingInfo]);
+
+  useEffect(() => {
+    paymentDataRef.current = {
+      amount,
+      currency,
+      invoiceNumber,
+      customerEmail,
+      billingInfo: billingInfoRef.current
+    };
+  }, [amount, currency, invoiceNumber, customerEmail]);
 
   useEffect(() => {
     const tokenizationKey = import.meta.env.VITE_NMI_TOKENIZATION_KEY;
@@ -145,7 +156,6 @@ export default function NMIPaymentForm({
               if (response.token) {
                 setPaymentSubmitted(true);
 
-                const currentData = paymentDataRef.current;
                 const result = await fetch(
                   `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-process-payment`,
                   {
@@ -156,11 +166,11 @@ export default function NMIPaymentForm({
                     },
                     body: JSON.stringify({
                       paymentToken: response.token,
-                      amount: currentData.amount,
-                      currency: currentData.currency,
-                      invoiceNumber: currentData.invoiceNumber,
-                      customerEmail: currentData.customerEmail,
-                      billingInfo: currentData.billingInfo,
+                      amount: paymentDataRef.current.amount,
+                      currency: paymentDataRef.current.currency,
+                      invoiceNumber: paymentDataRef.current.invoiceNumber,
+                      customerEmail: paymentDataRef.current.customerEmail,
+                      billingInfo: billingInfoRef.current,
                     }),
                   }
                 );
