@@ -36,9 +36,26 @@ export default function SearchBar() {
   };
 
   const handleSearch = () => {
+    if (!origin.trim()) {
+      alert('Please enter your departure location');
+      return;
+    }
+    if (!destination.trim()) {
+      alert('Please enter your destination');
+      return;
+    }
+    if (!departDate) {
+      alert('Please select a departure date');
+      return;
+    }
+    if (tripType === 'roundtrip' && !returnDate) {
+      alert('Please select a return date');
+      return;
+    }
+
     trackSearchFlight({
-      from: origin || 'Not specified',
-      to: destination || 'Not specified',
+      from: origin,
+      to: destination,
       departDate: departDate,
       returnDate: tripType === 'roundtrip' ? returnDate : undefined,
       passengers: adults,
@@ -47,7 +64,17 @@ export default function SearchBar() {
 
     trackButtonClick('Search Flights', 'Hero Search Bar');
 
-    window.location.href = '/checkout';
+    const searchParams = new URLSearchParams({
+      from: origin,
+      to: destination,
+      departDate: departDate,
+      returnDate: tripType === 'roundtrip' ? returnDate : '',
+      passengers: adults.toString(),
+      cabin: cabin,
+      tripType: tripType
+    });
+
+    window.location.href = `/flight-quote?${searchParams.toString()}`;
   };
 
   return (

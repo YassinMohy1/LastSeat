@@ -309,6 +309,13 @@ export default function AdminDashboard() {
                 استفسارات العملاء
               </button>
               <button
+                onClick={() => navigate('/admin/flight-inquiries')}
+                className="bg-white text-purple-600 border border-purple-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+              >
+                <FileText className="w-4 h-4" />
+                طلبات الرحلات
+              </button>
+              <button
                 onClick={() => navigate('/admin/create-invoice')}
                 className="bg-gradient-to-r from-brand-blue to-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-1.5"
               >
