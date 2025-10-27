@@ -41,12 +41,15 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    // Generate unique transaction reference
+    const uniqueRef = `${invoiceNumber || 'TXN'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
     const transactionData = new URLSearchParams({
       security_key: nmiSecurityKey,
       payment_token: paymentToken,
       amount: amount.toFixed(2),
       currency: (currency || 'USD').toUpperCase(),
-      orderid: invoiceNumber || '',
+      orderid: uniqueRef,
       order_description: `Flight Booking - ${invoiceNumber}`,
       email: customerEmail || '',
       type: 'sale',
