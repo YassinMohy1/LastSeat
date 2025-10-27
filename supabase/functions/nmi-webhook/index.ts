@@ -15,6 +15,20 @@ Deno.serve(async (req: Request) => {
     });
   }
 
+  if (req.method === 'GET') {
+    return new Response(
+      JSON.stringify({
+        status: 'ok',
+        message: 'NMI Webhook endpoint is ready',
+        timestamp: new Date().toISOString()
+      }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -58,6 +72,8 @@ Deno.serve(async (req: Request) => {
     const amount = params.get('amount');
     const responseCode = params.get('response_code');
     const responseText = params.get('responsetext');
+
+    console.log('Webhook received:', { eventType, transactionId, orderId, responseCode });
 
     if (eventType === 'sale' && responseCode === '100') {
       const { error: updateError } = await supabase
