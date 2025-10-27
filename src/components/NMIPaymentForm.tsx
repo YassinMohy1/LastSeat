@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Loader2, CreditCard, Lock } from 'lucide-react';
 
 declare global {
@@ -30,6 +30,12 @@ export default function NMIPaymentForm({
   const [processing, setProcessing] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [paymentSubmitted, setPaymentSubmitted] = useState(false);
+  const [configured, setConfigured] = useState(false);
+  const paymentDataRef = useRef({ amount, currency, invoiceNumber, customerEmail });
+
+  useEffect(() => {
+    paymentDataRef.current = { amount, currency, invoiceNumber, customerEmail };
+  }, [amount, currency, invoiceNumber, customerEmail]);
 
   useEffect(() => {
     const tokenizationKey = import.meta.env.VITE_NMI_TOKENIZATION_KEY;
@@ -73,7 +79,7 @@ export default function NMIPaymentForm({
   }, [onError]);
 
   useEffect(() => {
-    if (scriptLoaded && window.CollectJS) {
+    if (scriptLoaded && window.CollectJS && !configured) {
       try {
         window.CollectJS.configure({
           variant: 'inline',
@@ -109,16 +115,11 @@ export default function NMIPaymentForm({
             }
           },
           callback: async (response: any) => {
-            // Prevent duplicate submissions
-            if (paymentSubmitted) {
-              console.log('Payment already submitted, ignoring duplicate request');
-              return;
-            }
-
             try {
               if (response.token) {
                 setPaymentSubmitted(true);
 
+                const currentData = paymentDataRef.current;
                 const result = await fetch(
                   `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-process-payment`,
                   {
@@ -129,10 +130,10 @@ export default function NMIPaymentForm({
                     },
                     body: JSON.stringify({
                       paymentToken: response.token,
-                      amount,
-                      currency,
-                      invoiceNumber,
-                      customerEmail,
+                      amount: currentData.amount,
+                      currency: currentData.currency,
+                      invoiceNumber: currentData.invoiceNumber,
+                      customerEmail: currentData.customerEmail,
                     }),
                   }
                 );
@@ -163,12 +164,14 @@ export default function NMIPaymentForm({
             console.log('Payment fields are ready');
           }
         });
+        setConfigured(true);
+        console.log('CollectJS configured successfully');
       } catch (err: any) {
         console.error('CollectJS configuration error:', err);
         onError('Failed to initialize payment fields');
       }
     }
-  }, [scriptLoaded, amount, currency, invoiceNumber, customerEmail, onSuccess, onError]);
+  }, [scriptLoaded, configured, onSuccess, onError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
