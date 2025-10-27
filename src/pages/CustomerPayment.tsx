@@ -64,12 +64,16 @@ export default function CustomerPayment() {
   };
 
   const handlePaymentMethodSelect = async (method: 'visa' | 'bank') => {
-    setPaymentMethod(method);
-
     if (method === 'visa') {
       setProcessingPayment(true);
+      setError('');
       try {
         const redirectUrl = `${window.location.origin}/payment-success?invoice=${invoice!.invoice_number}`;
+
+        console.log('Initiating NMI payment...', {
+          amount: invoice!.amount,
+          invoice: invoice!.invoice_number
+        });
 
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-create-payment`,
@@ -90,23 +94,31 @@ export default function CustomerPayment() {
           }
         );
 
+        console.log('Response status:', response.status);
+
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'فشل تهيئة الدفع');
+          const errorData = await response.json().catch(() => ({ error: 'خطأ في الاتصال بخدمة الدفع' }));
+          console.error('Payment initialization failed:', errorData);
+          throw new Error(errorData.error || 'فشل تهيئة الدفع. الرجاء المحاولة مرة أخرى.');
         }
 
         const data = await response.json();
+        console.log('Payment data received:', data);
 
         if (data.formUrl) {
+          console.log('Redirecting to:', data.formUrl);
           window.location.href = data.formUrl;
         } else {
-          throw new Error('فشل الحصول على رابط الدفع');
+          throw new Error('فشل الحصول على رابط الدفع. الرجاء المحاولة مرة أخرى.');
         }
       } catch (err: any) {
-        setError(err.message || 'فشل تهيئة الدفع');
+        console.error('Payment error:', err);
+        const errorMessage = err.message || 'فشل تهيئة الدفع. الرجاء المحاولة مرة أخرى أو اتصل بنا.';
+        setError(errorMessage);
         setProcessingPayment(false);
-        setPaymentMethod(null);
       }
+    } else {
+      setPaymentMethod(method);
     }
   };
 
@@ -228,11 +240,22 @@ export default function CustomerPayment() {
               <div>
                 <h2 className="text-lg font-bold text-gray-900 mb-4">طريقة الدفع</h2>
 
+                {error && (
+                  <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start gap-2">
+                    <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="font-semibold mb-1">خطأ في الدفع</p>
+                      <p className="text-sm">{error}</p>
+                    </div>
+                  </div>
+                )}
+
                 {!paymentMethod ? (
                   <div className="space-y-3">
                     <button
                       onClick={() => handlePaymentMethodSelect('visa')}
-                      className="w-full p-6 border-2 border-gray-200 rounded-xl hover:border-brand-blue hover:bg-blue-50 transition-all text-right group"
+                      disabled={processingPayment}
+                      className="w-full p-6 border-2 border-gray-200 rounded-xl hover:border-brand-blue hover:bg-blue-50 transition-all text-right group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="flex items-center gap-4">
                         <div className="bg-brand-blue/10 p-3 rounded-lg group-hover:bg-brand-blue group-hover:text-white transition-colors">
@@ -247,7 +270,8 @@ export default function CustomerPayment() {
 
                     <button
                       onClick={() => handlePaymentMethodSelect('bank')}
-                      className="w-full p-6 border-2 border-gray-200 rounded-xl hover:border-brand-blue hover:bg-blue-50 transition-all text-right group"
+                      disabled={processingPayment}
+                      className="w-full p-6 border-2 border-gray-200 rounded-xl hover:border-brand-blue hover:bg-blue-50 transition-all text-right group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="flex items-center gap-4">
                         <div className="bg-brand-blue/10 p-3 rounded-lg group-hover:bg-brand-blue group-hover:text-white transition-colors">
@@ -302,13 +326,6 @@ export default function CustomerPayment() {
                     )}
                   </div>
                 ) : null}
-
-                {error && paymentMethod && (
-                  <div className="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
-                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                    {error}
-                  </div>
-                )}
               </div>
             </div>
 
