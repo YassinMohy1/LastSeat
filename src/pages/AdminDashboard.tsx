@@ -87,6 +87,14 @@ export default function AdminDashboard() {
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [showAuditLogs, setShowAuditLogs] = useState(false);
+  const [auditStats, setAuditStats] = useState({
+    totalActions: 0,
+    invoicesCreated: 0,
+    invoicesPaid: 0,
+    invoicesCancelled: 0,
+    invoicesDeleted: 0,
+    uniqueAdmins: 0
+  });
   const isMainAdmin = adminProfile?.role === 'main_admin';
 
   useEffect(() => {
@@ -153,10 +161,21 @@ export default function AdminDashboard() {
         .from('audit_logs')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(100);
+        .limit(200);
 
       if (error) throw error;
       setAuditLogs(data || []);
+
+      // Calculate audit statistics
+      const stats = {
+        totalActions: data?.length || 0,
+        invoicesCreated: data?.filter(log => log.action_type === 'create_invoice').length || 0,
+        invoicesPaid: data?.filter(log => log.action_type === 'update_invoice_status' && log.details?.new_status === 'paid').length || 0,
+        invoicesCancelled: data?.filter(log => log.action_type === 'update_invoice_status' && log.details?.new_status === 'cancelled').length || 0,
+        invoicesDeleted: data?.filter(log => log.action_type === 'delete_invoice').length || 0,
+        uniqueAdmins: new Set(data?.map(log => log.admin_email)).size || 0
+      };
+      setAuditStats(stats);
     } catch (error) {
       console.error('Error fetching audit logs:', error);
     }
@@ -367,52 +386,52 @@ export default function AdminDashboard() {
               {isMainAdmin && (
                 <button
                   onClick={() => setShowAuditLogs(!showAuditLogs)}
-                  className="bg-white text-purple-600 border border-purple-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+                  className="bg-white text-purple-600 border border-purple-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 flex items-center gap-1"
                 >
-                  <Shield className="w-3.5 h-3.5" />
-                  سجل الأنشطة
+                  <Shield className="w-3 h-3" />
+                  السجل
                 </button>
               )}
               <button
                 onClick={() => navigate('/admin/customers')}
-                className="bg-white text-brand-blue border border-brand-blue px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-brand-blue hover:text-white transition-all duration-300 flex items-center gap-1.5"
+                className="bg-white text-brand-blue border border-brand-blue px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-brand-blue hover:text-white transition-all duration-300 flex items-center gap-1"
               >
-                <Users className="w-3.5 h-3.5" />
-                إدارة العملاء
+                <Users className="w-3 h-3" />
+                العملاء
               </button>
               <button
                 onClick={() => navigate('/admin/inquiries')}
-                className="bg-white text-green-600 border border-green-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+                className="bg-white text-green-600 border border-green-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-600 hover:text-white transition-all duration-300 flex items-center gap-1"
               >
-                <FileText className="w-3.5 h-3.5" />
+                <FileText className="w-3 h-3" />
                 استفسارات
               </button>
               <button
                 onClick={() => navigate('/admin/flight-inquiries')}
-                className="bg-white text-orange-600 border border-orange-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+                className="bg-white text-orange-600 border border-orange-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center gap-1"
               >
-                <FileText className="w-3.5 h-3.5" />
-                طلبات رحلات
+                <FileText className="w-3 h-3" />
+                طلبات
               </button>
               <button
                 onClick={() => navigate('/admin/flight-prices')}
-                className="bg-white text-amber-600 border border-amber-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-amber-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+                className="bg-white text-amber-600 border border-amber-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-amber-600 hover:text-white transition-all duration-300 flex items-center gap-1"
               >
-                <DollarSign className="w-3.5 h-3.5" />
-                الأسعار
+                <DollarSign className="w-3 h-3" />
+                أسعار
               </button>
               <button
                 onClick={() => navigate('/admin/create-invoice')}
-                className="bg-gradient-to-r from-brand-blue to-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-1.5"
+                className="bg-gradient-to-r from-brand-blue to-blue-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-1"
               >
-                <Plus className="w-3.5 h-3.5" />
-                فاتورة جديدة
+                <Plus className="w-3 h-3" />
+                جديد
               </button>
               <button
                 onClick={handleSignOut}
-                className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-gray-200 transition-all flex items-center gap-1.5"
+                className="bg-gray-100 text-gray-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-200 transition-all flex items-center gap-1"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-3 h-3" />
                 خروج
               </button>
             </div>
@@ -422,69 +441,148 @@ export default function AdminDashboard() {
 
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4">
         {isMainAdmin && showAuditLogs && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-4">
-            <div className="px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-700 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Shield className="w-5 h-5 text-white" />
-                <h2 className="text-base font-bold text-white">سجل الأنشطة الإدارية</h2>
+          <div className="bg-white rounded-xl shadow-lg border border-purple-100 overflow-hidden mb-6">
+            <div className="px-5 py-4 bg-gradient-to-r from-purple-600 to-purple-700">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="bg-white/20 p-2 rounded-lg">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-white">سجل الأنشطة الإدارية</h2>
+                    <p className="text-purple-100 text-xs">تتبع شامل لجميع العمليات والأنشطة</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAuditLogs(false)}
+                  className="text-white hover:bg-white/20 p-2 rounded-lg transition-colors"
+                >
+                  <XCircle className="w-5 h-5" />
+                </button>
               </div>
-              <button
-                onClick={() => setShowAuditLogs(false)}
-                className="text-white hover:bg-white/20 p-1 rounded transition-colors"
-              >
-                <XCircle className="w-4 h-4" />
-              </button>
+
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <Activity className="w-4 h-4 text-white mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-white">{auditStats.totalActions}</p>
+                  <p className="text-purple-100 text-xs">إجمالي الأنشطة</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <Plus className="w-4 h-4 text-white mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-white">{auditStats.invoicesCreated}</p>
+                  <p className="text-purple-100 text-xs">فواتير مُنشأة</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <CheckCircle className="w-4 h-4 text-white mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-white">{auditStats.invoicesPaid}</p>
+                  <p className="text-purple-100 text-xs">مدفوعة</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <XCircle className="w-4 h-4 text-white mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-white">{auditStats.invoicesCancelled}</p>
+                  <p className="text-purple-100 text-xs">ملغاة</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <Trash2 className="w-4 h-4 text-white mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-white">{auditStats.invoicesDeleted}</p>
+                  <p className="text-purple-100 text-xs">محذوفة</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <Users className="w-4 h-4 text-white mx-auto mb-1" />
+                  <p className="text-2xl font-bold text-white">{auditStats.uniqueAdmins}</p>
+                  <p className="text-purple-100 text-xs">مدراء نشطين</p>
+                </div>
+              </div>
             </div>
-            <div className="max-h-96 overflow-y-auto">
+
+            <div className="max-h-[500px] overflow-y-auto">
               {auditLogs.length === 0 ? (
-                <div className="p-8 text-center text-gray-500">
-                  <Activity className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                  <p>لا توجد أنشطة مسجلة بعد</p>
+                <div className="p-12 text-center text-gray-500">
+                  <Activity className="w-16 h-16 mx-auto mb-3 text-gray-300" />
+                  <p className="text-base font-semibold">لا توجد أنشطة مسجلة بعد</p>
+                  <p className="text-sm text-gray-400 mt-1">سيتم عرض جميع الأنشطة هنا</p>
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100">
-                  {auditLogs.map((log) => (
-                    <div key={log.id} className="p-3 hover:bg-gray-50 transition-colors">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-semibold text-gray-900">{log.admin_email}</span>
-                            <span className="text-xs text-gray-500">•</span>
-                            <span className="text-xs text-gray-600">
-                              {log.action_type === 'create_invoice' && '✨ إنشاء فاتورة'}
-                              {log.action_type === 'update_invoice_status' && '🔄 تحديث حالة فاتورة'}
-                              {log.action_type === 'delete_invoice' && '🗑️ حذف فاتورة'}
-                              {log.action_type === 'update_invoice' && '📝 تعديل فاتورة'}
-                            </span>
+                  {auditLogs.map((log, index) => {
+                    const actionIcons: Record<string, { icon: JSX.Element; color: string; label: string }> = {
+                      'create_invoice': { icon: <Plus className="w-4 h-4" />, color: 'bg-blue-50 text-blue-600 border-blue-200', label: 'إنشاء فاتورة' },
+                      'update_invoice_status': {
+                        icon: log.details?.new_status === 'paid' ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />,
+                        color: log.details?.new_status === 'paid' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-red-50 text-red-600 border-red-200',
+                        label: log.details?.new_status === 'paid' ? 'تأكيد دفع' : 'إلغاء فاتورة'
+                      },
+                      'delete_invoice': { icon: <Trash2 className="w-4 h-4" />, color: 'bg-red-50 text-red-600 border-red-200', label: 'حذف فاتورة' },
+                      'update_invoice': { icon: <Edit className="w-4 h-4" />, color: 'bg-amber-50 text-amber-600 border-amber-200', label: 'تعديل فاتورة' }
+                    };
+
+                    const action = actionIcons[log.action_type] || { icon: <Activity className="w-4 h-4" />, color: 'bg-gray-50 text-gray-600 border-gray-200', label: log.action_type };
+
+                    return (
+                      <div key={log.id} className="p-4 hover:bg-purple-50/30 transition-all duration-200">
+                        <div className="flex items-start gap-4">
+                          <div className={`${action.color} p-2.5 rounded-lg border flex-shrink-0`}>
+                            {action.icon}
                           </div>
-                          <div className="text-xs text-gray-500">
-                            {log.entity_type === 'invoice' && `الفاتورة: ${log.entity_id}`}
-                          </div>
-                          {log.details && Object.keys(log.details).length > 0 && (
-                            <div className="mt-1 text-xs text-gray-400">
-                              {log.details.old_status && log.details.new_status && (
-                                <span>{log.details.old_status} → {log.details.new_status}</span>
-                              )}
-                              {log.details.invoice_number && (
-                                <span>رقم الفاتورة: {log.details.invoice_number}</span>
-                              )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-3 mb-2">
+                              <div className="flex-1">
+                                <h4 className="text-sm font-bold text-gray-900 mb-1">{action.label}</h4>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 rounded-full text-xs font-medium border border-purple-200">
+                                    <Users className="w-3 h-3" />
+                                    {log.admin_email === 'system' ? 'النظام' : log.admin_email}
+                                  </span>
+                                  {log.details?.invoice_number && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-50 text-gray-700 rounded-full text-xs font-medium border border-gray-200">
+                                      <FileText className="w-3 h-3" />
+                                      {log.details.invoice_number}
+                                    </span>
+                                  )}
+                                  {log.details?.customer_name && (
+                                    <span className="text-xs text-gray-600">
+                                      العميل: {log.details.customer_name}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="text-left flex-shrink-0">
+                                <div className="text-xs font-medium text-gray-700">
+                                  {new Date(log.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' })}
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {new Date(log.created_at).toLocaleTimeString('ar-EG', {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </div>
+                              </div>
                             </div>
-                          )}
-                        </div>
-                        <div className="text-left">
-                          <div className="text-xs text-gray-500">
-                            {new Date(log.created_at).toLocaleDateString('ar-EG')}
-                          </div>
-                          <div className="text-xs text-gray-400">
-                            {new Date(log.created_at).toLocaleTimeString('ar-EG', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
+                            {(log.details?.amount || log.details?.old_status) && (
+                              <div className="flex items-center gap-3 text-xs text-gray-600 mt-2 pt-2 border-t border-gray-100">
+                                {log.details?.amount && (
+                                  <span className="flex items-center gap-1 font-medium">
+                                    <DollarSign className="w-3 h-3" />
+                                    {formatCurrency(Number(log.details.amount))}
+                                  </span>
+                                )}
+                                {log.details?.old_status && log.details?.new_status && (
+                                  <span className="flex items-center gap-1">
+                                    <span className="px-1.5 py-0.5 bg-gray-100 rounded text-[10px]">{log.details.old_status}</span>
+                                    →
+                                    <span className="px-1.5 py-0.5 bg-gray-100 rounded text-[10px]">{log.details.new_status}</span>
+                                  </span>
+                                )}
+                                {log.details?.flight_from && log.details?.flight_to && (
+                                  <span>{log.details.flight_from} → {log.details.flight_to}</span>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
