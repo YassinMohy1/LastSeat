@@ -33,6 +33,11 @@ export default function FlightQuote() {
     message: ''
   });
 
+  const extractIATACode = (cityString: string): string => {
+    const match = cityString.match(/\(([A-Z]{3})\)/);
+    return match ? match[1] : cityString.substring(0, 3).toUpperCase();
+  };
+
   const getAirportCoordinates = (cityCode: string): { lat: number; lng: number } | null => {
     const airports: Record<string, { lat: number; lng: number }> = {
       'JFK': { lat: 40.6413, lng: -73.7781 },
@@ -42,6 +47,7 @@ export default function FlightQuote() {
       'CDG': { lat: 49.0097, lng: 2.5479 },
       'SIN': { lat: 1.3644, lng: 103.9915 },
       'HND': { lat: 35.5494, lng: 139.7798 },
+      'NRT': { lat: 35.7647, lng: 140.3864 },
       'AMS': { lat: 52.3105, lng: 4.7683 },
       'FRA': { lat: 50.0379, lng: 8.5622 },
       'ICN': { lat: 37.4602, lng: 126.4407 },
@@ -60,9 +66,79 @@ export default function FlightQuote() {
       'LAS': { lat: 36.0840, lng: -115.1537 },
       'MCO': { lat: 28.4312, lng: -81.3081 },
       'EWR': { lat: 40.6895, lng: -74.1745 },
+      'YYZ': { lat: 43.6777, lng: -79.6248 },
+      'YVR': { lat: 49.1947, lng: -123.1840 },
+      'MEX': { lat: 19.4363, lng: -99.0721 },
+      'GRU': { lat: -23.4356, lng: -46.4731 },
+      'GIG': { lat: -22.8099, lng: -43.2505 },
+      'SCL': { lat: -33.3930, lng: -70.7858 },
+      'LIM': { lat: -12.0219, lng: -77.1143 },
+      'BOG': { lat: 4.7016, lng: -74.1469 },
+      'MAD': { lat: 40.4719, lng: -3.5626 },
+      'BCN': { lat: 41.2974, lng: 2.0833 },
+      'FCO': { lat: 41.8003, lng: 12.2389 },
+      'MXP': { lat: 45.6301, lng: 8.7277 },
+      'VIE': { lat: 48.1103, lng: 16.5697 },
+      'ZRH': { lat: 47.4647, lng: 8.5492 },
+      'CPH': { lat: 55.6180, lng: 12.6508 },
+      'OSL': { lat: 60.1976, lng: 11.1004 },
+      'STO': { lat: 59.6519, lng: 17.9186 },
+      'HEL': { lat: 60.3172, lng: 24.9633 },
+      'LED': { lat: 59.8003, lng: 30.2625 },
+      'SVO': { lat: 55.9726, lng: 37.4146 },
+      'DEL': { lat: 28.5562, lng: 77.1000 },
+      'BOM': { lat: 19.0896, lng: 72.8656 },
+      'BLR': { lat: 13.1979, lng: 77.7063 },
+      'HYD': { lat: 17.2403, lng: 78.4294 },
+      'BKK': { lat: 13.6900, lng: 100.7501 },
+      'KUL': { lat: 2.7456, lng: 101.7099 },
+      'CGK': { lat: -6.1256, lng: 106.6559 },
+      'MNL': { lat: 14.5086, lng: 121.0194 },
+      'HKG': { lat: 22.3080, lng: 113.9185 },
+      'PVG': { lat: 31.1443, lng: 121.8083 },
+      'PEK': { lat: 40.0799, lng: 116.6031 },
+      'CAN': { lat: 23.3924, lng: 113.2988 },
+      'SYD': { lat: -33.9399, lng: 151.1753 },
+      'MEL': { lat: -37.6690, lng: 144.8410 },
+      'BNE': { lat: -27.3842, lng: 153.1175 },
+      'AKL': { lat: -37.0082, lng: 174.7850 },
+      'JNB': { lat: -26.1367, lng: 28.2411 },
+      'CPT': { lat: -33.9715, lng: 18.6021 },
+      'ADD': { lat: 8.9806, lng: 38.7994 },
+      'NBO': { lat: -1.3192, lng: 36.9278 },
+      'LOS': { lat: 6.5774, lng: 3.3212 },
+      'ACC': { lat: 5.6052, lng: -0.1719 },
+      'DEN': { lat: 39.8561, lng: -104.6737 },
+      'PHX': { lat: 33.4352, lng: -112.0101 },
+      'IAH': { lat: 29.9902, lng: -95.3368 },
+      'MSP': { lat: 44.8848, lng: -93.2223 },
+      'DTW': { lat: 42.2162, lng: -83.3554 },
+      'PHL': { lat: 39.8729, lng: -75.2437 },
+      'LGA': { lat: 40.7769, lng: -73.8740 },
+      'BWI': { lat: 39.1774, lng: -76.6684 },
+      'DCA': { lat: 38.8521, lng: -77.0377 },
+      'SAN': { lat: 32.7338, lng: -117.1933 },
+      'TPA': { lat: 27.9755, lng: -82.5332 },
+      'PDX': { lat: 45.5898, lng: -122.5951 },
+      'STL': { lat: 38.7487, lng: -90.3700 },
+      'CLT': { lat: 35.2144, lng: -80.9473 },
+      'AUS': { lat: 30.1945, lng: -97.6699 },
+      'SLC': { lat: 40.7899, lng: -111.9791 },
+      'MSY': { lat: 29.9934, lng: -90.2580 },
+      'BNA': { lat: 36.1263, lng: -86.6774 },
+      'OAK': { lat: 37.7126, lng: -122.2197 },
+      'SJC': { lat: 37.3639, lng: -121.9289 },
+      'RDU': { lat: 35.8776, lng: -78.7875 },
+      'SAT': { lat: 29.5337, lng: -98.4698 },
+      'PIT': { lat: 40.4915, lng: -80.2329 },
+      'CLE': { lat: 41.4117, lng: -81.8498 },
+      'CMH': { lat: 39.9980, lng: -82.8919 },
+      'IND': { lat: 39.7173, lng: -86.2944 },
+      'MCI': { lat: 39.2976, lng: -94.7139 },
+      'ABQ': { lat: 35.0402, lng: -106.6092 },
     };
 
-    const code = cityCode.substring(0, 3).toUpperCase();
+    const code = extractIATACode(cityCode);
     return airports[code] || null;
   };
 
@@ -70,8 +146,18 @@ export default function FlightQuote() {
     const coord1 = getAirportCoordinates(from);
     const coord2 = getAirportCoordinates(to);
 
+    if (!coord1 && !coord2) {
+      return 3000 + Math.random() * 3000;
+    }
+
     if (!coord1 || !coord2) {
-      return 1000;
+      const knownCoord = coord1 || coord2;
+      if (!knownCoord) return 3000;
+
+      const avgLat = Math.abs(knownCoord.lat);
+      if (avgLat > 50) return 1500 + Math.random() * 1000;
+      if (avgLat > 30) return 2500 + Math.random() * 2000;
+      return 4000 + Math.random() * 3000;
     }
 
     const R = 6371;
@@ -98,15 +184,21 @@ export default function FlightQuote() {
 
     if (basePrice < 200) basePrice = 200;
 
+    const routeVariability = 0.85 + (Math.random() * 0.3);
+    basePrice *= routeVariability;
+
     if (flightDetails.cabin === 'Business') basePrice *= 2.8;
     if (flightDetails.cabin === 'First Class') basePrice *= 5;
 
     if (flightDetails.tripType === 'roundtrip') basePrice *= 1.85;
 
-    const seasonalMultiplier = 1.1;
+    const seasonalMultiplier = 1.05 + (Math.random() * 0.15);
     basePrice *= seasonalMultiplier;
 
     basePrice *= flightDetails.passengers;
+
+    const demandFactor = 0.95 + (Math.random() * 0.2);
+    basePrice *= demandFactor;
 
     return Math.round(basePrice);
   };
