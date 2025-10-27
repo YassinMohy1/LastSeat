@@ -16,7 +16,6 @@ Deno.serve(async (req: Request) => {
 
   try {
     const nmiSecurityKey = Deno.env.get('NMI_PRIVATE_KEY');
-    const nmiApiUrl = Deno.env.get('NMI_API_URL') || 'https://secure.networkmerchants.com/api/transact.php';
 
     if (!nmiSecurityKey) {
       return new Response(
@@ -42,44 +41,45 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const formData = new URLSearchParams({
+    const threeStepUrl = 'https://secure.nmi.com/api/v2/three-step';
+
+    const step1Data = new URLSearchParams({
       security_key: nmiSecurityKey,
       amount: amount.toFixed(2),
       currency: (currency || 'USD').toUpperCase(),
+      redirect_url: redirectUrl || '',
       order_description: description || 'Flight Booking',
       orderid: invoiceNumber || '',
-      billing_email: customerEmail || '',
-      redirect_url: redirectUrl || '',
-      type: 'sale',
+      email: customerEmail || '',
     });
 
-    const response = await fetch(nmiApiUrl, {
+    console.log('Sending Three-Step request to NMI...');
+
+    const response = await fetch(threeStepUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: formData.toString(),
+      body: step1Data.toString(),
     });
 
     const responseText = await response.text();
-
     console.log('NMI Raw Response:', responseText);
 
     const params = new URLSearchParams(responseText);
-    const formUrl = params.get('form_url');
+    const formUrl = params.get('form-url');
     const tokenId = params.get('token-id');
-    const responseCode = params.get('response');
 
-    if (responseCode !== '1' || !formUrl || !tokenId) {
-      const errorMessage = params.get('responsetext') || 'Payment initialization failed';
-      const errorDetails = {
-        response: responseCode,
-        responsetext: params.get('responsetext'),
+    if (!formUrl || !tokenId) {
+      const errorMessage = params.get('error-message') || 'Payment initialization failed';
+      console.error('NMI Error:', {
+        error: errorMessage,
         rawResponse: responseText.substring(0, 500)
-      };
-      console.error('NMI Error Details:', errorDetails);
-      throw new Error(`${errorMessage} (Response: ${responseCode})`);
+      });
+      throw new Error(errorMessage);
     }
+
+    console.log('Three-Step initialized successfully:', { tokenId, formUrl });
 
     return new Response(
       JSON.stringify({
