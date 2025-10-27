@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import NMIPaymentForm from '../components/NMIPaymentForm';
+import TravelCarePlan from '../components/TravelCarePlan';
 import {
   Plane,
   Calendar,
@@ -430,108 +431,43 @@ export default function CustomerPayment() {
             </div>
           </div>
 
-          <div className="mb-8">
-            <div className="bg-green-500 text-white px-6 py-4 rounded-t-lg flex items-center gap-3">
-              <Shield className="w-6 h-6" />
-              <div>
-                <h3 className="font-bold text-lg">Choose the Travel Care plan</h3>
-                <p className="text-sm text-green-50">that's right for you</p>
-              </div>
-            </div>
-
-            <div className="border border-gray-200 rounded-b-lg overflow-hidden">
-              <div className="grid grid-cols-3">
-                <div className="p-6 bg-gray-50">
-                  <h4 className="font-bold text-gray-900 mb-2">Features</h4>
-                </div>
-                <div className="p-6 bg-white border-l border-gray-200 text-center">
-                  <h4 className="font-bold text-gray-900 mb-2">Basic</h4>
-                  <p className="text-2xl font-bold text-brand-blue">$220.00</p>
-                </div>
-                <div className="p-6 bg-white border-l border-gray-200 text-center relative">
-                  <div className="absolute top-2 right-2 bg-yellow-400 text-xs font-bold px-2 py-1 rounded">
-                    Most Popular
-                  </div>
-                  <h4 className="font-bold text-gray-900 mb-2">Premium</h4>
-                  <p className="text-2xl font-bold text-brand-blue">$253.00</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 border-t border-gray-200">
-                <div className="p-4 bg-gray-50">
-                  <p className="text-sm text-gray-700">VIP Support & Flight Delay Rebooking</p>
-                </div>
-                <div className="p-4 bg-white border-l border-gray-200 text-center">
-                  <Check className="w-6 h-6 text-green-500 mx-auto" />
-                </div>
-                <div className="p-4 bg-white border-l border-gray-200 text-center">
-                  <Check className="w-6 h-6 text-green-500 mx-auto" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 border-t border-gray-200">
-                <div className="p-4 bg-gray-50">
-                  <p className="text-sm text-gray-700">Change for Free</p>
-                </div>
-                <div className="p-4 bg-white border-l border-gray-200 text-center">
-                  <X className="w-6 h-6 text-gray-300 mx-auto" />
-                </div>
-                <div className="p-4 bg-white border-l border-gray-200 text-center">
-                  <Check className="w-6 h-6 text-green-500 mx-auto" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 border-t border-gray-200">
-                <div className="p-4 bg-gray-50">
-                  <p className="text-sm text-gray-700">Select Plan</p>
-                </div>
-                <div className="p-4 bg-white border-l border-gray-200 text-center">
-                  <label className="flex items-center justify-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="travelCare"
-                      value="basic"
-                      checked={travelCarePlan === 'basic'}
-                      onChange={() => setTravelCarePlan('basic')}
-                      className="w-4 h-4 text-brand-blue"
-                    />
-                    <span className="text-sm">Add</span>
-                  </label>
-                </div>
-                <div className="p-4 bg-white border-l border-gray-200 text-center">
-                  <label className="flex items-center justify-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="travelCare"
-                      value="premium"
-                      checked={travelCarePlan === 'premium'}
-                      onChange={() => setTravelCarePlan('premium')}
-                      className="w-4 h-4 text-brand-blue"
-                    />
-                    <span className="text-sm font-semibold">Added</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 border-t border-gray-200">
-                <div className="p-4 bg-gray-50 col-span-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="travelCare"
-                      value="none"
-                      checked={travelCarePlan === 'none'}
-                      onChange={() => setTravelCarePlan('none')}
-                      className="w-4 h-4 text-gray-400"
-                    />
-                    <span className="text-sm text-green-600">
-                      No, thanks. I choose not to add Travel Care Plan and take all the risks on myself.
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
+          <TravelCarePlan
+            plans={[
+              {
+                id: 'none',
+                title: 'No Protection',
+                price: 0,
+                features: [],
+                recommended: false
+              },
+              {
+                id: 'basic',
+                title: 'Basic',
+                price: 220,
+                features: [
+                  'VIP Support',
+                  'Price Drop Protection',
+                  'Flight Delay & Cancellation Coverage',
+                  'Missed Connection Protection'
+                ],
+                recommended: false
+              },
+              {
+                id: 'premium',
+                title: 'Premium',
+                price: 253,
+                features: [
+                  'Everything in Basic',
+                  'Change Flight for Free',
+                  'Cancel for Any Reason',
+                  'All Agency Fees Waived'
+                ],
+                recommended: true
+              }
+            ]}
+            selectedPlan={travelCarePlan}
+            onPlanChange={(planId) => setTravelCarePlan(planId as TravelCarePlan)}
+          />
 
           <div className="mb-8">
             <div className="bg-brand-blue text-white px-6 py-4 rounded-t-lg flex items-center gap-3">
