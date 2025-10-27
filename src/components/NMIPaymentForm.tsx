@@ -60,6 +60,7 @@ export default function NMIPaymentForm({
   const paymentDataRef = useRef({ amount, currency, invoiceNumber, customerEmail, billingInfo });
   const billingInfoRef = useRef(billingInfo);
   const isProcessingRef = useRef(false);
+  const lastTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     billingInfoRef.current = billingInfo;
@@ -153,16 +154,25 @@ export default function NMIPaymentForm({
             }
           },
           callback: async (response: any) => {
+            // Check if already processing
             if (isProcessingRef.current) {
               console.log('Payment already being processed, ignoring duplicate callback');
               return;
             }
 
+            // Check if we've already processed this exact token
+            if (lastTokenRef.current === response.token) {
+              console.log('Duplicate token detected, ignoring:', response.token);
+              return;
+            }
+
+            // Immediately set to true and store token before any async operations
+            isProcessingRef.current = true;
+            lastTokenRef.current = response.token;
+
             try {
               if (response.token) {
-                isProcessingRef.current = true;
                 setPaymentSubmitted(true);
-
                 console.log('Processing payment with token:', response.token);
 
                 const result = await fetch(
