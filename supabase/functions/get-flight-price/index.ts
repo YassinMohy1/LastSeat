@@ -28,7 +28,26 @@ Deno.serve(async (req: Request) => {
     const apiSecret = Deno.env.get('AMADEUS_API_SECRET');
 
     if (!apiKey || !apiSecret) {
-      throw new Error('Amadeus API credentials not configured');
+      console.log('Amadeus credentials not found, using fallback pricing');
+      const body = await req.json() as PriceRequest;
+      return new Response(
+        JSON.stringify({
+          price: calculateFallbackPrice(
+            body.origin,
+            body.destination,
+            body.adults,
+            body.cabin,
+            !!body.returnDate
+          ),
+          currency: 'USD',
+          source: 'estimated',
+          message: 'Using estimated pricing'
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     const { origin, destination, departureDate, returnDate, adults, cabin } = await req.json() as PriceRequest;
@@ -57,7 +76,19 @@ Deno.serve(async (req: Request) => {
     });
 
     if (!tokenResponse.ok) {
-      throw new Error('Failed to authenticate with Amadeus');
+      console.error('Failed to authenticate with Amadeus');
+      return new Response(
+        JSON.stringify({
+          price: calculateFallbackPrice(origin, destination, adults, cabin, !!returnDate),
+          currency: 'USD',
+          source: 'estimated',
+          message: 'Using estimated pricing'
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     const { access_token } = await tokenResponse.json();
@@ -91,7 +122,6 @@ Deno.serve(async (req: Request) => {
       const errorData = await flightResponse.text();
       console.error('Amadeus API error:', errorData);
 
-      // Return fallback pricing if API fails
       return new Response(
         JSON.stringify({
           price: calculateFallbackPrice(origin, destination, adults, cabin, !!returnDate),
@@ -109,7 +139,6 @@ Deno.serve(async (req: Request) => {
     const flightData = await flightResponse.json();
 
     if (!flightData.data || flightData.data.length === 0) {
-      // No flights found, return fallback pricing
       return new Response(
         JSON.stringify({
           price: calculateFallbackPrice(origin, destination, adults, cabin, !!returnDate),
@@ -164,7 +193,6 @@ Deno.serve(async (req: Request) => {
   }
 });
 
-// Fallback pricing calculation based on distance and cabin class
 function calculateFallbackPrice(
   origin: string,
   destination: string,
@@ -172,27 +200,16 @@ function calculateFallbackPrice(
   cabin: string,
   isRoundtrip: boolean
 ): number {
-  // Base price per person for economy
   let basePrice = 350;
 
-  // Adjust for cabin class
   if (cabin === 'BUSINESS') basePrice *= 2.5;
   if (cabin === 'FIRST') basePrice *= 4;
 
-  // Adjust for trip type
   if (isRoundtrip) basePrice *= 1.8;
 
-  // Adjust based on common routes (approximate)
   const fromUpper = origin.toUpperCase();
   const toUpper = destination.toUpperCase();
 
-  // International routes get higher prices
-  const internationalRoutes = [
-    ['US', 'EU'], ['US', 'AS'], ['US', 'AF'], ['US', 'OC'],
-    ['EU', 'AS'], ['EU', 'AF'], ['EU', 'OC'],
-  ];
-
-  // Simple check for international routes
   const isInternational = fromUpper.length >= 3 && toUpper.length >= 3 &&
                           fromUpper.substring(0, 2) !== toUpper.substring(0, 2);
 
@@ -200,6 +217,5 @@ function calculateFallbackPrice(
     basePrice *= 1.3;
   }
 
-  // Total price for all passengers
   return Math.round(basePrice * adults);
 }

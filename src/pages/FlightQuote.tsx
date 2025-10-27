@@ -54,6 +54,9 @@ export default function FlightQuote() {
           'First Class': 'FIRST'
         };
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-flight-price`,
           {
@@ -69,8 +72,15 @@ export default function FlightQuote() {
               adults: flightDetails.passengers,
               cabin: cabinMap[flightDetails.cabin] || 'ECONOMY',
             }),
+            signal: controller.signal,
           }
         );
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error('API request failed');
+        }
 
         const data = await response.json();
 
