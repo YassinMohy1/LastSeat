@@ -24,7 +24,9 @@ import {
   Download,
   Edit,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  Activity,
+  Shield
 } from 'lucide-react';
 
 interface Invoice {
@@ -49,6 +51,18 @@ interface Invoice {
   paid_at: string | null;
 }
 
+interface AuditLog {
+  id: string;
+  admin_id: string;
+  admin_email: string;
+  action_type: string;
+  entity_type: string;
+  entity_id: string | null;
+  details: any;
+  ip_address: string | null;
+  created_at: string;
+}
+
 export default function AdminDashboard() {
   const { adminProfile, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -71,6 +85,9 @@ export default function AdminDashboard() {
   });
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<string | null>(null);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [showAuditLogs, setShowAuditLogs] = useState(false);
+  const isMainAdmin = adminProfile?.role === 'main_admin';
 
   useEffect(() => {
     if (authLoading) return;
@@ -80,12 +97,15 @@ export default function AdminDashboard() {
       return;
     }
 
-    if (adminProfile.role !== 'admin') {
+    if (adminProfile.role !== 'admin' && adminProfile.role !== 'main_admin') {
       navigate('/', { replace: true });
       return;
     }
 
     fetchInvoices();
+    if (adminProfile.role === 'main_admin') {
+      fetchAuditLogs();
+    }
   }, [authLoading, adminProfile, navigate]);
 
   if (authLoading) {
@@ -124,6 +144,40 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  const fetchAuditLogs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (error) throw error;
+      setAuditLogs(data || []);
+    } catch (error) {
+      console.error('Error fetching audit logs:', error);
+    }
+  };
+
+  const logAdminAction = async (actionType: string, entityType: string, entityId: string, details: any = {}) => {
+    try {
+      await supabase.from('audit_logs').insert({
+        admin_id: adminProfile?.id,
+        admin_email: adminProfile?.email || '',
+        action_type: actionType,
+        entity_type: entityType,
+        entity_id: entityId,
+        details: details
+      });
+
+      if (isMainAdmin) {
+        fetchAuditLogs();
+      }
+    } catch (error) {
+      console.error('Error logging action:', error);
     }
   };
 
@@ -225,6 +279,11 @@ export default function AdminDashboard() {
 
       if (error) throw error;
 
+      await logAdminAction('update_invoice_status', 'invoice', invoiceId, {
+        old_status: invoices.find(i => i.id === invoiceId)?.payment_status,
+        new_status: newStatus
+      });
+
       toast.success('Invoice status updated successfully!');
       await fetchInvoices();
       setSelectedInvoice(null);
@@ -244,6 +303,10 @@ export default function AdminDashboard() {
         .eq('id', invoiceId);
 
       if (error) throw error;
+
+      await logAdminAction('delete_invoice', 'invoice', invoiceId, {
+        invoice_number: invoices.find(i => i.id === invoiceId)?.invoice_number
+      });
 
       toast.success('Invoice deleted successfully!');
       await fetchInvoices();
@@ -301,47 +364,56 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              {isMainAdmin && (
+                <button
+                  onClick={() => setShowAuditLogs(!showAuditLogs)}
+                  className="bg-white text-purple-600 border border-purple-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+                >
+                  <Shield className="w-3.5 h-3.5" />
+                  سجل الأنشطة
+                </button>
+              )}
               <button
                 onClick={() => navigate('/admin/customers')}
                 className="bg-white text-brand-blue border border-brand-blue px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-brand-blue hover:text-white transition-all duration-300 flex items-center gap-1.5"
               >
-                <Users className="w-4 h-4" />
+                <Users className="w-3.5 h-3.5" />
                 إدارة العملاء
               </button>
               <button
                 onClick={() => navigate('/admin/inquiries')}
                 className="bg-white text-green-600 border border-green-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-green-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
               >
-                <FileText className="w-4 h-4" />
-                استفسارات العملاء
+                <FileText className="w-3.5 h-3.5" />
+                استفسارات
               </button>
               <button
                 onClick={() => navigate('/admin/flight-inquiries')}
-                className="bg-white text-purple-600 border border-purple-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+                className="bg-white text-orange-600 border border-orange-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
               >
-                <FileText className="w-4 h-4" />
-                طلبات الرحلات
+                <FileText className="w-3.5 h-3.5" />
+                طلبات رحلات
               </button>
               <button
                 onClick={() => navigate('/admin/flight-prices')}
-                className="bg-white text-orange-600 border border-orange-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+                className="bg-white text-amber-600 border border-amber-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-amber-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
               >
-                <DollarSign className="w-4 h-4" />
-                أسعار الرحلات
+                <DollarSign className="w-3.5 h-3.5" />
+                الأسعار
               </button>
               <button
                 onClick={() => navigate('/admin/create-invoice')}
                 className="bg-gradient-to-r from-brand-blue to-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-1.5"
               >
-                <Plus className="w-4 h-4" />
-                إنشاء فاتورة
+                <Plus className="w-3.5 h-3.5" />
+                فاتورة جديدة
               </button>
               <button
                 onClick={handleSignOut}
                 className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-gray-200 transition-all flex items-center gap-1.5"
               >
-                <LogOut className="w-4 h-4" />
-                تسجيل الخروج
+                <LogOut className="w-3.5 h-3.5" />
+                خروج
               </button>
             </div>
           </div>
@@ -349,6 +421,76 @@ export default function AdminDashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4">
+        {isMainAdmin && showAuditLogs && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-4">
+            <div className="px-4 py-3 bg-gradient-to-r from-purple-600 to-purple-700 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield className="w-5 h-5 text-white" />
+                <h2 className="text-base font-bold text-white">سجل الأنشطة الإدارية</h2>
+              </div>
+              <button
+                onClick={() => setShowAuditLogs(false)}
+                className="text-white hover:bg-white/20 p-1 rounded transition-colors"
+              >
+                <XCircle className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="max-h-96 overflow-y-auto">
+              {auditLogs.length === 0 ? (
+                <div className="p-8 text-center text-gray-500">
+                  <Activity className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                  <p>لا توجد أنشطة مسجلة بعد</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-100">
+                  {auditLogs.map((log) => (
+                    <div key={log.id} className="p-3 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-semibold text-gray-900">{log.admin_email}</span>
+                            <span className="text-xs text-gray-500">•</span>
+                            <span className="text-xs text-gray-600">
+                              {log.action_type === 'create_invoice' && '✨ إنشاء فاتورة'}
+                              {log.action_type === 'update_invoice_status' && '🔄 تحديث حالة فاتورة'}
+                              {log.action_type === 'delete_invoice' && '🗑️ حذف فاتورة'}
+                              {log.action_type === 'update_invoice' && '📝 تعديل فاتورة'}
+                            </span>
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {log.entity_type === 'invoice' && `الفاتورة: ${log.entity_id}`}
+                          </div>
+                          {log.details && Object.keys(log.details).length > 0 && (
+                            <div className="mt-1 text-xs text-gray-400">
+                              {log.details.old_status && log.details.new_status && (
+                                <span>{log.details.old_status} → {log.details.new_status}</span>
+                              )}
+                              {log.details.invoice_number && (
+                                <span>رقم الفاتورة: {log.details.invoice_number}</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-left">
+                          <div className="text-xs text-gray-500">
+                            {new Date(log.created_at).toLocaleDateString('ar-EG')}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {new Date(log.created_at).toLocaleTimeString('ar-EG', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
           <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-4 text-white shadow-lg">
             <div className="flex items-center justify-between mb-2">
