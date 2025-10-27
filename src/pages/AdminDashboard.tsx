@@ -49,6 +49,8 @@ interface Invoice {
   notes: string | null;
   created_at: string;
   paid_at: string | null;
+  created_by_admin_id: string | null;
+  created_by_admin_email: string | null;
 }
 
 interface AuditLog {
@@ -777,6 +779,7 @@ export default function AdminDashboard() {
                     <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">تاريخ السفر</th>
                     <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">المبلغ</th>
                     <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">الحالة</th>
+                    <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">المسؤول</th>
                     <th className="px-3 py-2 text-center text-xs font-semibold text-gray-700">الإجراءات</th>
                   </tr>
                 </thead>
@@ -827,6 +830,21 @@ export default function AdminDashboard() {
                             {new Date(invoice.paid_at).toLocaleDateString('ar-EG')}
                           </div>
                         )}
+                      </td>
+                      <td className="px-3 py-2">
+                        <div className="flex items-center gap-1.5">
+                          <div className="bg-purple-100 p-1.5 rounded-full">
+                            <Users className="w-3 h-3 text-purple-600" />
+                          </div>
+                          <div>
+                            <div className="text-xs font-medium text-gray-900">
+                              {invoice.created_by_admin_email === 'system' ? 'النظام' : (invoice.created_by_admin_email?.split('@')[0] || 'غير معروف')}
+                            </div>
+                            <div className="text-[10px] text-gray-500">
+                              {new Date(invoice.created_at).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                          </div>
+                        </div>
                       </td>
                       <td className="px-3 py-2">
                         <div className="flex items-center justify-center gap-1">

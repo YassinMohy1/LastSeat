@@ -62,7 +62,7 @@ export default function CreateInvoice() {
       const invoiceNumber = generateInvoiceNumber();
       const paymentLink = generatePaymentLink();
 
-      const { error: insertError } = await supabase
+      const { error: insertError, data: insertedData } = await supabase
         .from('invoices')
         .insert([
           {
@@ -81,11 +81,35 @@ export default function CreateInvoice() {
             currency: formData.currency,
             payment_status: 'pending',
             payment_link: paymentLink,
-            notes: formData.notes || null
+            notes: formData.notes || null,
+            created_by_admin_id: adminProfile?.id,
+            created_by_admin_email: adminProfile?.email
           }
-        ]);
+        ])
+        .select()
+        .single();
 
       if (insertError) throw insertError;
+
+      // Log the invoice creation
+      if (insertedData && adminProfile) {
+        await supabase.from('audit_logs').insert({
+          admin_id: adminProfile.id,
+          admin_email: adminProfile.email,
+          action_type: 'create_invoice',
+          entity_type: 'invoice',
+          entity_id: insertedData.id,
+          details: {
+            invoice_number: invoiceNumber,
+            customer_name: formData.customerName,
+            customer_email: formData.customerEmail,
+            amount: parseFloat(formData.amount),
+            currency: formData.currency,
+            flight_from: formData.flightFrom,
+            flight_to: formData.flightTo
+          }
+        });
+      }
 
       navigate('/admin/dashboard');
     } catch (err: any) {
