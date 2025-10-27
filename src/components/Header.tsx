@@ -7,7 +7,8 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [timeLeft, setTimeLeft] = useState(180);
-  const [showPromo, setShowPromo] = useState(true);
+  const [showPromo, setShowPromo] = useState(false);
+  const [showPopup, setShowPopup] = useState(true);
 
   useEffect(() => {
     checkAdminStatus();
@@ -57,32 +58,49 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white shadow-md fixed w-full top-0 z-50">
-      {showPromo && (
-        <div className="bg-gradient-to-r from-brand-blue via-sky-600 to-brand-blue text-white py-2.5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]"></div>
-          <div className="container mx-auto px-3 flex justify-center items-center gap-2 sm:gap-4 relative z-10">
-            <Mail className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse flex-shrink-0" />
-            <span className="text-xs sm:text-sm font-semibold hidden sm:block">Unlock savings on your next trip!</span>
-            <span className="text-xs font-semibold sm:hidden">Get savings!</span>
-            <div className="bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-md font-mono text-xs sm:text-sm font-bold flex-shrink-0">
-              {formatTime(timeLeft)}
+    <>
+      {showPopup && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fadeIn">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full relative animate-slideUp overflow-hidden">
+            <div className="bg-gradient-to-r from-brand-blue via-sky-600 to-brand-blue text-white p-6 relative">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]"></div>
+              <button
+                onClick={() => setShowPopup(false)}
+                className="absolute right-4 top-4 text-white/80 hover:text-white transition z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <div className="relative z-10">
+                <Mail className="w-12 h-12 mx-auto mb-3 animate-pulse" />
+                <h3 className="text-xl font-bold text-center mb-2">Unlock Exclusive Savings!</h3>
+                <p className="text-sm text-center text-white/90">Limited time offer on your next trip</p>
+              </div>
             </div>
-            <a
-              href="tel:888-602-6667"
-              className="bg-white text-brand-blue px-2 sm:px-3 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-bold hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-lg flex-shrink-0"
-            >
-              GET VOUCHER
-            </a>
-            <button
-              onClick={() => setShowPromo(false)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition flex-shrink-0"
-            >
-              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            </button>
+            <div className="p-6 text-center">
+              <div className="bg-gradient-to-r from-sky-50 to-blue-50 rounded-lg p-4 mb-4">
+                <p className="text-sm text-gray-600 mb-2">Offer expires in:</p>
+                <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg font-mono text-2xl font-bold text-brand-blue inline-block">
+                  {formatTime(timeLeft)}
+                </div>
+              </div>
+              <a
+                href="tel:888-602-6667"
+                onClick={() => setShowPopup(false)}
+                className="block w-full bg-gradient-to-r from-brand-blue to-sky-600 text-white px-6 py-3 rounded-lg text-sm font-bold hover:shadow-lg transition-all duration-300 hover:scale-105 mb-3"
+              >
+                CALL NOW: 888-602-6667
+              </a>
+              <button
+                onClick={() => setShowPopup(false)}
+                className="text-sm text-gray-500 hover:text-gray-700 transition"
+              >
+                Maybe later
+              </button>
+            </div>
           </div>
         </div>
       )}
+      <header className="bg-white shadow-md fixed w-full top-0 z-50">
 
       <div className="bg-gradient-to-r from-brand-blue to-brand-blue/90 text-white py-2">
         <div className="container mx-auto px-3 flex justify-between items-center">
@@ -187,5 +205,6 @@ export default function Header() {
         )}
       </nav>
     </header>
+    </>
   );
 }
