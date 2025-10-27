@@ -124,29 +124,12 @@ export default function SearchBar() {
           <div className="relative group">
             <Calendar className="absolute left-2 top-2 w-3.5 h-3.5 text-white pointer-events-none group-focus-within:text-brand-blue transition-colors" />
             <input
-              type="text"
-              value={departDate ? formatDateDisplay(departDate) : ''}
-              onFocus={(e) => {
-                e.target.type = 'date';
-                e.target.value = departDate;
-                e.target.showPicker?.();
-              }}
-              onBlur={(e) => {
-                if (e.target.value) {
-                  setDepartDate(e.target.value);
-                }
-                e.target.type = 'text';
-                e.target.value = departDate ? formatDateDisplay(departDate) : '';
-              }}
-              onChange={(e) => {
-                if (e.target.type === 'date') {
-                  setDepartDate(e.target.value);
-                }
-              }}
+              type="date"
+              value={departDate}
+              onChange={(e) => setDepartDate(e.target.value)}
               placeholder="DD/MM/YYYY"
               min={new Date().toISOString().split('T')[0]}
-              lang="en-US"
-              className="w-full pl-8 pr-2.5 py-2 border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white placeholder-white/70 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer text-xs hover:border-white/50 hover:bg-white/20"
+              className="w-full pl-8 pr-2.5 py-2 border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white placeholder-white/70 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer text-xs hover:border-white/50 hover:bg-white/20 [color-scheme:dark]"
             />
           </div>
         </div>
@@ -157,29 +140,12 @@ export default function SearchBar() {
             <div className="relative group">
               <Calendar className="absolute left-2 top-2 w-3.5 h-3.5 text-white pointer-events-none group-focus-within:text-brand-blue transition-colors" />
               <input
-                type="text"
-                value={returnDate ? formatDateDisplay(returnDate) : ''}
-                onFocus={(e) => {
-                  e.target.type = 'date';
-                  e.target.value = returnDate;
-                  e.target.showPicker?.();
-                }}
-                onBlur={(e) => {
-                  if (e.target.value) {
-                    setReturnDate(e.target.value);
-                  }
-                  e.target.type = 'text';
-                  e.target.value = returnDate ? formatDateDisplay(returnDate) : '';
-                }}
-                onChange={(e) => {
-                  if (e.target.type === 'date') {
-                    setReturnDate(e.target.value);
-                  }
-                }}
+                type="date"
+                value={returnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
                 placeholder="DD/MM/YYYY"
                 min={departDate || new Date().toISOString().split('T')[0]}
-                lang="en-US"
-                className="w-full pl-8 pr-2.5 py-2 border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white placeholder-white/70 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer text-xs hover:border-white/50 hover:bg-white/20"
+                className="w-full pl-8 pr-2.5 py-2 border-2 border-white/30 bg-white/10 backdrop-blur-sm text-white placeholder-white/70 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all duration-200 cursor-pointer text-xs hover:border-white/50 hover:bg-white/20 [color-scheme:dark]"
               />
             </div>
           </div>
