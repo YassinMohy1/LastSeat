@@ -61,7 +61,7 @@ export default function Header() {
   };
 
   const generatePromoCode = () => {
-    const prefix = 'SAVE50';
+    const prefix = 'SAVE35';
     const random = Math.random().toString(36).substring(2, 8).toUpperCase();
     setPromoCode(`${prefix}-${random}`);
   };
@@ -75,9 +75,18 @@ export default function Header() {
   return (
     <>
       {showPopup && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full relative animate-slideUp overflow-hidden">
-            <div className="bg-gradient-to-r from-brand-blue via-sky-600 to-brand-blue text-white p-6 relative">
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-fadeIn"
+          style={{
+            backgroundImage: 'url(/image\ copy\ copy\ copy\ copy\ copy\ copy\ copy\ copy\ copy.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full relative animate-slideUp overflow-hidden z-10">
+            <div className="bg-gradient-to-r from-red-600 via-sky-500 to-brand-blue text-white p-6 relative">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]"></div>
               <button
                 onClick={() => setShowPopup(false)}
@@ -87,15 +96,15 @@ export default function Header() {
               </button>
               <div className="relative z-10">
                 <Mail className="w-12 h-12 mx-auto mb-3 animate-pulse" />
-                <h3 className="text-xl font-bold text-center mb-2">Get $50 Extra OFF!</h3>
+                <h3 className="text-xl font-bold text-center mb-2">Get $35 Extra OFF!</h3>
                 <p className="text-sm text-center text-white/90">Call now and mention your exclusive code</p>
               </div>
             </div>
             <div className="p-6 text-center">
-              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 mb-4 border-2 border-dashed border-amber-300">
+              <div className="bg-gradient-to-r from-red-50 to-sky-50 rounded-lg p-4 mb-4 border-2 border-dashed border-red-300">
                 <p className="text-xs text-gray-600 mb-2 font-semibold">YOUR EXCLUSIVE CODE</p>
                 <div className="bg-white px-4 py-3 rounded-lg mb-2 flex items-center justify-center gap-2">
-                  <span className="font-mono text-xl font-bold text-brand-blue tracking-wider">{promoCode}</span>
+                  <span className="font-mono text-xl font-bold text-red-600 tracking-wider">{promoCode}</span>
                   <button
                     onClick={copyToClipboard}
                     className="p-1.5 hover:bg-gray-100 rounded transition-colors"
@@ -108,7 +117,7 @@ export default function Header() {
                     )}
                   </button>
                 </div>
-                <p className="text-xs text-amber-700 font-semibold">Save an additional $50 on your booking!</p>
+                <p className="text-xs text-red-700 font-semibold">Save an additional $35 on your booking!</p>
               </div>
               <div className="bg-gradient-to-r from-sky-50 to-blue-50 rounded-lg p-3 mb-4">
                 <p className="text-xs text-gray-600 mb-1">Offer expires in:</p>
@@ -119,7 +128,7 @@ export default function Header() {
               <a
                 href="tel:888-602-6667"
                 onClick={() => setShowPopup(false)}
-                className="block w-full bg-gradient-to-r from-brand-blue to-sky-600 text-white px-6 py-3 rounded-lg text-sm font-bold hover:shadow-lg transition-all duration-300 hover:scale-105 mb-3"
+                className="block w-full bg-gradient-to-r from-red-600 to-sky-500 text-white px-6 py-3 rounded-lg text-sm font-bold hover:shadow-lg transition-all duration-300 hover:scale-105 mb-3"
               >
                 CALL NOW: 888-602-6667
               </a>
