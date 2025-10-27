@@ -103,13 +103,13 @@ export default function Header() {
         </div>
       </div>
 
-      <nav className="container mx-auto px-3 py-2">
+      <nav className="container mx-auto px-3 py-1.5">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2">
             <img
               src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png?ex=690141eb&is=68fff06b&hm=eaecebb87b6bbf8f9aee13084555faa83c81bb3d679c2ff3b5275498ea57d6f5&"
               alt="Last Seat Ticket"
-              className="h-10 sm:h-12 w-auto object-contain"
+              className="h-8 sm:h-10 w-auto object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
