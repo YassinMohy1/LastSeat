@@ -268,6 +268,8 @@ export default function CustomerPayment() {
                         currency={invoice.currency}
                         invoiceNumber={invoice.invoice_number}
                         customerEmail={invoice.customer_email}
+                        customerName={invoice.customer_name}
+                        customerPhone={invoice.customer_phone}
                         onSuccess={handlePaymentSuccess}
                         onError={handlePaymentError}
                       />

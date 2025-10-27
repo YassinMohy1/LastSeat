@@ -10,11 +10,24 @@ declare global {
   }
 }
 
+interface BillingInfo {
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+  phone: string;
+}
+
 interface NMIPaymentFormProps {
   amount: number;
   currency: string;
   invoiceNumber: string;
   customerEmail: string;
+  customerName?: string;
+  customerPhone?: string;
   onSuccess: () => void;
   onError: (error: string) => void;
 }
@@ -24,6 +37,8 @@ export default function NMIPaymentForm({
   currency,
   invoiceNumber,
   customerEmail,
+  customerName,
+  customerPhone,
   onSuccess,
   onError
 }: NMIPaymentFormProps) {
@@ -31,11 +46,22 @@ export default function NMIPaymentForm({
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [paymentSubmitted, setPaymentSubmitted] = useState(false);
   const [configured, setConfigured] = useState(false);
-  const paymentDataRef = useRef({ amount, currency, invoiceNumber, customerEmail });
+  const [billingInfo, setBillingInfo] = useState<BillingInfo>({
+    firstName: customerName?.split(' ')[0] || '',
+    lastName: customerName?.split(' ').slice(1).join(' ') || '',
+    address: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: 'US',
+    phone: customerPhone || '',
+  });
+
+  const paymentDataRef = useRef({ amount, currency, invoiceNumber, customerEmail, billingInfo });
 
   useEffect(() => {
-    paymentDataRef.current = { amount, currency, invoiceNumber, customerEmail };
-  }, [amount, currency, invoiceNumber, customerEmail]);
+    paymentDataRef.current = { amount, currency, invoiceNumber, customerEmail, billingInfo };
+  }, [amount, currency, invoiceNumber, customerEmail, billingInfo]);
 
   useEffect(() => {
     const tokenizationKey = import.meta.env.VITE_NMI_TOKENIZATION_KEY;
@@ -134,11 +160,19 @@ export default function NMIPaymentForm({
                       currency: currentData.currency,
                       invoiceNumber: currentData.invoiceNumber,
                       customerEmail: currentData.customerEmail,
+                      billingInfo: currentData.billingInfo,
                     }),
                   }
                 );
 
                 const data = await result.json();
+
+                // Check if 3DS authentication is required
+                if (data.requires3DS && data.redirectUrl) {
+                  console.log('Redirecting to 3DS authentication:', data.redirectUrl);
+                  window.location.href = data.redirectUrl;
+                  return;
+                }
 
                 if (!result.ok || !data.success) {
                   throw new Error(data.error || 'Payment failed');
@@ -182,6 +216,12 @@ export default function NMIPaymentForm({
       return;
     }
 
+    // Validate billing info for 3DS
+    if (!billingInfo.address || !billingInfo.city || !billingInfo.zip) {
+      onError('Please fill in all billing information for secure payment processing.');
+      return;
+    }
+
     if (!scriptLoaded || !window.CollectJS) {
       onError('Payment system is not ready. Please wait a moment and try again.');
       return;
@@ -213,31 +253,104 @@ export default function NMIPaymentForm({
 
       <form id="nmi-payment-form" onSubmit={handleSubmit} style={{ display: scriptLoaded ? 'block' : 'none' }}>
         <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                الاسم الأول
+              </label>
+              <input
+                type="text"
+                value={billingInfo.firstName}
+                onChange={(e) => setBillingInfo({ ...billingInfo, firstName: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                اسم العائلة
+              </label>
+              <input
+                type="text"
+                value={billingInfo.lastName}
+                onChange={(e) => setBillingInfo({ ...billingInfo, lastName: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+                required
+              />
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              رقم البطاقة
+              العنوان
             </label>
-            <div id="ccnumber"></div>
+            <input
+              type="text"
+              value={billingInfo.address}
+              onChange={(e) => setBillingInfo({ ...billingInfo, address: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+              required
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                تاريخ الانتهاء
+                المدينة
               </label>
-              <div id="ccexp"></div>
+              <input
+                type="text"
+                value={billingInfo.city}
+                onChange={(e) => setBillingInfo({ ...billingInfo, city: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+                required
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                CVV
+                الرمز البريدي
               </label>
-              <div id="cvv"></div>
+              <input
+                type="text"
+                value={billingInfo.zip}
+                onChange={(e) => setBillingInfo({ ...billingInfo, zip: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="border-t border-gray-200 pt-4 mt-6">
+            <h4 className="text-sm font-medium text-gray-700 mb-3">معلومات البطاقة</h4>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  رقم البطاقة
+                </label>
+                <div id="ccnumber"></div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    تاريخ الانتهاء
+                  </label>
+                  <div id="ccexp"></div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    CVV
+                  </label>
+                  <div id="cvv"></div>
+                </div>
+              </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2 text-sm text-gray-600 bg-green-50 border border-green-200 rounded-lg p-3">
             <Lock className="w-4 h-4 text-green-600 flex-shrink-0" />
-            <p>معلومات الدفع الخاصة بك محمية بتشفير آمن</p>
+            <p>معلومات الدفع الخاصة بك محمية بتشفير 3D Secure</p>
           </div>
 
           <button

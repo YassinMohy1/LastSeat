@@ -29,7 +29,7 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const { paymentToken, amount, currency, invoiceNumber, customerEmail } = await req.json();
+    const { paymentToken, amount, currency, invoiceNumber, customerEmail, billingInfo } = await req.json();
 
     if (!paymentToken || !amount || amount <= 0) {
       return new Response(
@@ -50,7 +50,20 @@ Deno.serve(async (req: Request) => {
       order_description: `Flight Booking - ${invoiceNumber}`,
       email: customerEmail || '',
       type: 'sale',
+      three_ds_version: '2',
+      three_ds_action: 'authenticate_attempt',
     });
+
+    if (billingInfo) {
+      if (billingInfo.firstName) transactionData.append('firstname', billingInfo.firstName);
+      if (billingInfo.lastName) transactionData.append('lastname', billingInfo.lastName);
+      if (billingInfo.address) transactionData.append('address1', billingInfo.address);
+      if (billingInfo.city) transactionData.append('city', billingInfo.city);
+      if (billingInfo.state) transactionData.append('state', billingInfo.state);
+      if (billingInfo.zip) transactionData.append('zip', billingInfo.zip);
+      if (billingInfo.country) transactionData.append('country', billingInfo.country);
+      if (billingInfo.phone) transactionData.append('phone', billingInfo.phone);
+    }
 
     console.log('Processing NMI payment with token:', paymentToken);
 
@@ -69,6 +82,25 @@ Deno.serve(async (req: Request) => {
     const responseCode = params.get('response');
     const responseText2 = params.get('responsetext');
     const transactionId = params.get('transactionid');
+    const threeDsUrl = params.get('three_ds_redirect_url');
+
+    // Check if 3DS authentication is required
+    if (responseCode === '2' && threeDsUrl) {
+      console.log('3DS authentication required:', { transactionId, threeDsUrl });
+      return new Response(
+        JSON.stringify({
+          success: false,
+          requires3DS: true,
+          redirectUrl: threeDsUrl,
+          transactionId: transactionId,
+          message: '3D Secure authentication required',
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     if (responseCode === '1') {
       console.log('Payment successful:', { transactionId, invoiceNumber });
