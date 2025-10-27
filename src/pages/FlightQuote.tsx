@@ -13,7 +13,7 @@ export default function FlightQuote() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
-  const [priceLoading, setPriceLoading] = useState(true);
+  const [priceLoading, setPriceLoading] = useState(false);
   const [priceSource, setPriceSource] = useState<'amadeus' | 'estimated'>('estimated');
 
   const flightDetails = {
@@ -42,6 +42,7 @@ export default function FlightQuote() {
   useEffect(() => {
     const fetchPrice = async () => {
       if (!flightDetails.from || !flightDetails.to || !flightDetails.departDate) {
+        setEstimatedPrice(estimatePrice());
         return;
       }
 
@@ -55,7 +56,7 @@ export default function FlightQuote() {
         };
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
 
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/get-flight-price`,
@@ -101,7 +102,7 @@ export default function FlightQuote() {
     };
 
     fetchPrice();
-  }, [flightDetails]);
+  }, []);
 
   const formatDate = (dateStr: string) => {
     if (!dateStr) return '';
