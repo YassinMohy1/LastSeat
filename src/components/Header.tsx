@@ -61,23 +61,24 @@ export default function Header() {
       {showPromo && (
         <div className="bg-gradient-to-r from-brand-blue via-sky-600 to-brand-blue text-white py-2.5 relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]"></div>
-          <div className="container mx-auto px-3 flex justify-center items-center gap-4 relative z-10">
-            <Mail className="w-4 h-4 animate-pulse" />
-            <span className="text-sm font-semibold">Unlock savings on your next trip!</span>
-            <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md font-mono text-sm font-bold">
+          <div className="container mx-auto px-3 flex justify-center items-center gap-2 sm:gap-4 relative z-10">
+            <Mail className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse flex-shrink-0" />
+            <span className="text-xs sm:text-sm font-semibold hidden sm:block">Unlock savings on your next trip!</span>
+            <span className="text-xs font-semibold sm:hidden">Get savings!</span>
+            <div className="bg-white/20 backdrop-blur-sm px-2 sm:px-3 py-0.5 sm:py-1 rounded-md font-mono text-xs sm:text-sm font-bold flex-shrink-0">
               {formatTime(timeLeft)}
             </div>
             <a
               href="tel:888-602-6667"
-              className="bg-white text-brand-blue px-4 py-1.5 rounded-md text-sm font-bold hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-lg"
+              className="bg-white text-brand-blue px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-md text-xs sm:text-sm font-bold hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-lg flex-shrink-0"
             >
               GET VOUCHER
             </a>
             <button
               onClick={() => setShowPromo(false)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition flex-shrink-0"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>
