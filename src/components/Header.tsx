@@ -67,11 +67,12 @@ export default function Header() {
             <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-md font-mono text-sm font-bold">
               {formatTime(timeLeft)}
             </div>
-            <button
+            <a
+              href="tel:888-602-6667"
               className="bg-white text-brand-blue px-4 py-1.5 rounded-md text-sm font-bold hover:bg-white/90 transition-all duration-300 hover:scale-105 shadow-lg"
             >
-              SAVE NOW
-            </button>
+              GET VOUCHER
+            </a>
             <button
               onClick={() => setShowPromo(false)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition"
@@ -107,7 +108,7 @@ export default function Header() {
             <img
               src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png?ex=690141eb&is=68fff06b&hm=eaecebb87b6bbf8f9aee13084555faa83c81bb3d679c2ff3b5275498ea57d6f5&"
               alt="Last Seat Ticket"
-              className="h-14 sm:h-16 w-auto object-contain"
+              className="h-10 sm:h-12 w-auto object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
