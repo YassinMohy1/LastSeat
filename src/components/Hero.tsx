@@ -8,10 +8,9 @@ export default function Hero() {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-60"
-        poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080'%3E%3Crect fill='%230c4a6e' width='1920' height='1080'/%3E%3C/svg%3E"
+        className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="/WhatsApp Video 2025-10-26 at 3.57.56 AM.mp4" type="video/mp4" />
+        <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=6900fdb7&is=68ffac37&hm=34663369365494cf8f2f30c4bc9b6db5580c4da32f47ead5c717254d491ab956&" type="video/mp4" />
       </video>
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
