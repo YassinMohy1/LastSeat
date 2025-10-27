@@ -11,6 +11,7 @@ import CustomerPayment from './pages/CustomerPayment';
 import CustomersManagement from './pages/CustomersManagement';
 import InquiriesManagement from './pages/InquiriesManagement';
 import FlightInquiriesManagement from './pages/FlightInquiriesManagement';
+import FlightPricesManagement from './pages/FlightPricesManagement';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/admin/customers" element={<CustomersManagement />} />
           <Route path="/admin/inquiries" element={<InquiriesManagement />} />
           <Route path="/admin/flight-inquiries" element={<FlightInquiriesManagement />} />
+          <Route path="/admin/flight-prices" element={<FlightPricesManagement />} />
 
           <Route path="/pay/:paymentLink" element={<CustomerPayment />} />
         </Routes>

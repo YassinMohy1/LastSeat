@@ -323,6 +323,13 @@ export default function AdminDashboard() {
                 طلبات الرحلات
               </button>
               <button
+                onClick={() => navigate('/admin/flight-prices')}
+                className="bg-white text-orange-600 border border-orange-600 px-3 py-1.5 rounded-lg text-sm font-semibold hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center gap-1.5"
+              >
+                <DollarSign className="w-4 h-4" />
+                أسعار الرحلات
+              </button>
+              <button
                 onClick={() => navigate('/admin/create-invoice')}
                 className="bg-gradient-to-r from-brand-blue to-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-1.5"
               >

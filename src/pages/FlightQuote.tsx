@@ -229,6 +229,28 @@ export default function FlightQuote() {
       }
 
       setPriceLoading(true);
+
+      try {
+        const { data: dbPrice, error: dbError } = await supabase
+          .from('flight_prices')
+          .select('*')
+          .eq('route_from', flightDetails.from)
+          .eq('route_to', flightDetails.to)
+          .eq('cabin_class', flightDetails.cabin)
+          .eq('trip_type', flightDetails.tripType)
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (dbPrice && !dbError) {
+          setEstimatedPrice(dbPrice.original_price);
+          setPriceSource('estimated');
+          setPriceLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.log('No database price found, using calculation');
+      }
+
       setEstimatedPrice(estimatePrice());
 
       try {
