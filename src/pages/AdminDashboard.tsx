@@ -384,16 +384,17 @@ export default function AdminDashboard() {
     setSearchResult(null);
 
     try {
+      const searchTerm = searchInvoiceNumber.trim().toUpperCase();
+
       const { data, error } = await supabase
         .from('invoices')
         .select('*')
-        .eq('invoice_number', searchInvoiceNumber.trim())
-        .maybeSingle();
+        .ilike('invoice_number', searchTerm);
 
       if (error) throw error;
 
-      if (data) {
-        setSearchResult(data);
+      if (data && data.length > 0) {
+        setSearchResult(data[0]);
       } else {
         toast.error('لم يتم العثور على الفاتورة');
       }
