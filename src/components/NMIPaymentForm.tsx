@@ -29,6 +29,7 @@ export default function NMIPaymentForm({
 }: NMIPaymentFormProps) {
   const [processing, setProcessing] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [paymentSubmitted, setPaymentSubmitted] = useState(false);
 
   useEffect(() => {
     const tokenizationKey = import.meta.env.VITE_NMI_TOKENIZATION_KEY;
@@ -108,8 +109,16 @@ export default function NMIPaymentForm({
             }
           },
           callback: async (response: any) => {
+            // Prevent duplicate submissions
+            if (paymentSubmitted) {
+              console.log('Payment already submitted, ignoring duplicate request');
+              return;
+            }
+
             try {
               if (response.token) {
+                setPaymentSubmitted(true);
+
                 const result = await fetch(
                   `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-process-payment`,
                   {
@@ -142,6 +151,7 @@ export default function NMIPaymentForm({
               console.error('Payment processing error:', err);
               onError(err.message || 'Payment processing failed');
               setProcessing(false);
+              setPaymentSubmitted(false);
             }
           },
           validationCallback: (field: string, status: boolean, message: string) => {
@@ -162,6 +172,12 @@ export default function NMIPaymentForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Prevent duplicate submissions
+    if (processing || paymentSubmitted) {
+      console.log('Payment already in progress');
+      return;
+    }
 
     if (!scriptLoaded || !window.CollectJS) {
       onError('Payment system is not ready. Please wait a moment and try again.');
@@ -223,9 +239,9 @@ export default function NMIPaymentForm({
 
           <button
             type="submit"
-            disabled={processing}
+            disabled={processing || paymentSubmitted}
             className={`w-full py-4 rounded-lg font-bold text-lg transition-all ${
-              processing
+              processing || paymentSubmitted
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-brand-blue hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
             }`}
