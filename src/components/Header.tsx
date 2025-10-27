@@ -165,18 +165,30 @@ export default function Header() {
 
       <nav className="container mx-auto px-3 py-1.5">
         <div className="flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2">
-            <img
-              src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png?ex=690141eb&is=68fff06b&hm=eaecebb87b6bbf8f9aee13084555faa83c81bb3d679c2ff3b5275498ea57d6f5&"
-              alt="Last Seat Ticket"
-              className="h-8 sm:h-10 w-auto object-contain"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                console.error('Failed to load logo');
-              }}
-            />
-          </Link>
+          <div className="flex items-center gap-6">
+            <Link to="/" className="flex items-center gap-2">
+              <img
+                src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png?ex=690141eb&is=68fff06b&hm=eaecebb87b6bbf8f9aee13084555faa83c81bb3d679c2ff3b5275498ea57d6f5&"
+                alt="Last Seat Ticket"
+                className="h-8 sm:h-10 w-auto object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  console.error('Failed to load logo');
+                }}
+              />
+            </Link>
+
+            <ul className="hidden lg:flex gap-4 items-center text-xs">
+              <li><Link to="/" className="hover:text-brand-blue transition">Home</Link></li>
+              <li><a href="/#how-to-book" className="hover:text-brand-blue transition">How to Book</a></li>
+              <li><Link to="/blog" className="hover:text-brand-blue transition">Blog</Link></li>
+              <li><a href="/#offers" className="hover:text-brand-blue transition">Offers</a></li>
+              <li><a href="/#gift-vouchers" className="hover:text-brand-blue transition">Gift Vouchers</a></li>
+              <li><a href="/#about" className="hover:text-brand-blue transition">About Us</a></li>
+              <li><a href="/#contact" className="hover:text-brand-blue transition">Contact Us</a></li>
+            </ul>
+          </div>
 
           <button
             className="lg:hidden"
@@ -185,34 +197,32 @@ export default function Header() {
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
 
-          <ul className="hidden lg:flex gap-4 items-center text-xs">
-            <li><Link to="/" className="hover:text-brand-blue transition">Home</Link></li>
-            <li><a href="/#how-to-book" className="hover:text-brand-blue transition">How to Book</a></li>
-            <li><Link to="/blog" className="hover:text-brand-blue transition">Blog</Link></li>
-            <li><a href="/#offers" className="hover:text-brand-blue transition">Offers</a></li>
-            <li><a href="/#gift-vouchers" className="hover:text-brand-blue transition">Gift Vouchers</a></li>
-            <li><a href="/#about" className="hover:text-brand-blue transition">About Us</a></li>
-            <li><a href="/#contact" className="hover:text-brand-blue transition">Contact Us</a></li>
-            <li>
-              {isAdmin ? (
-                <Link
-                  to="/admin/dashboard"
-                  className="flex items-center gap-1 px-2 py-1 bg-brand-blue/10 text-brand-blue rounded-lg hover:bg-brand-blue/20 transition-all duration-300"
-                >
-                  <DoorOpen className="w-3.5 h-3.5" />
-                  <span className="text-xs font-medium">Dashboard</span>
-                </Link>
-              ) : (
-                <Link
-                  to="/admin/login"
-                  className="flex items-center gap-1 px-2 py-1 border border-brand-blue/30 text-brand-blue rounded-lg hover:bg-brand-blue/5 transition-all duration-300"
-                >
-                  <DoorOpen className="w-3.5 h-3.5" />
-                  <span className="text-xs font-medium">Login</span>
-                </Link>
-              )}
-            </li>
-          </ul>
+          <div className="hidden lg:flex items-center gap-4">
+            <a
+              href="tel:888-602-6667"
+              className="flex items-center gap-1.5 text-brand-blue hover:text-brand-blue/80 transition text-xs font-semibold"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span>888-602-6667</span>
+            </a>
+            {isAdmin ? (
+              <Link
+                to="/admin/dashboard"
+                className="flex items-center gap-1 px-2 py-1 bg-brand-blue/10 text-brand-blue rounded-lg hover:bg-brand-blue/20 transition-all duration-300"
+              >
+                <DoorOpen className="w-3.5 h-3.5" />
+                <span className="text-xs font-medium">Dashboard</span>
+              </Link>
+            ) : (
+              <Link
+                to="/admin/login"
+                className="flex items-center gap-1 px-2 py-1 border border-brand-blue/30 text-brand-blue rounded-lg hover:bg-brand-blue/5 transition-all duration-300"
+              >
+                <DoorOpen className="w-3.5 h-3.5" />
+                <span className="text-xs font-medium">Login</span>
+              </Link>
+            )}
+          </div>
         </div>
 
         {mobileMenuOpen && (
