@@ -44,6 +44,8 @@ export default function CustomerPayment() {
 
   const [travelCarePlan, setTravelCarePlan] = useState<TravelCarePlan>('none');
   const [baggageProtection, setBaggageProtection] = useState(false);
+  const [selectedTip, setSelectedTip] = useState<number | null>(null);
+  const [customTip, setCustomTip] = useState<string>('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
@@ -69,6 +71,30 @@ export default function CustomerPayment() {
     }
   };
 
+  const getTipOptions = (): number[] => {
+    if (!invoice) return [];
+
+    const baseAmount = Number(invoice.amount);
+
+    if (baseAmount < 1000) {
+      return [10, 20, 30, 40, 50, 60];
+    } else if (baseAmount < 2000) {
+      return [15, 30, 45, 60, 75, 90];
+    } else {
+      return [20, 40, 60, 80, 100, 120];
+    }
+  };
+
+  const getTipAmount = (): number => {
+    if (selectedTip !== null) {
+      return selectedTip;
+    }
+    if (customTip && !isNaN(parseFloat(customTip))) {
+      return parseFloat(customTip);
+    }
+    return 0;
+  };
+
   const calculateTotalAmount = (): number => {
     if (!invoice) return 0;
 
@@ -83,6 +109,8 @@ export default function CustomerPayment() {
     if (baggageProtection) {
       total += 19.99 * invoice.passengers;
     }
+
+    total += getTipAmount();
 
     return total;
   };
@@ -187,6 +215,15 @@ export default function CustomerPayment() {
                     <span className="text-gray-700 font-medium">Lost Baggage Protection:</span>
                     <span className="text-gray-900 font-semibold">
                       ${(19.99 * invoice.passengers).toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
+                {getTipAmount() > 0 && (
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-700 font-medium">Service Tip:</span>
+                    <span className="text-gray-900 font-semibold">
+                      ${getTipAmount().toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -567,6 +604,100 @@ export default function CustomerPayment() {
             </div>
           </div>
 
+          <div className="mb-8">
+            <div className="bg-blue-600 text-white px-6 py-4 rounded-t-lg">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                How was my service?
+              </h3>
+              <p className="text-sm text-blue-100 mt-1">
+                If you feel that the service provided was exceptional, you can express your gratitude (optional)
+              </p>
+            </div>
+
+            <div className="border border-gray-200 rounded-b-lg p-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                {getTipOptions().map((amount, index) => {
+                  const labels = ['Average', 'Good', 'Great', 'Excellent', 'Perfect', 'Outstanding'];
+                  return (
+                    <button
+                      key={amount}
+                      onClick={() => {
+                        setSelectedTip(amount);
+                        setCustomTip('');
+                      }}
+                      className={`p-4 rounded-lg border-2 transition-all ${
+                        selectedTip === amount
+                          ? 'border-blue-600 bg-blue-50'
+                          : 'border-gray-200 hover:border-blue-300'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="font-bold text-gray-900 mb-1">{labels[index]}</div>
+                        <div className="text-lg font-bold text-blue-600">${amount.toFixed(2)}</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="border-t border-gray-200 pt-4 mb-4">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Think I did better?
+                </label>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => {
+                      const current = parseFloat(customTip) || 0;
+                      if (current > 0) setCustomTip((current - 1).toFixed(2));
+                    }}
+                    className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 font-bold"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    value={customTip}
+                    onChange={(e) => {
+                      setCustomTip(e.target.value);
+                      setSelectedTip(null);
+                    }}
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                    className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg text-center text-lg font-semibold focus:border-blue-600 focus:outline-none"
+                  />
+                  <button
+                    onClick={() => {
+                      const current = parseFloat(customTip) || 0;
+                      setCustomTip((current + 1).toFixed(2));
+                    }}
+                    className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center text-gray-700 font-bold"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              <label className="flex items-start gap-2 text-sm text-gray-600">
+                <input
+                  type="checkbox"
+                  checked={getTipAmount() > 0}
+                  onChange={(e) => {
+                    if (!e.target.checked) {
+                      setSelectedTip(null);
+                      setCustomTip('');
+                    }
+                  }}
+                  className="mt-0.5"
+                />
+                <span>
+                  I agree, that this amount will be charged in addition to the cost of the airline ticket(s)
+                </span>
+              </label>
+            </div>
+          </div>
+
           <div className="bg-gray-50 rounded-lg p-6 mb-6">
             <div className="flex justify-between items-center mb-3">
               <span className="text-gray-700 font-medium">Base Flight Cost:</span>
@@ -589,6 +720,15 @@ export default function CustomerPayment() {
                 <span className="text-gray-700 font-medium">Lost Baggage Protection:</span>
                 <span className="text-gray-900 font-semibold">
                   ${(19.99 * invoice.passengers).toFixed(2)}
+                </span>
+              </div>
+            )}
+
+            {getTipAmount() > 0 && (
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-gray-700 font-medium">Service Tip:</span>
+                <span className="text-gray-900 font-semibold">
+                  ${getTipAmount().toFixed(2)}
                 </span>
               </div>
             )}
