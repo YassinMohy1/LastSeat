@@ -180,15 +180,15 @@ export default function SearchBar() {
                         <button
                           type="button"
                           onClick={() => setAdults(Math.max(1, adults - 1))}
-                          className="w-6 h-6 rounded-full bg-brand-blue text-white text-sm font-bold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                          className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
                         >
                           -
                         </button>
-                        <span className="text-sm font-semibold text-gray-900 w-4 text-center">{adults}</span>
+                        <span className="text-sm font-semibold text-gray-900 w-5 text-center">{adults}</span>
                         <button
                           type="button"
                           onClick={() => setAdults(Math.min(9, adults + 1))}
-                          className="w-6 h-6 rounded-full bg-brand-blue text-white text-sm font-bold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                          className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
                         >
                           +
                         </button>
