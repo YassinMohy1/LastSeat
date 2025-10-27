@@ -32,6 +32,16 @@ interface Invoice {
   currency: string;
   payment_status: string;
   notes: string | null;
+  outbound_departure_time: string | null;
+  outbound_arrival_time: string | null;
+  outbound_duration: string | null;
+  outbound_stops: number | null;
+  outbound_stops_info: string | null;
+  return_departure_time: string | null;
+  return_arrival_time: string | null;
+  return_duration: string | null;
+  return_stops: number | null;
+  return_stops_info: string | null;
 }
 
 type TravelCarePlan = 'none' | 'basic' | 'premium';
@@ -347,7 +357,9 @@ export default function CustomerPayment() {
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <p className="text-sm text-gray-600">{new Date(invoice.departure_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                  <p className="text-2xl font-bold text-gray-900">12:30 PM</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {invoice.outbound_departure_time || '12:30 PM'}
+                  </p>
                   <p className="text-gray-600">{invoice.flight_from}</p>
                 </div>
 
@@ -358,12 +370,30 @@ export default function CustomerPayment() {
                       <Plane className="w-6 h-6 text-brand-blue transform rotate-90" />
                     </div>
                   </div>
-                  <p className="text-center text-sm text-orange-500 mt-2">1 Stop</p>
+                  {invoice.outbound_stops !== null && invoice.outbound_stops !== undefined ? (
+                    <>
+                      <p className="text-center text-sm text-orange-500 mt-2">
+                        {invoice.outbound_stops === 0
+                          ? 'Direct'
+                          : `${invoice.outbound_stops} Stop${invoice.outbound_stops > 1 ? 's' : ''}`}
+                      </p>
+                      {invoice.outbound_duration && (
+                        <p className="text-center text-xs text-gray-500">{invoice.outbound_duration}</p>
+                      )}
+                      {invoice.outbound_stops_info && (
+                        <p className="text-center text-xs text-gray-500 mt-1">{invoice.outbound_stops_info}</p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-center text-sm text-orange-500 mt-2">1 Stop</p>
+                  )}
                 </div>
 
                 <div className="text-right">
                   <p className="text-sm text-gray-600">{new Date(invoice.departure_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                  <p className="text-2xl font-bold text-gray-900">11:50 PM</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {invoice.outbound_arrival_time || '11:50 PM'}
+                  </p>
                   <p className="text-gray-600">{invoice.flight_to}</p>
                 </div>
               </div>
@@ -376,7 +406,9 @@ export default function CustomerPayment() {
                   <div className="flex items-center justify-between mb-2">
                     <div>
                       <p className="text-sm text-gray-600">{new Date(invoice.return_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                      <p className="text-2xl font-bold text-gray-900">12:30 PM</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {invoice.return_departure_time || '12:30 PM'}
+                      </p>
                       <p className="text-gray-600">{invoice.flight_to}</p>
                     </div>
 
@@ -387,12 +419,30 @@ export default function CustomerPayment() {
                           <Plane className="w-6 h-6 text-brand-blue transform -rotate-90" />
                         </div>
                       </div>
-                      <p className="text-center text-sm text-orange-500 mt-2">1 Stop</p>
+                      {invoice.return_stops !== null && invoice.return_stops !== undefined ? (
+                        <>
+                          <p className="text-center text-sm text-orange-500 mt-2">
+                            {invoice.return_stops === 0
+                              ? 'Direct'
+                              : `${invoice.return_stops} Stop${invoice.return_stops > 1 ? 's' : ''}`}
+                          </p>
+                          {invoice.return_duration && (
+                            <p className="text-center text-xs text-gray-500">{invoice.return_duration}</p>
+                          )}
+                          {invoice.return_stops_info && (
+                            <p className="text-center text-xs text-gray-500 mt-1">{invoice.return_stops_info}</p>
+                          )}
+                        </>
+                      ) : (
+                        <p className="text-center text-sm text-orange-500 mt-2">1 Stop</p>
+                      )}
                     </div>
 
                     <div className="text-right">
                       <p className="text-sm text-gray-600">{new Date(invoice.return_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
-                      <p className="text-2xl font-bold text-gray-900">1:10 AM</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {invoice.return_arrival_time || '1:10 AM'}
+                      </p>
                       <p className="text-gray-600">{invoice.flight_from}</p>
                     </div>
                   </div>

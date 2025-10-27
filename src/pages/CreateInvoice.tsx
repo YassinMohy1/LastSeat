@@ -32,7 +32,17 @@ export default function CreateInvoice() {
     cabinClass: 'Economy',
     amount: '',
     currency: 'USD',
-    notes: ''
+    notes: '',
+    outboundDepartureTime: '',
+    outboundArrivalTime: '',
+    outboundDuration: '',
+    outboundStops: '0',
+    outboundStopsInfo: '',
+    returnDepartureTime: '',
+    returnArrivalTime: '',
+    returnDuration: '',
+    returnStops: '0',
+    returnStopsInfo: ''
   });
 
   useEffect(() => {
@@ -98,6 +108,16 @@ export default function CreateInvoice() {
             payment_status: 'pending',
             payment_link: paymentLink,
             notes: formData.notes || null,
+            outbound_departure_time: formData.outboundDepartureTime || null,
+            outbound_arrival_time: formData.outboundArrivalTime || null,
+            outbound_duration: formData.outboundDuration || null,
+            outbound_stops: parseInt(formData.outboundStops) || 0,
+            outbound_stops_info: formData.outboundStopsInfo || null,
+            return_departure_time: formData.returnDepartureTime || null,
+            return_arrival_time: formData.returnArrivalTime || null,
+            return_duration: formData.returnDuration || null,
+            return_stops: parseInt(formData.returnStops) || 0,
+            return_stops_info: formData.returnStopsInfo || null,
             created_by_admin_id: adminProfile?.id,
             created_by_admin_email: adminProfile?.email
           }
@@ -306,6 +326,142 @@ export default function CreateInvoice() {
                 </select>
               </div>
             </div>
+
+            {/* Flight Details - Outbound */}
+            <div className="mt-6 p-6 bg-blue-50 border-2 border-blue-200 rounded-lg">
+              <h3 className="text-md font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Plane className="w-5 h-5 text-brand-blue" />
+                تفاصيل رحلة الذهاب
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">وقت الإقلاع</label>
+                  <input
+                    type="time"
+                    name="outboundDepartureTime"
+                    value={formData.outboundDepartureTime}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">وقت الوصول</label>
+                  <input
+                    type="time"
+                    name="outboundArrivalTime"
+                    value={formData.outboundArrivalTime}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">مدة الرحلة</label>
+                  <input
+                    type="text"
+                    name="outboundDuration"
+                    value={formData.outboundDuration}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                    placeholder="مثال: 5h 30m"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">عدد المحطات</label>
+                  <select
+                    name="outboundStops"
+                    value={formData.outboundStops}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all appearance-none"
+                  >
+                    <option value="0">مباشر (0 محطة)</option>
+                    <option value="1">1 محطة</option>
+                    <option value="2">2 محطة</option>
+                    <option value="3">3 محطات</option>
+                  </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">معلومات المحطات (اختياري)</label>
+                  <input
+                    type="text"
+                    name="outboundStopsInfo"
+                    value={formData.outboundStopsInfo}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                    placeholder="مثال: 2h 15m in Dubai (DXB)"
+                    disabled={formData.outboundStops === '0'}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Flight Details - Return */}
+            {formData.returnDate && (
+              <div className="mt-4 p-6 bg-green-50 border-2 border-green-200 rounded-lg">
+                <h3 className="text-md font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Plane className="w-5 h-5 text-green-600 transform rotate-180" />
+                  تفاصيل رحلة العودة
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">وقت الإقلاع</label>
+                    <input
+                      type="time"
+                      name="returnDepartureTime"
+                      value={formData.returnDepartureTime}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">وقت الوصول</label>
+                    <input
+                      type="time"
+                      name="returnArrivalTime"
+                      value={formData.returnArrivalTime}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">مدة الرحلة</label>
+                    <input
+                      type="text"
+                      name="returnDuration"
+                      value={formData.returnDuration}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                      placeholder="مثال: 6h 15m"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">عدد المحطات</label>
+                    <select
+                      name="returnStops"
+                      value={formData.returnStops}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all appearance-none"
+                    >
+                      <option value="0">مباشر (0 محطة)</option>
+                      <option value="1">1 محطة</option>
+                      <option value="2">2 محطة</option>
+                      <option value="3">3 محطات</option>
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">معلومات المحطات (اختياري)</label>
+                    <input
+                      type="text"
+                      name="returnStopsInfo"
+                      value={formData.returnStopsInfo}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                      placeholder="مثال: 3h 45m in Istanbul (IST)"
+                      disabled={formData.returnStops === '0'}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Payment Information */}
