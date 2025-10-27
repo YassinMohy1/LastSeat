@@ -127,7 +127,7 @@ export default function AdminDashboard() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-brand-blue"></div>
-          <p className="mt-4 text-gray-600">جاري التحميل...</p>
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -172,7 +172,6 @@ export default function AdminDashboard() {
       if (error) throw error;
       setAuditLogs(data || []);
 
-      // Calculate audit statistics
       const stats = {
         totalActions: data?.length || 0,
         invoicesCreated: data?.filter(log => log.action_type === 'create_invoice').length || 0,
@@ -278,7 +277,7 @@ export default function AdminDashboard() {
 
   const handleSignOut = async () => {
     await signOut();
-    toast.success('تم تسجيل الخروج بنجاح');
+    toast.success('Signed out successfully');
     window.location.href = '/login';
   };
 
@@ -319,7 +318,7 @@ export default function AdminDashboard() {
   };
 
   const deleteInvoice = async (invoiceId: string) => {
-    if (!window.confirm('هل أنت متأكد من حذف هذه الفاتورة؟')) return;
+    if (!window.confirm('Are you sure you want to delete this invoice?')) return;
 
     try {
       const { error } = await supabase
@@ -354,9 +353,9 @@ export default function AdminDashboard() {
       cancelled: <XCircle className="w-4 h-4" />
     };
     const labels = {
-      pending: 'قيد الانتظار',
-      paid: 'مدفوعة',
-      cancelled: 'ملغية'
+      pending: 'Pending',
+      paid: 'Paid',
+      cancelled: 'Cancelled'
     };
 
     return (
@@ -376,7 +375,7 @@ export default function AdminDashboard() {
 
   const searchInvoiceByNumber = async () => {
     if (!searchInvoiceNumber.trim()) {
-      toast.error('الرجاء إدخال رقم الفاتورة');
+      toast.error('Please enter invoice number');
       return;
     }
 
@@ -396,11 +395,11 @@ export default function AdminDashboard() {
       if (data && data.length > 0) {
         setSearchResult(data[0]);
       } else {
-        toast.error('لم يتم العثور على الفاتورة');
+        toast.error('Invoice not found');
       }
     } catch (error) {
       console.error('Error searching invoice:', error);
-      toast.error('حدث خطأ أثناء البحث');
+      toast.error('Error searching invoice');
     } finally {
       setSearchLoading(false);
     }
@@ -422,8 +421,8 @@ export default function AdminDashboard() {
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-gray-900">لوحة التحكم</h1>
-                <p className="text-xs text-gray-600">مرحباً، {adminProfile?.full_name}</p>
+                <h1 className="text-lg font-bold text-gray-900">Dashboard</h1>
+                <p className="text-xs text-gray-600">Welcome, {adminProfile?.full_name}</p>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
@@ -433,7 +432,7 @@ export default function AdminDashboard() {
                   className="bg-white text-purple-600 border border-purple-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-purple-600 hover:text-white transition-all duration-300 flex items-center gap-1"
                 >
                   <Shield className="w-3 h-3" />
-                  السجل
+                  Audit Log
                 </button>
               )}
               <button
@@ -441,42 +440,42 @@ export default function AdminDashboard() {
                 className="bg-white text-brand-blue border border-brand-blue px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-brand-blue hover:text-white transition-all duration-300 flex items-center gap-1"
               >
                 <Users className="w-3 h-3" />
-                العملاء
+                Customers
               </button>
               <button
                 onClick={() => navigate('/admin/inquiries')}
                 className="bg-white text-green-600 border border-green-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-green-600 hover:text-white transition-all duration-300 flex items-center gap-1"
               >
                 <FileText className="w-3 h-3" />
-                استفسارات
+                Inquiries
               </button>
               <button
                 onClick={() => navigate('/admin/flight-inquiries')}
                 className="bg-white text-orange-600 border border-orange-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-orange-600 hover:text-white transition-all duration-300 flex items-center gap-1"
               >
                 <FileText className="w-3 h-3" />
-                طلبات
+                Requests
               </button>
               <button
                 onClick={() => navigate('/admin/flight-prices')}
                 className="bg-white text-amber-600 border border-amber-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-amber-600 hover:text-white transition-all duration-300 flex items-center gap-1"
               >
                 <DollarSign className="w-3 h-3" />
-                أسعار
+                Prices
               </button>
               <button
                 onClick={() => navigate('/admin/create-invoice')}
                 className="bg-gradient-to-r from-brand-blue to-blue-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-1"
               >
                 <Plus className="w-3 h-3" />
-                جديد
+                New
               </button>
               <button
                 onClick={handleSignOut}
                 className="bg-gray-100 text-gray-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-200 transition-all flex items-center gap-1"
               >
                 <LogOut className="w-3 h-3" />
-                خروج
+                Logout
               </button>
             </div>
           </div>
@@ -493,8 +492,8 @@ export default function AdminDashboard() {
                     <Shield className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-white">سجل الأنشطة الإدارية</h2>
-                    <p className="text-purple-100 text-xs">تتبع شامل لجميع العمليات والأنشطة</p>
+                    <h2 className="text-lg font-bold text-white">Admin Activity Log</h2>
+                    <p className="text-purple-100 text-xs">Complete tracking of all operations and activities</p>
                   </div>
                 </div>
                 <button
@@ -509,40 +508,40 @@ export default function AdminDashboard() {
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
                   <Activity className="w-4 h-4 text-white mx-auto mb-1" />
                   <p className="text-2xl font-bold text-white">{auditStats.totalActions}</p>
-                  <p className="text-purple-100 text-xs">إجمالي الأنشطة</p>
+                  <p className="text-purple-100 text-xs">Total Actions</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
                   <Plus className="w-4 h-4 text-white mx-auto mb-1" />
                   <p className="text-2xl font-bold text-white">{auditStats.invoicesCreated}</p>
-                  <p className="text-purple-100 text-xs">فواتير مُنشأة</p>
+                  <p className="text-purple-100 text-xs">Created</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
                   <CheckCircle className="w-4 h-4 text-white mx-auto mb-1" />
                   <p className="text-2xl font-bold text-white">{auditStats.invoicesPaid}</p>
-                  <p className="text-purple-100 text-xs">مدفوعة</p>
+                  <p className="text-purple-100 text-xs">Paid</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
                   <XCircle className="w-4 h-4 text-white mx-auto mb-1" />
                   <p className="text-2xl font-bold text-white">{auditStats.invoicesCancelled}</p>
-                  <p className="text-purple-100 text-xs">ملغاة</p>
+                  <p className="text-purple-100 text-xs">Cancelled</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
                   <Trash2 className="w-4 h-4 text-white mx-auto mb-1" />
                   <p className="text-2xl font-bold text-white">{auditStats.invoicesDeleted}</p>
-                  <p className="text-purple-100 text-xs">محذوفة</p>
+                  <p className="text-purple-100 text-xs">Deleted</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 text-center">
                   <Users className="w-4 h-4 text-white mx-auto mb-1" />
                   <p className="text-2xl font-bold text-white">{auditStats.uniqueAdmins}</p>
-                  <p className="text-purple-100 text-xs">مدراء نشطين</p>
+                  <p className="text-purple-100 text-xs">Active Admins</p>
                 </div>
                 <button
                   onClick={() => setShowSearchModal(true)}
                   className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-3 text-center transition-all cursor-pointer border-2 border-white/30"
                 >
                   <Search className="w-4 h-4 text-white mx-auto mb-1" />
-                  <p className="text-sm font-bold text-white">بحث</p>
-                  <p className="text-purple-100 text-xs">عن فاتورة</p>
+                  <p className="text-sm font-bold text-white">Search</p>
+                  <p className="text-purple-100 text-xs">Invoice</p>
                 </button>
               </div>
             </div>
@@ -551,21 +550,21 @@ export default function AdminDashboard() {
               {auditLogs.length === 0 ? (
                 <div className="p-12 text-center text-gray-500">
                   <Activity className="w-16 h-16 mx-auto mb-3 text-gray-300" />
-                  <p className="text-base font-semibold">لا توجد أنشطة مسجلة بعد</p>
-                  <p className="text-sm text-gray-400 mt-1">سيتم عرض جميع الأنشطة هنا</p>
+                  <p className="text-base font-semibold">No activities recorded yet</p>
+                  <p className="text-sm text-gray-400 mt-1">All activities will be displayed here</p>
                 </div>
               ) : (
                 <div className="divide-y divide-gray-100">
                   {auditLogs.map((log, index) => {
                     const actionIcons: Record<string, { icon: JSX.Element; color: string; label: string }> = {
-                      'create_invoice': { icon: <Plus className="w-4 h-4" />, color: 'bg-blue-50 text-blue-600 border-blue-200', label: 'إنشاء فاتورة' },
+                      'create_invoice': { icon: <Plus className="w-4 h-4" />, color: 'bg-blue-50 text-blue-600 border-blue-200', label: 'Create Invoice' },
                       'update_invoice_status': {
                         icon: log.details?.new_status === 'paid' ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />,
                         color: log.details?.new_status === 'paid' ? 'bg-green-50 text-green-600 border-green-200' : 'bg-red-50 text-red-600 border-red-200',
-                        label: log.details?.new_status === 'paid' ? 'تأكيد دفع' : 'إلغاء فاتورة'
+                        label: log.details?.new_status === 'paid' ? 'Confirm Payment' : 'Cancel Invoice'
                       },
-                      'delete_invoice': { icon: <Trash2 className="w-4 h-4" />, color: 'bg-red-50 text-red-600 border-red-200', label: 'حذف فاتورة' },
-                      'update_invoice': { icon: <Edit className="w-4 h-4" />, color: 'bg-amber-50 text-amber-600 border-amber-200', label: 'تعديل فاتورة' }
+                      'delete_invoice': { icon: <Trash2 className="w-4 h-4" />, color: 'bg-red-50 text-red-600 border-red-200', label: 'Delete Invoice' },
+                      'update_invoice': { icon: <Edit className="w-4 h-4" />, color: 'bg-amber-50 text-amber-600 border-amber-200', label: 'Update Invoice' }
                     };
 
                     const action = actionIcons[log.action_type] || { icon: <Activity className="w-4 h-4" />, color: 'bg-gray-50 text-gray-600 border-gray-200', label: log.action_type };
@@ -583,7 +582,7 @@ export default function AdminDashboard() {
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-purple-50 text-purple-700 rounded-full text-xs font-medium border border-purple-200">
                                     <Users className="w-3 h-3" />
-                                    {log.admin_email === 'system' ? 'النظام' : log.admin_email}
+                                    {log.admin_email === 'system' ? 'System' : log.admin_email}
                                   </span>
                                   {log.details?.invoice_number && (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-50 text-gray-700 rounded-full text-xs font-medium border border-gray-200">
@@ -593,17 +592,17 @@ export default function AdminDashboard() {
                                   )}
                                   {log.details?.customer_name && (
                                     <span className="text-xs text-gray-600">
-                                      العميل: {log.details.customer_name}
+                                      Customer: {log.details.customer_name}
                                     </span>
                                   )}
                                 </div>
                               </div>
                               <div className="text-left flex-shrink-0">
                                 <div className="text-xs font-medium text-gray-700">
-                                  {new Date(log.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' })}
+                                  {new Date(log.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
                                 </div>
                                 <div className="text-xs text-gray-500">
-                                  {new Date(log.created_at).toLocaleTimeString('ar-EG', {
+                                  {new Date(log.created_at).toLocaleTimeString('en-US', {
                                     hour: '2-digit',
                                     minute: '2-digit'
                                   })}
@@ -645,7 +644,7 @@ export default function AdminDashboard() {
           <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-4 text-white shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <div>
-                <p className="text-blue-100 text-xs font-medium">إجمالي الفواتير</p>
+                <p className="text-blue-100 text-xs font-medium">Total Invoices</p>
                 <p className="text-2xl font-bold mt-1">{stats.total}</p>
               </div>
               <div className="bg-white/20 p-2 rounded-lg">
@@ -654,14 +653,14 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center gap-1 text-blue-100 text-xs">
               <TrendingUp className="w-3 h-3" />
-              <span>جميع الفواتير المسجلة</span>
+              <span>All registered invoices</span>
             </div>
           </div>
 
           <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg p-4 text-white shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <div>
-                <p className="text-yellow-100 text-xs font-medium">قيد الانتظار</p>
+                <p className="text-yellow-100 text-xs font-medium">Pending</p>
                 <p className="text-2xl font-bold mt-1">{stats.pending}</p>
               </div>
               <div className="bg-white/20 p-2 rounded-lg">
@@ -670,14 +669,14 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center gap-1 text-yellow-100 text-xs">
               <AlertCircle className="w-3 h-3" />
-              <span>في انتظار الدفع</span>
+              <span>Awaiting payment</span>
             </div>
           </div>
 
           <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-4 text-white shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <div>
-                <p className="text-green-100 text-xs font-medium">المدفوعة</p>
+                <p className="text-green-100 text-xs font-medium">Paid</p>
                 <p className="text-2xl font-bold mt-1">{stats.paid}</p>
               </div>
               <div className="bg-white/20 p-2 rounded-lg">
@@ -693,7 +692,7 @@ export default function AdminDashboard() {
           <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-4 text-white shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <div>
-                <p className="text-red-100 text-xs font-medium">الملغية</p>
+                <p className="text-red-100 text-xs font-medium">Cancelled</p>
                 <p className="text-2xl font-bold mt-1">{stats.cancelled}</p>
               </div>
               <div className="bg-white/20 p-2 rounded-lg">
@@ -702,7 +701,7 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center gap-1 text-red-100 text-xs">
               <XCircle className="w-3 h-3" />
-              <span>فواتير ملغاة</span>
+              <span>Cancelled invoices</span>
             </div>
           </div>
         </div>
@@ -714,7 +713,7 @@ export default function AdminDashboard() {
                 <DollarSign className="w-4 h-4 text-emerald-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">إيرادات اليوم</p>
+                <p className="text-xs text-gray-600">Today's Revenue</p>
                 <p className="text-lg font-bold text-gray-900">{formatCurrency(stats.todayRevenue)}</p>
               </div>
             </div>
@@ -726,7 +725,7 @@ export default function AdminDashboard() {
                 <Calendar className="w-4 h-4 text-blue-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">إيرادات الشهر</p>
+                <p className="text-xs text-gray-600">Month Revenue</p>
                 <p className="text-lg font-bold text-gray-900">{formatCurrency(stats.monthRevenue)}</p>
               </div>
             </div>
@@ -738,7 +737,7 @@ export default function AdminDashboard() {
                 <TrendingUp className="w-4 h-4 text-orange-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">إجمالي الإيرادات</p>
+                <p className="text-xs text-gray-600">Total Revenue</p>
                 <p className="text-lg font-bold text-gray-900">{formatCurrency(stats.revenue)}</p>
               </div>
             </div>
@@ -749,7 +748,7 @@ export default function AdminDashboard() {
           <div className="px-3 py-3 border-b border-gray-200">
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold text-gray-900">الفواتير</h2>
+                <h2 className="text-base font-bold text-gray-900">Invoices</h2>
                 <button
                   onClick={fetchInvoices}
                   disabled={refreshing}
@@ -764,7 +763,7 @@ export default function AdminDashboard() {
                   <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="بحث في الفواتير..."
+                    placeholder="Search invoices..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-brand-blue focus:border-transparent"
@@ -776,10 +775,10 @@ export default function AdminDashboard() {
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="px-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-brand-blue focus:border-transparent"
                 >
-                  <option value="all">كل الحالات</option>
-                  <option value="pending">قيد الانتظار</option>
-                  <option value="paid">مدفوعة</option>
-                  <option value="cancelled">ملغية</option>
+                  <option value="all">All Statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="paid">Paid</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
 
                 <select
@@ -787,10 +786,10 @@ export default function AdminDashboard() {
                   onChange={(e) => setDateFilter(e.target.value)}
                   className="px-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-brand-blue focus:border-transparent"
                 >
-                  <option value="all">كل الفترات</option>
-                  <option value="today">اليوم</option>
-                  <option value="week">آخر أسبوع</option>
-                  <option value="month">هذا الشهر</option>
+                  <option value="all">All Periods</option>
+                  <option value="today">Today</option>
+                  <option value="week">Last Week</option>
+                  <option value="month">This Month</option>
                 </select>
               </div>
             </div>
@@ -799,38 +798,38 @@ export default function AdminDashboard() {
           {loading ? (
             <div className="p-8 text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-200 border-t-brand-blue"></div>
-              <p className="mt-3 text-gray-600 text-sm">جاري التحميل...</p>
+              <p className="mt-3 text-gray-600 text-sm">Loading...</p>
             </div>
           ) : filteredInvoices.length === 0 ? (
             <div className="p-8 text-center">
               <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-600 text-sm mb-2">
                 {searchQuery || statusFilter !== 'all' || dateFilter !== 'all'
-                  ? 'لا توجد نتائج مطابقة للبحث'
-                  : 'لا توجد فواتير بعد'}
+                  ? 'No results match your search'
+                  : 'No invoices yet'}
               </p>
               {!searchQuery && statusFilter === 'all' && dateFilter === 'all' && (
                 <button
                   onClick={() => navigate('/admin/create-invoice')}
                   className="mt-3 text-brand-blue text-sm font-semibold hover:underline"
                 >
-                  إنشاء أول فاتورة
+                  Create first invoice
                 </button>
               )}
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full" dir="rtl">
+              <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">رقم الفاتورة</th>
-                    <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">العميل</th>
-                    <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">الرحلة</th>
-                    <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">تاريخ السفر</th>
-                    <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">المبلغ</th>
-                    <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">الحالة</th>
-                    <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700">المسؤول</th>
-                    <th className="px-3 py-2 text-center text-xs font-semibold text-gray-700">الإجراءات</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700">Invoice #</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700">Customer</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700">Flight</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700">Travel Date</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700">Amount</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700">Status</th>
+                    <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700">Admin</th>
+                    <th className="px-3 py-2 text-center text-xs font-semibold text-gray-700">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -839,7 +838,7 @@ export default function AdminDashboard() {
                       <td className="px-3 py-2">
                         <div className="text-xs font-medium text-gray-900">{invoice.invoice_number}</div>
                         <div className="text-[10px] text-gray-500">
-                          {new Date(invoice.created_at).toLocaleDateString('ar-EG')}
+                          {new Date(invoice.created_at).toLocaleDateString('en-US')}
                         </div>
                       </td>
                       <td className="px-3 py-2">
@@ -850,18 +849,18 @@ export default function AdminDashboard() {
                         )}
                       </td>
                       <td className="px-3 py-2">
-                        <div className="text-xs text-gray-900">{invoice.flight_from} ← {invoice.flight_to}</div>
+                        <div className="text-xs text-gray-900">{invoice.flight_from} → {invoice.flight_to}</div>
                         <div className="text-[10px] text-gray-500">
-                          {invoice.passengers} راكب • {invoice.cabin_class}
+                          {invoice.passengers} pax • {invoice.cabin_class}
                         </div>
                       </td>
                       <td className="px-3 py-2">
                         <div className="text-xs text-gray-900">
-                          {new Date(invoice.departure_date).toLocaleDateString('ar-EG')}
+                          {new Date(invoice.departure_date).toLocaleDateString('en-US')}
                         </div>
                         {invoice.return_date && (
                           <div className="text-[10px] text-gray-500">
-                            العودة: {new Date(invoice.return_date).toLocaleDateString('ar-EG')}
+                            Return: {new Date(invoice.return_date).toLocaleDateString('en-US')}
                           </div>
                         )}
                       </td>
@@ -877,7 +876,7 @@ export default function AdminDashboard() {
                         {getStatusBadge(invoice.payment_status)}
                         {invoice.paid_at && (
                           <div className="text-[10px] text-gray-500 mt-1">
-                            {new Date(invoice.paid_at).toLocaleDateString('ar-EG')}
+                            {new Date(invoice.paid_at).toLocaleDateString('en-US')}
                           </div>
                         )}
                       </td>
@@ -888,10 +887,10 @@ export default function AdminDashboard() {
                           </div>
                           <div>
                             <div className="text-xs font-medium text-gray-900">
-                              {invoice.created_by_admin_email === 'system' ? 'النظام' : (invoice.created_by_admin_email?.split('@')[0] || 'غير معروف')}
+                              {invoice.created_by_admin_email === 'system' ? 'System' : (invoice.created_by_admin_email?.split('@')[0] || 'Unknown')}
                             </div>
                             <div className="text-[10px] text-gray-500">
-                              {new Date(invoice.created_at).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                              {new Date(invoice.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                             </div>
                           </div>
                         </div>
@@ -901,7 +900,7 @@ export default function AdminDashboard() {
                           <button
                             onClick={() => copyPaymentLink(invoice.id, invoice.payment_link)}
                             className="p-1.5 text-brand-blue hover:bg-blue-50 rounded-lg transition-colors"
-                            title="نسخ رابط الدفع"
+                            title="Copy payment link"
                           >
                             {copiedId === invoice.id ? (
                               <Check className="w-3.5 h-3.5 text-green-600" />
@@ -912,7 +911,7 @@ export default function AdminDashboard() {
                           <button
                             onClick={() => window.open(`/pay/${invoice.payment_link}`, '_blank')}
                             className="p-1.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                            title="معاينة"
+                            title="Preview"
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
@@ -924,32 +923,32 @@ export default function AdminDashboard() {
                               <MoreVertical className="w-3.5 h-3.5" />
                             </button>
                             {selectedInvoice === invoice.id && (
-                              <div className="absolute left-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                              <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
                                 <div className="py-1">
                                   {invoice.payment_status === 'pending' && (
                                     <button
                                       onClick={() => updateInvoiceStatus(invoice.id, 'paid')}
-                                      className="w-full px-3 py-1.5 text-right text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-1.5"
+                                      className="w-full px-3 py-1.5 text-left text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-1.5"
                                     >
                                       <CheckCircle className="w-3.5 h-3.5 text-green-600" />
-                                      تحديد كمدفوعة
+                                      Mark as Paid
                                     </button>
                                   )}
                                   {invoice.payment_status !== 'cancelled' && (
                                     <button
                                       onClick={() => updateInvoiceStatus(invoice.id, 'cancelled')}
-                                      className="w-full px-3 py-1.5 text-right text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-1.5"
+                                      className="w-full px-3 py-1.5 text-left text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-1.5"
                                     >
                                       <XCircle className="w-3.5 h-3.5 text-red-600" />
-                                      إلغاء الفاتورة
+                                      Cancel Invoice
                                     </button>
                                   )}
                                   <button
                                     onClick={() => deleteInvoice(invoice.id)}
-                                    className="w-full px-3 py-1.5 text-right text-xs text-red-600 hover:bg-red-50 flex items-center gap-1.5"
+                                    className="w-full px-3 py-1.5 text-left text-xs text-red-600 hover:bg-red-50 flex items-center gap-1.5"
                                   >
                                     <Trash2 className="w-3.5 h-3.5" />
-                                    حذف الفاتورة
+                                    Delete Invoice
                                   </button>
                                 </div>
                               </div>
@@ -966,7 +965,6 @@ export default function AdminDashboard() {
         </div>
       </main>
 
-      {/* Search Invoice Modal */}
       {showSearchModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -976,8 +974,8 @@ export default function AdminDashboard() {
                   <Search className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-white">بحث عن فاتورة</h3>
-                  <p className="text-purple-100 text-sm">أدخل رقم الفاتورة للعرض</p>
+                  <h3 className="text-xl font-bold text-white">Search Invoice</h3>
+                  <p className="text-purple-100 text-sm">Enter invoice number to view details</p>
                 </div>
               </div>
               <button
@@ -990,15 +988,15 @@ export default function AdminDashboard() {
 
             <div className="p-6">
               <div className="mb-6">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">رقم الفاتورة</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Invoice Number</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={searchInvoiceNumber}
                     onChange={(e) => setSearchInvoiceNumber(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && searchInvoiceByNumber()}
-                    placeholder="مثال: INV-2025-0001"
-                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:ring-2 focus:ring-purple-600/20 focus:outline-none transition-all text-right"
+                    placeholder="Example: INV-2025-0001"
+                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:ring-2 focus:ring-purple-600/20 focus:outline-none transition-all"
                   />
                   <button
                     onClick={searchInvoiceByNumber}
@@ -1008,12 +1006,12 @@ export default function AdminDashboard() {
                     {searchLoading ? (
                       <>
                         <RefreshCw className="w-5 h-5 animate-spin" />
-                        بحث...
+                        Searching...
                       </>
                     ) : (
                       <>
                         <Search className="w-5 h-5" />
-                        بحث
+                        Search
                       </>
                     )}
                   </button>
@@ -1029,11 +1027,11 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2">
                           {getStatusBadge(searchResult.payment_status)}
                           <span className="text-xs text-gray-500">
-                            تاريخ الإنشاء: {new Date(searchResult.created_at).toLocaleDateString('ar-EG')}
+                            Created: {new Date(searchResult.created_at).toLocaleDateString('en-US')}
                           </span>
                         </div>
                       </div>
-                      <div className="text-left">
+                      <div className="text-right">
                         <p className="text-2xl font-bold text-purple-600">{formatCurrency(Number(searchResult.amount))}</p>
                         <p className="text-xs text-gray-500">{searchResult.currency}</p>
                       </div>
@@ -1043,7 +1041,7 @@ export default function AdminDashboard() {
                       <div className="bg-white/70 rounded-lg p-4">
                         <h5 className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
                           <Users className="w-3.5 h-3.5" />
-                          معلومات العميل
+                          Customer Information
                         </h5>
                         <div className="space-y-1">
                           <p className="text-sm font-semibold text-gray-900">{searchResult.customer_name}</p>
@@ -1057,21 +1055,21 @@ export default function AdminDashboard() {
                       <div className="bg-white/70 rounded-lg p-4">
                         <h5 className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
                           <FileText className="w-3.5 h-3.5" />
-                          تفاصيل الرحلة
+                          Flight Details
                         </h5>
                         <div className="space-y-1">
                           <p className="text-sm font-semibold text-gray-900">
-                            {searchResult.flight_from} ← {searchResult.flight_to}
+                            {searchResult.flight_from} → {searchResult.flight_to}
                           </p>
                           <p className="text-xs text-gray-600">
-                            {searchResult.passengers} راكب • {searchResult.cabin_class}
+                            {searchResult.passengers} pax • {searchResult.cabin_class}
                           </p>
                           <p className="text-xs text-gray-600">
-                            السفر: {new Date(searchResult.departure_date).toLocaleDateString('ar-EG')}
+                            Departure: {new Date(searchResult.departure_date).toLocaleDateString('en-US')}
                           </p>
                           {searchResult.return_date && (
                             <p className="text-xs text-gray-600">
-                              العودة: {new Date(searchResult.return_date).toLocaleDateString('ar-EG')}
+                              Return: {new Date(searchResult.return_date).toLocaleDateString('en-US')}
                             </p>
                           )}
                         </div>
@@ -1080,17 +1078,17 @@ export default function AdminDashboard() {
                       <div className="bg-white/70 rounded-lg p-4">
                         <h5 className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
                           <Users className="w-3.5 h-3.5" />
-                          المسؤول عن الفاتورة
+                          Responsible Admin
                         </h5>
                         <div className="space-y-1">
                           <p className="text-sm font-semibold text-purple-600">
                             {searchResult.created_by_admin_email === 'system'
-                              ? 'النظام'
-                              : (searchResult.created_by_admin_email?.split('@')[0] || 'غير معروف')
+                              ? 'System'
+                              : (searchResult.created_by_admin_email?.split('@')[0] || 'Unknown')
                             }
                           </p>
                           <p className="text-xs text-gray-600">
-                            {new Date(searchResult.created_at).toLocaleTimeString('ar-EG', {
+                            {new Date(searchResult.created_at).toLocaleTimeString('en-US', {
                               hour: '2-digit',
                               minute: '2-digit',
                               day: 'numeric',
@@ -1104,13 +1102,13 @@ export default function AdminDashboard() {
                         <div className="bg-white/70 rounded-lg p-4">
                           <h5 className="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
                             <DollarSign className="w-3.5 h-3.5" />
-                            طريقة الدفع
+                            Payment Method
                           </h5>
                           <div className="space-y-1">
                             <p className="text-sm font-semibold text-gray-900">{searchResult.payment_method}</p>
                             {searchResult.paid_at && (
                               <p className="text-xs text-green-600">
-                                تم الدفع: {new Date(searchResult.paid_at).toLocaleDateString('ar-EG')}
+                                Paid: {new Date(searchResult.paid_at).toLocaleDateString('en-US')}
                               </p>
                             )}
                           </div>
@@ -1120,7 +1118,7 @@ export default function AdminDashboard() {
 
                     {searchResult.notes && (
                       <div className="mt-4 bg-white/70 rounded-lg p-4">
-                        <h5 className="text-xs font-semibold text-gray-600 mb-2">ملاحظات</h5>
+                        <h5 className="text-xs font-semibold text-gray-600 mb-2">Notes</h5>
                         <p className="text-sm text-gray-700">{searchResult.notes}</p>
                       </div>
                     )}
@@ -1133,12 +1131,12 @@ export default function AdminDashboard() {
                         {copiedId === searchResult.id ? (
                           <>
                             <Check className="w-4 h-4" />
-                            تم النسخ
+                            Copied
                           </>
                         ) : (
                           <>
                             <Copy className="w-4 h-4" />
-                            نسخ رابط الدفع
+                            Copy Payment Link
                           </>
                         )}
                       </button>
@@ -1147,7 +1145,7 @@ export default function AdminDashboard() {
                         className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-all flex items-center gap-2"
                       >
                         <Eye className="w-4 h-4" />
-                        معاينة
+                        Preview
                       </button>
                     </div>
                   </div>
