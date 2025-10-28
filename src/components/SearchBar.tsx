@@ -260,21 +260,14 @@ export default function SearchBar() {
                           <span className="text-sm font-bold text-gray-900 w-8 text-center">{infants}</span>
                           <button
                             type="button"
-                            onClick={() => setInfants(Math.min(adults, infants + 1))}
-                            className="w-7 h-7 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={infants >= adults}
+                            onClick={() => setInfants(infants + 1)}
+                            className="w-7 h-7 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
                           >
                             +
                           </button>
                         </div>
                       </div>
                     </div>
-
-                    {infants >= adults && (
-                      <p className="text-xs text-orange-600 mt-2 font-medium">
-                        Note: Number of infants cannot exceed number of adults
-                      </p>
-                    )}
                   </div>
 
                   <div>
