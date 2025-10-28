@@ -143,31 +143,37 @@ export default function TravelCarePlan({ plans, selectedPlan, onPlanChange }: Tr
                   )}
                 </button>
               </td>
-              <td className="p-4 text-center bg-gray-100">
-                <Check className="w-6 h-6 text-green-500 mx-auto" />
+              <td className="p-4 bg-gray-100 align-top">
+                <div className="flex flex-col items-center">
+                  <Check className="w-6 h-6 text-green-500" />
+                  {expandedSections['vip-basic'] && (
+                    <div className="mt-4 space-y-3 text-left w-full">
+                      {PLAN_DETAILS.basic.sections[0].features.map((feature, idx) => (
+                        <div key={idx} className="text-sm">
+                          <div className="font-semibold text-gray-900">{feature.title}:</div>
+                          <div className="text-gray-700 text-xs mt-1">{feature.description}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </td>
-              <td className="p-4 text-center bg-white">
-                <Check className="w-6 h-6 text-green-500 mx-auto" />
+              <td className="p-4 bg-white align-top">
+                <div className="flex flex-col items-center">
+                  <Check className="w-6 h-6 text-green-500" />
+                  {expandedSections['vip-basic'] && (
+                    <div className="mt-4 space-y-3 text-left w-full">
+                      {PLAN_DETAILS.premium.sections[0].features.map((feature, idx) => (
+                        <div key={idx} className="text-sm">
+                          <div className="font-semibold text-gray-900">{feature.title}:</div>
+                          <div className="text-gray-700 text-xs mt-1">{feature.description}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </td>
             </tr>
-
-            {expandedSections['vip-basic'] && (
-              <tr className="bg-gray-50">
-                <td colSpan={3} className="p-6">
-                  <div className="space-y-4">
-                    {PLAN_DETAILS.basic.sections[0].features.map((feature, idx) => (
-                      <div key={idx} className="flex gap-3">
-                        <div className="w-1.5 h-1.5 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-gray-900">{feature.title}:</div>
-                          <div className="text-gray-700">{feature.description}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-            )}
 
             {/* Change for Free Section - Premium only */}
             <tr className="border-b border-gray-200">
@@ -184,37 +190,33 @@ export default function TravelCarePlan({ plans, selectedPlan, onPlanChange }: Tr
                   )}
                 </button>
               </td>
-              <td className="p-4 text-center bg-gray-100">
-                <X className="w-6 h-6 text-gray-400 mx-auto" />
+              <td className="p-4 bg-gray-100 align-top">
+                <div className="flex flex-col items-center">
+                  <X className="w-6 h-6 text-gray-400" />
+                </div>
               </td>
-              <td className="p-4 text-center bg-white">
-                <Check className="w-6 h-6 text-green-500 mx-auto" />
-              </td>
-            </tr>
-
-            {expandedSections['change-free'] && (
-              <tr className="bg-gray-50">
-                <td colSpan={3} className="p-6">
-                  <div className="space-y-4">
-                    {PLAN_DETAILS.premium.sections[1].features.map((feature, idx) => (
-                      <div key={idx} className="flex gap-3">
-                        <div className="w-1.5 h-1.5 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
-                        <div className="flex-1">
+              <td className="p-4 bg-white align-top">
+                <div className="flex flex-col items-center">
+                  <Check className="w-6 h-6 text-green-500" />
+                  {expandedSections['change-free'] && (
+                    <div className="mt-4 space-y-3 text-left w-full">
+                      {PLAN_DETAILS.premium.sections[1].features.map((feature, idx) => (
+                        <div key={idx} className="text-sm">
                           {feature.description ? (
                             <>
                               <div className="font-semibold text-gray-900">{feature.title}:</div>
-                              <div className="text-gray-700">{feature.description}</div>
+                              <div className="text-gray-700 text-xs mt-1">{feature.description}</div>
                             </>
                           ) : (
                             <div className="text-gray-700">{feature.title}</div>
                           )}
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-            )}
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </td>
+            </tr>
 
             {/* Selection Radio Buttons */}
             <tr className="bg-white">
