@@ -46,47 +46,43 @@ export default function Hero() {
         </div>
 
         <div className="mt-10 sm:mt-12">
-          <p className="text-white text-center text-xs sm:text-sm font-medium mb-4 drop-shadow-md">Trusted Partner Airlines</p>
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 px-4">
+          <p className="text-white text-center text-xs sm:text-sm font-medium mb-3 drop-shadow-md">Trusted Partner Airlines</p>
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 px-4">
             <img
-              src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png"
+              src="https://1000logos.net/wp-content/uploads/2020/04/Qatar-Airways-Logo-768x432.png"
               alt="Qatar Airways"
-              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/qatar-airways-3.svg'; }}
+              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Turkish_Airlines_logo_2019_compact.svg/300px-Turkish_Airlines_logo_2019_compact.svg.png"
+              src="https://1000logos.net/wp-content/uploads/2020/04/Turkish-Airlines-Logo-768x432.png"
               alt="Turkish Airlines"
-              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/turkish-airlines-1.svg'; }}
+              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/300px-Emirates_logo.svg.png"
+              src="https://1000logos.net/wp-content/uploads/2020/04/Emirates-Logo-768x432.png"
               alt="Emirates"
-              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/emirates-2.svg'; }}
+              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://upload.wikimedia.org/wikipedia/en/thumb/0/00/Etihad-airways-logo.svg/300px-Etihad-airways-logo.svg.png"
+              src="https://1000logos.net/wp-content/uploads/2020/04/Etihad-Airways-Logo-768x432.png"
               alt="Etihad Airways"
-              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/etihad-airways-2.svg'; }}
+              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lufthansa_Logo_2018.svg/300px-Lufthansa_Logo_2018.svg.png"
+              src="https://1000logos.net/wp-content/uploads/2017/03/Lufthansa-Logo-768x432.png"
               alt="Lufthansa"
-              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/lufthansa-1.svg'; }}
+              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://upload.wikimedia.org/wikipedia/en/thumb/4/42/British_Airways_Logo.svg/300px-British_Airways_Logo.svg.png"
+              src="https://1000logos.net/wp-content/uploads/2017/03/British-Airways-Logo-768x432.png"
               alt="British Airways"
-              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Delta_logo.svg/300px-Delta_logo.svg.png"
-              alt="Delta Airlines"
-              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Singapore_Airlines_Logo_2.svg/300px-Singapore_Airlines_Logo_2.svg.png"
-              alt="Singapore Airlines"
-              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/british-airways-1.svg'; }}
+              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
           </div>
         </div>
