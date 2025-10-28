@@ -68,6 +68,7 @@ export default function Hero() {
               alt="Ethiopian Airlines"
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
+            <span className="text-white text-sm sm:text-base font-medium opacity-90">and more...</span>
           </div>
         </div>
       </div>
