@@ -14,7 +14,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const [loginData, setLoginData] = useState({
-    email: '',
+    emailOrUsername: '',
     password: '',
   });
 
@@ -22,6 +22,7 @@ export default function Login() {
     firstName: '',
     lastName: '',
     email: '',
+    username: '',
     phone: '',
     city: '',
     password: '',
@@ -44,8 +45,34 @@ export default function Login() {
     setLoading(true);
 
     try {
+      let email = loginData.emailOrUsername;
+
+      if (!loginData.emailOrUsername.includes('@')) {
+        const { data: customerData } = await supabase
+          .from('customers')
+          .select('email')
+          .eq('username', loginData.emailOrUsername)
+          .maybeSingle();
+
+        if (customerData) {
+          email = customerData.email;
+        } else {
+          const { data: adminData } = await supabase
+            .from('admin_users')
+            .select('email')
+            .eq('username', loginData.emailOrUsername)
+            .maybeSingle();
+
+          if (adminData) {
+            email = adminData.email;
+          } else {
+            throw new Error('Username not found. Please check your credentials.');
+          }
+        }
+      }
+
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: loginData.email,
+        email: email,
         password: loginData.password,
       });
 
@@ -134,6 +161,7 @@ export default function Login() {
           .insert({
             id: authData.user.id,
             email: registerData.email,
+            username: registerData.username,
             first_name: registerData.firstName,
             last_name: registerData.lastName,
             full_name: `${registerData.firstName} ${registerData.lastName}`,
@@ -150,6 +178,7 @@ export default function Login() {
           firstName: '',
           lastName: '',
           email: '',
+          username: '',
           phone: '',
           city: '',
           password: '',
@@ -223,17 +252,17 @@ export default function Login() {
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-                    Email Address
+                    Email or Username
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <input
-                      type="email"
-                      value={loginData.email}
-                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      type="text"
+                      value={loginData.emailOrUsername}
+                      onChange={(e) => setLoginData({ ...loginData, emailOrUsername: e.target.value })}
                       required
                       className="w-full pl-9 pr-3 py-2 text-sm border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
-                      placeholder="your@email.com"
+                      placeholder="your@email.com or username"
                     />
                   </div>
                 </div>
@@ -321,6 +350,23 @@ export default function Login() {
                       required
                       className="w-full pl-9 pr-3 py-2 text-sm border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
                       placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+                    Username
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      value={registerData.username}
+                      onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
+                      required
+                      className="w-full pl-9 pr-3 py-2 text-sm border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                      placeholder="johndoe123"
                     />
                   </div>
                 </div>
