@@ -150,7 +150,11 @@ export default function Header() {
       <nav className="container mx-auto px-3 py-1.5">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-6">
-            <Link to="/" className="flex items-center gap-2">
+            <Link
+              to="/"
+              className="flex items-center gap-2"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               <img
                 src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png?ex=690141eb&is=68fff06b&hm=eaecebb87b6bbf8f9aee13084555faa83c81bb3d679c2ff3b5275498ea57d6f5&"
                 alt="Last Seat Ticket"
@@ -164,7 +168,15 @@ export default function Header() {
             </Link>
 
             <ul className="hidden lg:flex gap-4 items-center text-xs">
-              <li><Link to="/" className="hover:text-brand-blue transition">Home</Link></li>
+              <li>
+                <Link
+                  to="/"
+                  className="hover:text-brand-blue transition"
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                >
+                  Home
+                </Link>
+              </li>
               <li><a href="/#how-to-book" className="hover:text-brand-blue transition">How to Book</a></li>
               <li><Link to="/blog" className="hover:text-brand-blue transition">Blog</Link></li>
               <li><a href="/#offers" className="hover:text-brand-blue transition">Offers</a></li>
@@ -214,7 +226,18 @@ export default function Header() {
 
         {mobileMenuOpen && (
           <ul className="lg:hidden mt-3 space-y-2 pb-3 text-sm">
-            <li><Link to="/" className="block hover:text-brand-blue transition">Home</Link></li>
+            <li>
+              <Link
+                to="/"
+                className="block hover:text-brand-blue transition"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Home
+              </Link>
+            </li>
             <li><a href="/#how-to-book" className="block hover:text-brand-blue transition">How to Book</a></li>
             <li><Link to="/blog" className="block hover:text-brand-blue transition">Blog</Link></li>
             <li><a href="/#offers" className="block hover:text-brand-blue transition">Offers</a></li>
