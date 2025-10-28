@@ -1,11 +1,16 @@
 import { Shield, Lock, Eye, FileText } from 'lucide-react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import AIAssistant from '../components/AIAssistant';
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white pt-24">
+    <>
+      <Header />
+      <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white pt-24">
       <div className="container mx-auto px-4 py-12 max-w-5xl">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-brand-blue to-sky-500 rounded-full mb-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-brand-red to-brand-blue rounded-full mb-6">
             <Lock className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -19,7 +24,7 @@ export default function PrivacyPolicy() {
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 space-y-8">
           <section>
             <div className="flex items-center gap-3 mb-4">
-              <Shield className="w-6 h-6 text-brand-blue" />
+              <Shield className="w-6 h-6 text-brand-red" />
               <h2 className="text-2xl font-bold text-gray-900">Pricing Information</h2>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -52,7 +57,7 @@ export default function PrivacyPolicy() {
 
           <section className="border-t pt-8">
             <div className="flex items-center gap-3 mb-4">
-              <Shield className="w-6 h-6 text-brand-blue" />
+              <Shield className="w-6 h-6 text-brand-red" />
               <h2 className="text-2xl font-bold text-gray-900">Best Price Guarantee</h2>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -70,7 +75,7 @@ export default function PrivacyPolicy() {
 
           <section className="border-t pt-8">
             <div className="flex items-center gap-3 mb-4">
-              <Eye className="w-6 h-6 text-brand-blue" />
+              <Eye className="w-6 h-6 text-green-600" />
               <h2 className="text-2xl font-bold text-gray-900">Information We Collect</h2>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -99,7 +104,7 @@ export default function PrivacyPolicy() {
 
           <section className="border-t pt-8">
             <div className="flex items-center gap-3 mb-4">
-              <Lock className="w-6 h-6 text-brand-blue" />
+              <Lock className="w-6 h-6 text-gray-700" />
               <h2 className="text-2xl font-bold text-gray-900">How We Use Your Information</h2>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -120,7 +125,7 @@ export default function PrivacyPolicy() {
 
           <section className="border-t pt-8">
             <div className="flex items-center gap-3 mb-4">
-              <Shield className="w-6 h-6 text-brand-blue" />
+              <Shield className="w-6 h-6 text-brand-red" />
               <h2 className="text-2xl font-bold text-gray-900">Data Security</h2>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -161,7 +166,7 @@ export default function PrivacyPolicy() {
 
           <section className="border-t pt-8">
             <div className="flex items-center gap-3 mb-4">
-              <Eye className="w-6 h-6 text-brand-blue" />
+              <Eye className="w-6 h-6 text-green-600" />
               <h2 className="text-2xl font-bold text-gray-900">Your Rights</h2>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -195,7 +200,7 @@ export default function PrivacyPolicy() {
 
           <section className="border-t pt-8">
             <div className="flex items-center gap-3 mb-4">
-              <Shield className="w-6 h-6 text-brand-blue" />
+              <Shield className="w-6 h-6 text-brand-red" />
               <h2 className="text-2xl font-bold text-gray-900">Children's Privacy</h2>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -219,7 +224,7 @@ export default function PrivacyPolicy() {
 
           <section className="border-t pt-8">
             <div className="flex items-center gap-3 mb-4">
-              <Lock className="w-6 h-6 text-brand-blue" />
+              <Lock className="w-6 h-6 text-gray-700" />
               <h2 className="text-2xl font-bold text-gray-900">Contact Us</h2>
             </div>
             <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
@@ -256,6 +261,9 @@ export default function PrivacyPolicy() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+      <AIAssistant />
+      <Footer />
+    </>
   );
 }

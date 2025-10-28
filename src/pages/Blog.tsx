@@ -2,6 +2,7 @@ import { Calendar, User, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import AIAssistant from '../components/AIAssistant';
 
 const blogPosts = [
   {
@@ -87,14 +88,14 @@ export default function Blog() {
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                   />
                   <div className="absolute top-4 left-4">
-                    <span className="bg-brand-blue text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    <span className="bg-gradient-to-r from-brand-red to-brand-blue text-white px-3 py-1 rounded-full text-sm font-semibold">
                       {post.category}
                     </span>
                   </div>
                 </div>
 
                 <div className="p-6">
-                  <h2 className="text-xl font-bold text-gray-900 mb-3 hover:text-brand-blue transition line-clamp-2">
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 hover:text-brand-red transition line-clamp-2">
                     {post.title}
                   </h2>
 
@@ -111,7 +112,7 @@ export default function Blog() {
                     </div>
                   </div>
 
-                  <button className="flex items-center gap-2 text-brand-blue font-semibold hover:gap-3 transition-all">
+                  <button className="flex items-center gap-2 text-brand-red font-semibold hover:gap-3 transition-all">
                     Read More
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -121,14 +122,14 @@ export default function Blog() {
           </div>
 
           <div className="mt-16 text-center">
-            <div className="bg-gradient-to-r from-brand-blue to-sky-600 rounded-2xl p-12 max-w-4xl mx-auto text-white">
+            <div className="bg-gradient-to-r from-brand-red to-brand-blue rounded-2xl p-12 max-w-4xl mx-auto text-white">
               <h2 className="text-3xl font-bold mb-4">Ready to Start Your Journey?</h2>
               <p className="text-xl mb-6 opacity-90">
                 Call us now and let our experts find you the best flight deals
               </p>
               <Link
                 to="/"
-                className="inline-block bg-white text-brand-blue font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition transform hover:scale-105"
+                className="inline-block bg-white text-brand-red font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition transform hover:scale-105"
               >
                 Book Your Flight Now
               </Link>
@@ -138,6 +139,7 @@ export default function Blog() {
       </main>
 
       <Footer />
+      <AIAssistant />
     </div>
   );
 }
