@@ -19,9 +19,9 @@ export default function OrderSummary({
   taxRate,
   passengerCount = 1,
 }: OrderSummaryProps) {
-  const protectionCost = selectedPlan?.per_passenger
-    ? (selectedPlan?.price || 0) * passengerCount
-    : (selectedPlan?.price || 0);
+  const protectionCost = selectedPlan?.percentage
+    ? (baseFare * selectedPlan.percentage / 100)
+    : 0;
   const baggageCost = baggageProtection ? baggagePrice * passengerCount : 0;
   const subtotal = baseFare + protectionCost + baggageCost + serviceFee;
   const tax = subtotal * (taxRate / 100);
@@ -47,10 +47,7 @@ export default function OrderSummary({
             <div>
               <div className="text-gray-700">{selectedPlan.title}</div>
               <div className="text-xs text-gray-500">
-                Travel Protection
-                {selectedPlan?.per_passenger && passengerCount > 1 && (
-                  <span> (${selectedPlan.price} × {passengerCount})</span>
-                )}
+                Travel Protection ({selectedPlan.percentage}% of ticket price)
               </div>
             </div>
             <span className="font-semibold text-gray-900">${protectionCost.toFixed(2)}</span>

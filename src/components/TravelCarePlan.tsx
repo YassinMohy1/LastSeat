@@ -5,7 +5,7 @@ interface TravelCarePlanProps {
   plans: any[];
   selectedPlan: string;
   onPlanChange: (planId: string) => void;
-  passengerCount?: number;
+  baseFare: number;
 }
 
 const PLAN_DETAILS = {
@@ -81,7 +81,7 @@ const PLAN_DETAILS = {
   }
 };
 
-export default function TravelCarePlan({ plans, selectedPlan, onPlanChange, passengerCount = 1 }: TravelCarePlanProps) {
+export default function TravelCarePlan({ plans, selectedPlan, onPlanChange, baseFare }: TravelCarePlanProps) {
   const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({});
 
   const toggleSection = (sectionKey: string) => {
@@ -95,8 +95,8 @@ export default function TravelCarePlan({ plans, selectedPlan, onPlanChange, pass
   const premiumPlan = plans.find(p => p.id === 'premium');
   const nonePlan = plans.find(p => p.id === 'none');
 
-  const basicTotal = basicPlan?.per_passenger ? basicPlan.price * passengerCount : basicPlan?.price || 0;
-  const premiumTotal = premiumPlan?.per_passenger ? premiumPlan.price * passengerCount : premiumPlan?.price || 0;
+  const basicTotal = basicPlan ? (baseFare * basicPlan.percentage / 100) : 0;
+  const premiumTotal = premiumPlan ? (baseFare * premiumPlan.percentage / 100) : 0;
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
@@ -115,13 +115,11 @@ export default function TravelCarePlan({ plans, selectedPlan, onPlanChange, pass
               <th className="text-center p-4 min-w-[180px] bg-gray-100">
                 <div className="font-bold text-lg text-gray-900">Basic</div>
                 <div className="text-2xl font-bold text-gray-900 mt-1">
-                  ${basicTotal}<span className="text-sm font-normal">.00</span>
+                  ${basicTotal.toFixed(2)}
                 </div>
-                {basicPlan?.per_passenger && passengerCount > 1 && (
-                  <div className="text-xs text-gray-600 mt-1">
-                    ${basicPlan.price} × {passengerCount} passengers
-                  </div>
-                )}
+                <div className="text-xs text-gray-600 mt-1">
+                  {basicPlan?.percentage}% of ticket price
+                </div>
               </th>
               <th className="text-center p-4 min-w-[180px] bg-white relative">
                 <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
@@ -131,13 +129,11 @@ export default function TravelCarePlan({ plans, selectedPlan, onPlanChange, pass
                 </div>
                 <div className="font-bold text-lg text-gray-900 mt-2">Premium</div>
                 <div className="text-2xl font-bold text-gray-900 mt-1">
-                  ${premiumTotal}<span className="text-sm font-normal">.00</span>
+                  ${premiumTotal.toFixed(2)}
                 </div>
-                {premiumPlan?.per_passenger && passengerCount > 1 && (
-                  <div className="text-xs text-gray-600 mt-1">
-                    ${premiumPlan.price} × {passengerCount} passengers
-                  </div>
-                )}
+                <div className="text-xs text-gray-600 mt-1">
+                  {premiumPlan?.percentage}% of ticket price
+                </div>
               </th>
             </tr>
           </thead>
