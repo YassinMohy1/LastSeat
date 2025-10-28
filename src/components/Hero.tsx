@@ -48,12 +48,46 @@ export default function Hero() {
         <div className="mt-10 sm:mt-12">
           <p className="text-white text-center text-xs sm:text-sm font-medium mb-4 drop-shadow-md">Trusted Partner Airlines</p>
           <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 px-4">
-            <img src="https://logos-world.net/wp-content/uploads/2020/03/Qatar-Airways-Logo.png" alt="Qatar Airways" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
-            <img src="https://1000logos.net/wp-content/uploads/2020/04/Turkish-Airlines-Logo.png" alt="Turkish Airlines" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
-            <img src="https://logos-world.net/wp-content/uploads/2020/03/Emirates-Logo.png" alt="Emirates" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
-            <img src="https://1000logos.net/wp-content/uploads/2020/04/Etihad-Airways-Logo.png" alt="Etihad Airways" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
-            <img src="https://logos-world.net/wp-content/uploads/2020/03/Lufthansa-Logo.png" alt="Lufthansa" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
-            <img src="https://1000logos.net/wp-content/uploads/2017/03/British-Airways-Logo.png" alt="British Airways" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/thumb/9/9b/Qatar_Airways_Logo.svg/300px-Qatar_Airways_Logo.svg.png"
+              alt="Qatar Airways"
+              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Turkish_Airlines_logo_2019_compact.svg/300px-Turkish_Airlines_logo_2019_compact.svg.png"
+              alt="Turkish Airlines"
+              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Emirates_logo.svg/300px-Emirates_logo.svg.png"
+              alt="Emirates"
+              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/thumb/0/00/Etihad-airways-logo.svg/300px-Etihad-airways-logo.svg.png"
+              alt="Etihad Airways"
+              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Lufthansa_Logo_2018.svg/300px-Lufthansa_Logo_2018.svg.png"
+              alt="Lufthansa"
+              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/thumb/4/42/British_Airways_Logo.svg/300px-British_Airways_Logo.svg.png"
+              alt="British Airways"
+              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Delta_logo.svg/300px-Delta_logo.svg.png"
+              alt="Delta Airlines"
+              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Singapore_Airlines_Logo_2.svg/300px-Singapore_Airlines_Logo_2.svg.png"
+              alt="Singapore Airlines"
+              className="h-10 sm:h-12 md:h-14 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+            />
           </div>
         </div>
       </div>
