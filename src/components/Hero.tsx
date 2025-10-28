@@ -47,7 +47,7 @@ export default function Hero() {
 
         <div className="mt-10 sm:mt-12">
           <p className="text-white text-center text-xs sm:text-sm font-medium mb-3 drop-shadow-md">Trusted Partner Airlines</p>
-          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 px-4">
+          <div className="flex items-center justify-center gap-8 md:gap-12 px-4">
             <img
               src="https://logos-world.net/wp-content/uploads/2020/03/Qatar-Airways-Logo.png"
               alt="Qatar Airways"
@@ -64,8 +64,8 @@ export default function Hero() {
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://logos-world.net/wp-content/uploads/2020/03/Etihad-Airways-Logo.png"
-              alt="Etihad Airways"
+              src="/image.png"
+              alt="Ethiopian Airlines"
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
           </div>
