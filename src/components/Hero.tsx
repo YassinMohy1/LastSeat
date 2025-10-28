@@ -59,7 +59,7 @@ export default function Hero() {
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://logos-world.net/wp-content/uploads/2020/03/Singapore-Airlines-Logo.png"
+              src="/image copy copy copy copy copy copy copy copy copy copy copy.png"
               alt="Singapore Airlines"
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
