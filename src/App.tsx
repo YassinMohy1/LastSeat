@@ -3,6 +3,9 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './components/ToastContainer';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
+import AboutUs from './pages/AboutUs';
+import GiftVouchers from './pages/GiftVouchers';
+import ContactUs from './pages/ContactUs';
 import Login from './pages/Login';
 import FlightQuote from './pages/FlightQuote';
 import AdminDashboard from './pages/AdminDashboard';
@@ -21,6 +24,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/gift-vouchers" element={<GiftVouchers />} />
+          <Route path="/contact" element={<ContactUs />} />
           <Route path="/flight-quote" element={<FlightQuote />} />
 
           <Route path="/login" element={<Login />} />

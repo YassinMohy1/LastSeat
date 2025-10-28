@@ -168,9 +168,9 @@ export default function Header() {
               <li><a href="/#how-to-book" className="hover:text-brand-blue transition">How to Book</a></li>
               <li><Link to="/blog" className="hover:text-brand-blue transition">Blog</Link></li>
               <li><a href="/#offers" className="hover:text-brand-blue transition">Offers</a></li>
-              <li><a href="/#gift-vouchers" className="hover:text-brand-blue transition">Gift Vouchers</a></li>
-              <li><a href="/#about" className="hover:text-brand-blue transition">About Us</a></li>
-              <li><a href="/#contact" className="hover:text-brand-blue transition">Contact Us</a></li>
+              <li><Link to="/gift-vouchers" className="hover:text-brand-blue transition">Gift Vouchers</Link></li>
+              <li><Link to="/about" className="hover:text-brand-blue transition">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-brand-blue transition">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -218,9 +218,9 @@ export default function Header() {
             <li><a href="/#how-to-book" className="block hover:text-brand-blue transition">How to Book</a></li>
             <li><Link to="/blog" className="block hover:text-brand-blue transition">Blog</Link></li>
             <li><a href="/#offers" className="block hover:text-brand-blue transition">Offers</a></li>
-            <li><a href="/#gift-vouchers" className="block hover:text-brand-blue transition">Gift Vouchers</a></li>
-            <li><a href="/#about" className="block hover:text-brand-blue transition">About Us</a></li>
-            <li><a href="/#contact" className="block hover:text-brand-blue transition">Contact Us</a></li>
+            <li><Link to="/gift-vouchers" className="block hover:text-brand-blue transition">Gift Vouchers</Link></li>
+            <li><Link to="/about" className="block hover:text-brand-blue transition">About Us</Link></li>
+            <li><Link to="/contact" className="block hover:text-brand-blue transition">Contact Us</Link></li>
             <li>
               {isAdmin ? (
                 <Link

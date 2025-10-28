@@ -1,4 +1,5 @@
 import { Phone, Mail, MapPin, Facebook, Instagram, CreditCard, Shield, Plane } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
@@ -52,19 +53,19 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-gray-400">
-              <li><a href="#home" className="hover:text-white transition">Home</a></li>
-              <li><a href="#how-to-book" className="hover:text-white transition">How to Book</a></li>
-              <li><a href="#blog" className="hover:text-white transition">Blog</a></li>
-              <li><a href="#offers" className="hover:text-white transition">Offers</a></li>
-              <li><a href="#gift-vouchers" className="hover:text-white transition">Gift Vouchers</a></li>
+              <li><Link to="/" className="hover:text-white transition">Home</Link></li>
+              <li><a href="/#how-to-book" className="hover:text-white transition">How to Book</a></li>
+              <li><Link to="/blog" className="hover:text-white transition">Blog</Link></li>
+              <li><a href="/#offers" className="hover:text-white transition">Offers</a></li>
+              <li><Link to="/gift-vouchers" className="hover:text-white transition">Gift Vouchers</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-lg font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-gray-400">
-              <li><a href="#about" className="hover:text-white transition">About Us</a></li>
-              <li><a href="#contact" className="hover:text-white transition">Contact Us</a></li>
+              <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
               <li><a href="#" className="hover:text-white transition">FAQs</a></li>
               <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
               <li><a href="#" className="hover:text-white transition">Terms & Conditions</a></li>
