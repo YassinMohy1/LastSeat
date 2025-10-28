@@ -184,32 +184,32 @@ export default function SearchBar() {
             <ChevronDown className={`absolute right-2 top-2 w-3.5 h-3.5 text-white transition-transform duration-200 pointer-events-none ${isDropdownOpen ? 'rotate-180' : ''}`} />
 
             {isDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-2xl z-50 overflow-hidden border-2 border-gray-200 w-full md:w-[350px]">
-                <div className="p-3 space-y-2.5 max-h-[70vh] overflow-y-auto">
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-2xl z-50 overflow-hidden border-2 border-gray-200 w-[280px] md:w-[300px]">
+                <div className="p-2.5 space-y-2 max-h-[65vh] overflow-y-auto">
                   <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1.5">Number of Passengers</label>
+                    <label className="block text-[10px] font-semibold text-gray-700 mb-1">Number of Passengers</label>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       {/* Adults */}
-                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-                        <div className="flex-1">
-                          <span className="text-xs font-semibold text-gray-900 block">Adults</span>
-                          <p className="text-[9px] text-gray-500">12+ years</p>
+                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-1.5">
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[11px] font-semibold text-gray-900 block">Adults</span>
+                          <p className="text-[8px] text-gray-500 leading-tight">12+ years</p>
                         </div>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1 flex-shrink-0">
                           <button
                             type="button"
                             onClick={() => setAdults(Math.max(1, adults - 1))}
-                            className="w-6 h-6 rounded-full border-2 border-brand-blue text-brand-blue text-xs font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-[10px] font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={adults <= 1}
                           >
                             -
                           </button>
-                          <span className="text-xs font-bold text-gray-900 w-6 text-center">{adults}</span>
+                          <span className="text-[11px] font-bold text-gray-900 w-5 text-center">{adults}</span>
                           <button
                             type="button"
                             onClick={() => setAdults(adults + 1)}
-                            className="w-6 h-6 rounded-full border-2 border-brand-blue text-brand-blue text-xs font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
+                            className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-[10px] font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
                           >
                             +
                           </button>
@@ -217,25 +217,25 @@ export default function SearchBar() {
                       </div>
 
                       {/* Children */}
-                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-                        <div className="flex-1">
-                          <span className="text-xs font-semibold text-gray-900 block">Children</span>
-                          <p className="text-[9px] text-gray-500">2-11 years</p>
+                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-1.5">
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[11px] font-semibold text-gray-900 block">Children</span>
+                          <p className="text-[8px] text-gray-500 leading-tight">2-11 years</p>
                         </div>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1 flex-shrink-0">
                           <button
                             type="button"
                             onClick={() => setChildren(Math.max(0, children - 1))}
-                            className="w-6 h-6 rounded-full border-2 border-brand-blue text-brand-blue text-xs font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-[10px] font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={children <= 0}
                           >
                             -
                           </button>
-                          <span className="text-xs font-bold text-gray-900 w-6 text-center">{children}</span>
+                          <span className="text-[11px] font-bold text-gray-900 w-5 text-center">{children}</span>
                           <button
                             type="button"
                             onClick={() => setChildren(children + 1)}
-                            className="w-6 h-6 rounded-full border-2 border-brand-blue text-brand-blue text-xs font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
+                            className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-[10px] font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
                           >
                             +
                           </button>
@@ -243,25 +243,25 @@ export default function SearchBar() {
                       </div>
 
                       {/* Infants */}
-                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-                        <div className="flex-1">
-                          <span className="text-xs font-semibold text-gray-900 block">Infants</span>
-                          <p className="text-[9px] text-gray-500">Under 2 years</p>
+                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-1.5">
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[11px] font-semibold text-gray-900 block">Infants</span>
+                          <p className="text-[8px] text-gray-500 leading-tight">Under 2 years</p>
                         </div>
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1 flex-shrink-0">
                           <button
                             type="button"
                             onClick={() => setInfants(Math.max(0, infants - 1))}
-                            className="w-6 h-6 rounded-full border-2 border-brand-blue text-brand-blue text-xs font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-[10px] font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={infants <= 0}
                           >
                             -
                           </button>
-                          <span className="text-xs font-bold text-gray-900 w-6 text-center">{infants}</span>
+                          <span className="text-[11px] font-bold text-gray-900 w-5 text-center">{infants}</span>
                           <button
                             type="button"
                             onClick={() => setInfants(infants + 1)}
-                            className="w-6 h-6 rounded-full border-2 border-brand-blue text-brand-blue text-xs font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
+                            className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-[10px] font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
                           >
                             +
                           </button>
@@ -271,14 +271,14 @@ export default function SearchBar() {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1.5">Cabin Class</label>
-                    <div className="space-y-1">
+                    <label className="block text-[10px] font-semibold text-gray-700 mb-1">Cabin Class</label>
+                    <div className="space-y-0.5">
                       {(['Economy', 'Premium Economy', 'Business', 'First Class'] as const).map((cabinType) => (
                         <button
                           key={cabinType}
                           type="button"
                           onClick={() => setCabin(cabinType)}
-                          className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
+                          className={`w-full text-left px-2 py-1 rounded-lg text-[11px] font-medium transition-all duration-200 ${
                             cabin === cabinType
                               ? 'bg-gradient-to-r from-brand-red to-brand-blue text-white shadow-md'
                               : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
@@ -293,7 +293,7 @@ export default function SearchBar() {
                   <button
                     type="button"
                     onClick={() => setIsDropdownOpen(false)}
-                    className="w-full bg-gradient-to-r from-brand-red to-brand-blue text-white py-1.5 rounded-lg font-semibold text-xs hover:shadow-lg transition-all duration-200"
+                    className="w-full bg-gradient-to-r from-brand-red to-brand-blue text-white py-1.5 rounded-lg font-semibold text-[11px] hover:shadow-lg transition-all duration-200 mt-1"
                   >
                     Done
                   </button>
