@@ -49,24 +49,9 @@ export default function Hero() {
           <p className="text-white text-center text-xs sm:text-sm font-medium mb-3 drop-shadow-md">Trusted Partner Airlines</p>
           <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 px-4">
             <img
-              src="https://logos-world.net/wp-content/uploads/2020/03/Qatar-Airways-Logo.png"
-              alt="Qatar Airways"
-              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="https://logos-world.net/wp-content/uploads/2020/03/Turkish-Airlines-Logo.png"
-              alt="Turkish Airlines"
-              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="https://logos-world.net/wp-content/uploads/2020/04/United-Airlines-Logo.png"
-              alt="United Airlines"
-              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="https://logos-world.net/wp-content/uploads/2020/03/Etihad-Airways-Logo.png"
-              alt="Etihad Airways"
-              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              src="/image copy copy copy copy copy copy copy copy copy copy.png"
+              alt="Partner Airlines"
+              className="h-12 sm:h-14 md:h-16 object-contain opacity-90 hover:opacity-100 transition-opacity"
             />
           </div>
         </div>
