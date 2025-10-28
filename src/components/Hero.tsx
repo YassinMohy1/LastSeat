@@ -11,7 +11,7 @@ export default function Hero() {
         preload="auto"
         className="absolute inset-0 w-full h-full object-cover opacity-100 z-0"
       >
-        <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431853667069464729/scene_description_a_202510260650.mp4?ex=68feed24&is=68fd9ba4&hm=2492c2aa74178b093ac42ff4e1ccdd3a243ac8b92fe1245526d1663eb9ace81d&" type="video/mp4" />
+        <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=69024f37&is=6900fdb7&hm=9debbc9a909b224799fb1d9d56aecfd638496993979b5312ba7f4d10b919a46c&" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
