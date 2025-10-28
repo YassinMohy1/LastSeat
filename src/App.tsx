@@ -15,6 +15,8 @@ import CustomersManagement from './pages/CustomersManagement';
 import InquiriesManagement from './pages/InquiriesManagement';
 import FlightInquiriesManagement from './pages/FlightInquiriesManagement';
 import FlightPricesManagement from './pages/FlightPricesManagement';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="/gift-vouchers" element={<GiftVouchers />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/flight-quote" element={<FlightQuote />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<Login />} />
