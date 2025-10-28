@@ -436,14 +436,14 @@ export default function CustomerPayment() {
               {
                 id: 'none',
                 title: 'No Protection',
-                price: 0,
+                percentage: 0,
                 features: [],
                 recommended: false
               },
               {
                 id: 'basic',
                 title: 'Basic',
-                price: Math.round(getTravelCarePlanPrice('basic')),
+                percentage: 15,
                 features: [
                   'VIP Support',
                   'Price Drop Protection',
@@ -455,7 +455,7 @@ export default function CustomerPayment() {
               {
                 id: 'premium',
                 title: 'Premium',
-                price: Math.round(getTravelCarePlanPrice('premium')),
+                percentage: 17,
                 features: [
                   'Everything in Basic',
                   'Change Flight for Free',
@@ -467,6 +467,7 @@ export default function CustomerPayment() {
             ]}
             selectedPlan={travelCarePlan}
             onPlanChange={(planId) => setTravelCarePlan(planId as TravelCarePlan)}
+            baseFare={invoice ? Number(invoice.amount) : 0}
           />
 
           <div className="mb-8">
