@@ -10,7 +10,7 @@ export default function Hero() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=6900fdb7&is=68ffac37&hm=34663369365494cf8f2f30c4bc9b6db5580c4da32f47ead5c717254d491ab956&" type="video/mp4" />
+        <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431853667069464729/scene_description_a_202510260650.mp4?ex=68feed24&is=68fd9ba4&hm=2492c2aa74178b093ac42ff4e1ccdd3a243ac8b92fe1245526d1663eb9ace81d&" type="video/mp4" />
       </video>
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
