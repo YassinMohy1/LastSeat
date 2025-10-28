@@ -64,9 +64,9 @@
       }
     ],
     "baggage_protection": {
-      "price": 19.99,
-      "coverage": "$2,000 per lost bag",
-      "description": "Covers up to $2,000 per lost bag with 24-hour claim processing"
+      "price": 19.00,
+      "coverage": "$1,000 per bag (up to 2 bags)",
+      "description": "Covers up to $1,000 per bag with 24-hour claim processing"
     }
   },
   "fees": {
