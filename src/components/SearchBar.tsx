@@ -184,8 +184,8 @@ export default function SearchBar() {
             <ChevronDown className={`absolute right-2 top-2 w-3.5 h-3.5 text-white transition-transform duration-200 pointer-events-none ${isDropdownOpen ? 'rotate-180' : ''}`} />
 
             {isDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-2xl z-50 overflow-hidden border-2 border-gray-200 max-h-[500px] overflow-y-auto w-full md:w-[350px]">
-                <div className="p-5 space-y-5">
+              <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-2xl z-50 overflow-hidden border-2 border-gray-200 w-full md:w-[350px]">
+                <div className="p-5 space-y-5 max-h-[70vh] overflow-y-auto">
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-3">Number of Passengers</label>
 
