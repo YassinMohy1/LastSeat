@@ -498,7 +498,7 @@ export default function CustomerPayment() {
                   <div>
                     <p className="text-sm font-semibold text-gray-900 mb-1">
                       <span className="bg-green-600 text-white text-xs px-2 py-0.5 rounded mr-2">
-                        Optional add-on
+                        Recommended
                       </span>
                     </p>
                     <label className="flex items-center gap-2 cursor-pointer">
