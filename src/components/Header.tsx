@@ -8,7 +8,7 @@ export default function Header() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [timeLeft, setTimeLeft] = useState(180);
   const [showPromo, setShowPromo] = useState(false);
-  const [showPopup, setShowPopup] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
   const [promoCode, setPromoCode] = useState('');
   const [copied, setCopied] = useState(false);
 
@@ -16,11 +16,16 @@ export default function Header() {
     checkAdminStatus();
     generatePromoCode();
 
+    const popupTimer = setTimeout(() => {
+      setShowPopup(true);
+    }, 5000);
+
     const { data: authListener } = supabase.auth.onAuthStateChange(() => {
       checkAdminStatus();
     });
 
     return () => {
+      clearTimeout(popupTimer);
       authListener?.subscription.unsubscribe();
     };
   }, []);
