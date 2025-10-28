@@ -12,7 +12,9 @@ export default function SearchBar() {
   const [departDate, setDepartDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
   const [adults, setAdults] = useState(1);
-  const [cabin, setCabin] = useState<'Economy' | 'Business' | 'First Class'>('Economy');
+  const [children, setChildren] = useState(0);
+  const [infants, setInfants] = useState(0);
+  const [cabin, setCabin] = useState<'Economy' | 'Premium Economy' | 'Business' | 'First Class'>('Economy');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -27,8 +29,19 @@ export default function SearchBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const getTotalPassengers = () => {
+    return adults + children + infants;
+  };
+
   const getPassengersDisplay = () => {
-    return `${adults} Adult${adults > 1 ? 's' : ''}, ${cabin}`;
+    const total = getTotalPassengers();
+    const parts = [];
+
+    if (adults > 0) parts.push(`${adults} Adult${adults > 1 ? 's' : ''}`);
+    if (children > 0) parts.push(`${children} Child${children > 1 ? 'ren' : ''}`);
+    if (infants > 0) parts.push(`${infants} Infant${infants > 1 ? 's' : ''}`);
+
+    return `${total} Passenger${total > 1 ? 's' : ''}, ${cabin}`;
   };
 
   const formatDateDisplay = (dateStr: string) => {
@@ -54,13 +67,17 @@ export default function SearchBar() {
       toast.warning('Please select a return date');
       return;
     }
+    if (getTotalPassengers() === 0) {
+      toast.warning('Please select at least one passenger');
+      return;
+    }
 
     trackSearchFlight({
       from: origin,
       to: destination,
       departDate: departDate,
       returnDate: tripType === 'roundtrip' ? returnDate : undefined,
-      passengers: adults,
+      passengers: getTotalPassengers(),
       tripType: tripType
     });
 
@@ -71,7 +88,9 @@ export default function SearchBar() {
       to: destination,
       departDate: departDate,
       returnDate: tripType === 'roundtrip' ? returnDate : '',
-      passengers: adults.toString(),
+      adults: adults.toString(),
+      children: children.toString(),
+      infants: infants.toString(),
       cabin: cabin,
       tripType: tripType
     });
@@ -165,43 +184,110 @@ export default function SearchBar() {
             <ChevronDown className={`absolute right-2 top-2 w-3.5 h-3.5 text-white transition-transform duration-200 pointer-events-none ${isDropdownOpen ? 'rotate-180' : ''}`} />
 
             {isDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-2xl z-50 overflow-hidden border-2 border-gray-200">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-2xl z-50 overflow-hidden border-2 border-gray-200 max-h-[400px] overflow-y-auto">
                 <div className="p-4 space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-2">Number of Passengers</label>
-                    <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-                      <span className="text-sm text-gray-700">Adults</span>
-                      <div className="flex items-center gap-1">
-                        <button
-                          type="button"
-                          onClick={() => setAdults(Math.max(1, adults - 1))}
-                          className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
-                        >
-                          -
-                        </button>
-                        <span className="text-sm font-semibold text-gray-900 w-5 text-center">{adults}</span>
-                        <button
-                          type="button"
-                          onClick={() => setAdults(Math.min(9, adults + 1))}
-                          className="w-5 h-5 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
-                        >
-                          +
-                        </button>
+                    <label className="block text-xs font-semibold text-gray-700 mb-3">Number of Passengers</label>
+
+                    <div className="space-y-3">
+                      {/* Adults */}
+                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                        <div>
+                          <span className="text-sm font-semibold text-gray-900">Adults</span>
+                          <p className="text-xs text-gray-500">12+ years</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setAdults(Math.max(1, adults - 1))}
+                            className="w-7 h-7 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={adults <= 1}
+                          >
+                            -
+                          </button>
+                          <span className="text-sm font-bold text-gray-900 w-8 text-center">{adults}</span>
+                          <button
+                            type="button"
+                            onClick={() => setAdults(adults + 1)}
+                            className="w-7 h-7 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Children */}
+                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                        <div>
+                          <span className="text-sm font-semibold text-gray-900">Children</span>
+                          <p className="text-xs text-gray-500">2-11 years</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setChildren(Math.max(0, children - 1))}
+                            className="w-7 h-7 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={children <= 0}
+                          >
+                            -
+                          </button>
+                          <span className="text-sm font-bold text-gray-900 w-8 text-center">{children}</span>
+                          <button
+                            type="button"
+                            onClick={() => setChildren(children + 1)}
+                            className="w-7 h-7 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Infants */}
+                      <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                        <div>
+                          <span className="text-sm font-semibold text-gray-900">Infants</span>
+                          <p className="text-xs text-gray-500">Under 2 years</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setInfants(Math.max(0, infants - 1))}
+                            className="w-7 h-7 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={infants <= 0}
+                          >
+                            -
+                          </button>
+                          <span className="text-sm font-bold text-gray-900 w-8 text-center">{infants}</span>
+                          <button
+                            type="button"
+                            onClick={() => setInfants(Math.min(adults, infants + 1))}
+                            className="w-7 h-7 rounded-full border-2 border-brand-blue text-brand-blue text-sm font-bold hover:bg-brand-blue hover:text-white transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={infants >= adults}
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                     </div>
+
+                    {infants >= adults && (
+                      <p className="text-xs text-orange-600 mt-2 font-medium">
+                        Note: Number of infants cannot exceed number of adults
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 mb-2">Cabin Class</label>
                     <div className="space-y-2">
-                      {(['Economy', 'Business', 'First Class'] as const).map((cabinType) => (
+                      {(['Economy', 'Premium Economy', 'Business', 'First Class'] as const).map((cabinType) => (
                         <button
                           key={cabinType}
                           type="button"
                           onClick={() => setCabin(cabinType)}
                           className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                             cabin === cabinType
-                              ? 'bg-brand-blue text-white shadow-md'
+                              ? 'bg-gradient-to-r from-brand-red to-brand-blue text-white shadow-md'
                               : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                           }`}
                         >
@@ -214,7 +300,7 @@ export default function SearchBar() {
                   <button
                     type="button"
                     onClick={() => setIsDropdownOpen(false)}
-                    className="w-full bg-gradient-to-r from-brand-blue to-blue-600 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-200"
+                    className="w-full bg-gradient-to-r from-brand-red to-brand-blue text-white py-2.5 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-200"
                   >
                     Done
                   </button>
