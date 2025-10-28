@@ -47,42 +47,26 @@ export default function Hero() {
 
         <div className="mt-10 sm:mt-12">
           <p className="text-white text-center text-xs sm:text-sm font-medium mb-3 drop-shadow-md">Trusted Partner Airlines</p>
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 px-4">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 px-4">
             <img
-              src="https://1000logos.net/wp-content/uploads/2020/04/Qatar-Airways-Logo-768x432.png"
+              src="https://logos-world.net/wp-content/uploads/2020/03/Qatar-Airways-Logo.png"
               alt="Qatar Airways"
-              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/qatar-airways-3.svg'; }}
-              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://1000logos.net/wp-content/uploads/2020/04/Turkish-Airlines-Logo-768x432.png"
+              src="https://logos-world.net/wp-content/uploads/2020/03/Turkish-Airlines-Logo.png"
               alt="Turkish Airlines"
-              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/turkish-airlines-1.svg'; }}
-              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://1000logos.net/wp-content/uploads/2020/04/Emirates-Logo-768x432.png"
-              alt="Emirates"
-              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/emirates-2.svg'; }}
-              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              src="https://logos-world.net/wp-content/uploads/2020/04/Delta-Logo.png"
+              alt="Delta Airlines"
+              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
-              src="https://1000logos.net/wp-content/uploads/2020/04/Etihad-Airways-Logo-768x432.png"
-              alt="Etihad Airways"
-              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/etihad-airways-2.svg'; }}
-              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="https://1000logos.net/wp-content/uploads/2017/03/Lufthansa-Logo-768x432.png"
-              alt="Lufthansa"
-              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/lufthansa-1.svg'; }}
-              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="https://1000logos.net/wp-content/uploads/2017/03/British-Airways-Logo-768x432.png"
-              alt="British Airways"
-              onError={(e) => { e.currentTarget.src = 'https://cdn.worldvectorlogo.com/logos/british-airways-1.svg'; }}
-              className="h-6 sm:h-7 md:h-8 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              src="https://logos-world.net/wp-content/uploads/2020/03/Singapore-Airlines-Logo.png"
+              alt="Singapore Airlines"
+              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
           </div>
         </div>
