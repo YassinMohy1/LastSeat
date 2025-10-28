@@ -39,7 +39,8 @@
       {
         "id": "basic",
         "title": "Basic Plan",
-        "price": 54.99,
+        "price": 19,
+        "per_passenger": true,
         "features": [
           "Flight Change Fee Waiver",
           "24/7 Customer Support",
@@ -49,7 +50,8 @@
       {
         "id": "premium",
         "title": "Premium Plan",
-        "price": 84.99,
+        "price": 19,
+        "per_passenger": true,
         "features": [
           "Flight Change Fee Waiver",
           "24/7 Premium Customer Support",

@@ -7,6 +7,7 @@ interface OrderSummaryProps {
   baggagePrice: number;
   serviceFee: number;
   taxRate: number;
+  passengerCount?: number;
 }
 
 export default function OrderSummary({
@@ -16,8 +17,11 @@ export default function OrderSummary({
   baggagePrice,
   serviceFee,
   taxRate,
+  passengerCount = 1,
 }: OrderSummaryProps) {
-  const protectionCost = selectedPlan?.price || 0;
+  const protectionCost = selectedPlan?.per_passenger
+    ? (selectedPlan?.price || 0) * passengerCount
+    : (selectedPlan?.price || 0);
   const baggageCost = baggageProtection ? baggagePrice : 0;
   const subtotal = baseFare + protectionCost + baggageCost + serviceFee;
   const tax = subtotal * (taxRate / 100);
@@ -42,7 +46,12 @@ export default function OrderSummary({
           <div className="flex justify-between items-center py-2 border-b border-gray-200">
             <div>
               <div className="text-gray-700">{selectedPlan.title}</div>
-              <div className="text-xs text-gray-500">Travel Protection</div>
+              <div className="text-xs text-gray-500">
+                Travel Protection
+                {selectedPlan?.per_passenger && passengerCount > 1 && (
+                  <span> (${selectedPlan.price} × {passengerCount})</span>
+                )}
+              </div>
             </div>
             <span className="font-semibold text-gray-900">${protectionCost.toFixed(2)}</span>
           </div>

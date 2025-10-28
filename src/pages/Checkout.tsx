@@ -17,6 +17,7 @@ export default function Checkout() {
 
   const [currentStep, setCurrentStep] = useState(0);
   const [passengerData, setPassengerData] = useState<PassengerData | null>(null);
+  const [passengerCount, setPassengerCount] = useState(1);
   const [selectedPlan, setSelectedPlan] = useState('none');
   const [baggageProtection, setBaggageProtection] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -45,7 +46,9 @@ export default function Checkout() {
     try {
       trackButtonClick('Proceed with Payment', 'Checkout Page');
 
-      const protectionCost = selectedPlanData?.price || 0;
+      const protectionCost = selectedPlanData?.per_passenger
+        ? (selectedPlanData?.price || 0) * passengerCount
+        : (selectedPlanData?.price || 0);
       const baggageCost = baggageProtection ? pricingData.addons.baggage_protection.price : 0;
       const subtotal = pricingData.product.base_fare + protectionCost + baggageCost + pricingData.fees.service_fee;
       const tax = subtotal * (pricingData.fees.tax_rate / 100);
@@ -141,12 +144,28 @@ export default function Checkout() {
             <div className="lg:col-span-2 space-y-6">
               <FlightDetails data={pricingData} />
 
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Number of Passengers</h3>
+                <select
+                  value={passengerCount}
+                  onChange={(e) => setPassengerCount(Number(e.target.value))}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 focus:outline-none transition-all"
+                >
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                    <option key={num} value={num}>
+                      {num} {num === 1 ? 'Passenger' : 'Passengers'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <PassengerForm onDataChange={setPassengerData} />
 
               <TravelCarePlan
                 plans={pricingData.addons.plans}
                 selectedPlan={selectedPlan}
                 onPlanChange={setSelectedPlan}
+                passengerCount={passengerCount}
               />
 
               <BaggageProtection
@@ -172,6 +191,7 @@ export default function Checkout() {
                 baggagePrice={pricingData.addons.baggage_protection.price}
                 serviceFee={pricingData.fees.service_fee}
                 taxRate={pricingData.fees.tax_rate}
+                passengerCount={passengerCount}
               />
             </div>
           </div>
