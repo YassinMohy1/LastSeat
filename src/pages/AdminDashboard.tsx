@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { useToast } from '../components/ToastContainer';
+import EditInvoiceModal from '../components/EditInvoiceModal';
 import {
   LogOut,
   Plus,
@@ -101,6 +102,7 @@ export default function AdminDashboard() {
   const [searchInvoiceNumber, setSearchInvoiceNumber] = useState('');
   const [searchResult, setSearchResult] = useState<Invoice | null>(null);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const isMainAdmin = adminProfile?.role === 'main_admin';
 
   useEffect(() => {
@@ -338,6 +340,49 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error deleting invoice:', error);
       toast.error('Failed to delete invoice');
+    }
+  };
+
+  const handleEditInvoice = async (updatedData: Partial<Invoice>) => {
+    if (!editingInvoice || !adminProfile) return;
+
+    try {
+      const oldData = {
+        customer_name: editingInvoice.customer_name,
+        customer_email: editingInvoice.customer_email,
+        customer_phone: editingInvoice.customer_phone,
+        notes: editingInvoice.notes
+      };
+
+      const { error } = await supabase
+        .from('invoices')
+        .update({
+          ...updatedData,
+          updated_at: new Date().toISOString(),
+          last_edited_by_admin_id: adminProfile.id,
+          last_edited_by_admin_email: adminProfile.email,
+          last_edited_at: new Date().toISOString()
+        })
+        .eq('id', editingInvoice.id);
+
+      if (error) throw error;
+
+      await logAdminAction('edit_invoice', 'invoice', editingInvoice.id, {
+        invoice_number: editingInvoice.invoice_number,
+        changes: {
+          old: oldData,
+          new: updatedData
+        }
+      });
+
+      toast.success('Invoice updated successfully!');
+      await fetchInvoices();
+      setEditingInvoice(null);
+      setSelectedInvoice(null);
+    } catch (error) {
+      console.error('Error editing invoice:', error);
+      toast.error('Failed to update invoice');
+      throw error;
     }
   };
 
@@ -925,6 +970,16 @@ export default function AdminDashboard() {
                             {selectedInvoice === invoice.id && (
                               <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
                                 <div className="py-1">
+                                  <button
+                                    onClick={() => {
+                                      setEditingInvoice(invoice);
+                                      setSelectedInvoice(null);
+                                    }}
+                                    className="w-full px-3 py-1.5 text-left text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-1.5"
+                                  >
+                                    <Edit className="w-3.5 h-3.5 text-blue-600" />
+                                    Edit Details
+                                  </button>
                                   {invoice.payment_status === 'pending' && (
                                     <button
                                       onClick={() => updateInvoiceStatus(invoice.id, 'paid')}
@@ -1154,6 +1209,14 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {editingInvoice && (
+        <EditInvoiceModal
+          invoice={editingInvoice}
+          onClose={() => setEditingInvoice(null)}
+          onSave={handleEditInvoice}
+        />
       )}
     </div>
   );
