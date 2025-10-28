@@ -1,4 +1,4 @@
-import { Award, Users, Target, Heart, Shield, TrendingUp } from 'lucide-react';
+import { Award, Users, Target, Heart, Shield, TrendingUp, Plane, Zap, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AboutUs() {
@@ -13,6 +13,58 @@ export default function AboutUs() {
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Your trusted partner in finding the best flight deals and making travel accessible to everyone
           </p>
+        </div>
+
+        {/* What is Last Seat Tickets - Special Box with Animation */}
+        <div className="relative mb-16 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-blue via-sky-500 to-cyan-500 rounded-3xl opacity-10 animate-pulse"></div>
+          <div className="relative bg-white rounded-3xl shadow-2xl border-2 border-brand-blue/20 p-8 md:p-12 transform hover:scale-[1.02] transition-all duration-500">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-blue/10 to-transparent rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-sky-500/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <div className="bg-gradient-to-r from-brand-blue to-sky-500 p-3 rounded-2xl animate-bounce">
+                  <Plane className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-brand-blue to-sky-500 bg-clip-text text-transparent">
+                  What is Last Seat Tickets?
+                </h2>
+              </div>
+
+              <div className="space-y-4 text-center max-w-4xl mx-auto">
+                <p className="text-lg md:text-xl text-gray-700 leading-relaxed font-medium">
+                  Your go-to destination for <span className="text-brand-blue font-bold">unbeatable last-minute flight deals</span> and <span className="text-sky-500 font-bold">exclusive fares</span>.
+                </p>
+
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  We specialize in helping smart travelers score the best prices on flights before the last seat is gone.
+                  With access to major airlines worldwide, we make booking <span className="font-semibold text-brand-blue">fast</span>, <span className="font-semibold text-sky-500">simple</span>, and <span className="font-semibold text-cyan-500">secure</span> — whether you're planning a spontaneous getaway or a business trip.
+                </p>
+
+                <div className="flex flex-wrap justify-center gap-4 pt-6">
+                  <div className="flex items-center gap-2 bg-brand-blue/10 px-6 py-3 rounded-full transform hover:scale-105 transition-transform duration-300">
+                    <Search className="w-5 h-5 text-brand-blue" />
+                    <span className="font-semibold text-brand-blue">Find it</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-sky-500/10 px-6 py-3 rounded-full transform hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.2s' }}>
+                    <Zap className="w-5 h-5 text-sky-500" />
+                    <span className="font-semibold text-sky-500">Book it</span>
+                  </div>
+                  <div className="flex items-center gap-2 bg-cyan-500/10 px-6 py-3 rounded-full transform hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.4s' }}>
+                    <Plane className="w-5 h-5 text-cyan-500" />
+                    <span className="font-semibold text-cyan-500">Fly for less</span>
+                  </div>
+                </div>
+
+                <div className="pt-6">
+                  <p className="text-2xl font-bold bg-gradient-to-r from-brand-blue via-sky-500 to-cyan-500 bg-clip-text text-transparent animate-pulse">
+                    Find it. Book it. Fly for less with Last Seat Tickets.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Mission Statement */}
