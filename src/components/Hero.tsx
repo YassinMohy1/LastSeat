@@ -2,18 +2,20 @@ import SearchBar from './SearchBar';
 
 export default function Hero() {
   return (
-    <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-sky-900 via-sky-800 to-sky-700" id="home">
+    <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-black" id="home">
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover opacity-100 z-0"
       >
         <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431853667069464729/scene_description_a_202510260650.mp4?ex=68feed24&is=68fd9ba4&hm=2492c2aa74178b093ac42ff4e1ccdd3a243ac8b92fe1245526d1663eb9ace81d&" type="video/mp4" />
+        Your browser does not support the video tag.
       </video>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50 z-[1]"></div>
 
       <div className="container mx-auto relative z-10">
         <div className="text-center mb-6 animate-fadeIn">
