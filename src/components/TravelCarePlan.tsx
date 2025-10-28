@@ -154,11 +154,11 @@ export default function TravelCarePlan({ plans, selectedPlan, onPlanChange }: Tr
             {expandedSections['vip-basic'] && (
               <tr className="bg-gray-50">
                 <td colSpan={3} className="p-6">
-                  <div className="space-y-4 max-w-4xl">
+                  <div className="space-y-4">
                     {PLAN_DETAILS.basic.sections[0].features.map((feature, idx) => (
                       <div key={idx} className="flex gap-3">
                         <div className="w-1.5 h-1.5 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
-                        <div>
+                        <div className="flex-1">
                           <div className="font-semibold text-gray-900">{feature.title}:</div>
                           <div className="text-gray-700">{feature.description}</div>
                         </div>
@@ -195,11 +195,11 @@ export default function TravelCarePlan({ plans, selectedPlan, onPlanChange }: Tr
             {expandedSections['change-free'] && (
               <tr className="bg-gray-50">
                 <td colSpan={3} className="p-6">
-                  <div className="space-y-4 max-w-4xl">
+                  <div className="space-y-4">
                     {PLAN_DETAILS.premium.sections[1].features.map((feature, idx) => (
                       <div key={idx} className="flex gap-3">
                         <div className="w-1.5 h-1.5 bg-gray-900 rounded-full mt-2 flex-shrink-0"></div>
-                        <div>
+                        <div className="flex-1">
                           {feature.description ? (
                             <>
                               <div className="font-semibold text-gray-900">{feature.title}:</div>
