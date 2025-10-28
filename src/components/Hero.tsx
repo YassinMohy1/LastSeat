@@ -2,17 +2,17 @@ import SearchBar from './SearchBar';
 
 export default function Hero() {
   return (
-    <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-black" id="home">
+    <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-sky-900 via-sky-800 to-sky-700" id="home">
       <video
         autoPlay
         loop
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
+        poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230c4a6e;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%230e7490;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%230369a1;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23grad)'/%3E%3C/svg%3E"
         className="absolute inset-0 w-full h-full object-cover opacity-100 z-0"
       >
         <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=69024f37&is=6900fdb7&hm=9debbc9a909b224799fb1d9d56aecfd638496993979b5312ba7f4d10b919a46c&" type="video/mp4" />
-        Your browser does not support the video tag.
       </video>
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50 z-[1]"></div>
@@ -53,21 +53,25 @@ export default function Hero() {
             <img
               src="https://logos-world.net/wp-content/uploads/2020/03/Qatar-Airways-Logo.png"
               alt="Qatar Airways"
+              loading="lazy"
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
               src="https://logos-world.net/wp-content/uploads/2020/03/Turkish-Airlines-Logo.png"
               alt="Turkish Airlines"
+              loading="lazy"
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
               src="/image copy copy copy copy copy copy copy copy copy copy copy.png"
               alt="Singapore Airlines"
+              loading="lazy"
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <img
               src="/image copy copy copy copy copy copy copy copy copy copy copy copy copy.png"
               alt="Ethiopian Airlines"
+              loading="lazy"
               className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
             />
             <span className="text-white text-sm sm:text-base font-medium opacity-90">and more...</span>
