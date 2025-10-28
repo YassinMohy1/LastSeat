@@ -284,13 +284,13 @@ export default function NMIPaymentForm({
     <div className="bg-white rounded-xl border border-gray-200 p-6">
       <div className="flex items-center gap-2 mb-6">
         <CreditCard className="w-6 h-6 text-brand-blue" />
-        <h3 className="text-lg font-bold text-gray-900">بطاقة الائتمان / Visa</h3>
+        <h3 className="text-lg font-bold text-gray-900">Credit Card / Visa</h3>
       </div>
 
       {!scriptLoaded && (
         <div className="text-center py-4">
           <Loader2 className="w-6 h-6 animate-spin text-brand-blue mx-auto mb-2" />
-          <p className="text-sm text-gray-600">جاري تحميل نظام الدفع...</p>
+          <p className="text-sm text-gray-600">Loading payment system...</p>
         </div>
       )}
 
@@ -299,7 +299,7 @@ export default function NMIPaymentForm({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                الاسم الأول
+                First Name
               </label>
               <input
                 type="text"
@@ -311,7 +311,7 @@ export default function NMIPaymentForm({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                اسم العائلة
+                Last Name
               </label>
               <input
                 type="text"
@@ -325,7 +325,7 @@ export default function NMIPaymentForm({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              العنوان
+              Address
             </label>
             <input
               type="text"
@@ -339,7 +339,7 @@ export default function NMIPaymentForm({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                المدينة
+                City
               </label>
               <input
                 type="text"
@@ -351,7 +351,7 @@ export default function NMIPaymentForm({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                الرمز البريدي
+                Zip Code
               </label>
               <input
                 type="text"
@@ -364,12 +364,12 @@ export default function NMIPaymentForm({
           </div>
 
           <div className="border-t border-gray-200 pt-4 mt-6">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">معلومات البطاقة</h4>
+            <h4 className="text-sm font-medium text-gray-700 mb-3">Card Information</h4>
 
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  رقم البطاقة
+                  Card Number
                 </label>
                 <div id="ccnumber"></div>
               </div>
@@ -377,7 +377,7 @@ export default function NMIPaymentForm({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    تاريخ الانتهاء
+                    Expiration Date
                   </label>
                   <div id="ccexp"></div>
                 </div>
@@ -393,7 +393,7 @@ export default function NMIPaymentForm({
 
           <div className="flex items-center gap-2 text-sm text-gray-600 bg-green-50 border border-green-200 rounded-lg p-3">
             <Lock className="w-4 h-4 text-green-600 flex-shrink-0" />
-            <p>معلومات الدفع الخاصة بك محمية بتشفير 3D Secure</p>
+            <p>Your payment information is secured with 3D Secure encryption</p>
           </div>
 
           <button
@@ -408,10 +408,10 @@ export default function NMIPaymentForm({
             {processing ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="w-5 h-5 animate-spin" />
-                جاري معالجة الدفع...
+                Processing payment...
               </span>
             ) : (
-              `ادفع ${currency} ${amount.toFixed(2)}`
+              `Pay ${currency} ${amount.toFixed(2)}`
             )}
           </button>
         </div>
