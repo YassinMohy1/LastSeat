@@ -61,9 +61,7 @@ export default function Header() {
   };
 
   const generatePromoCode = () => {
-    const prefix = 'SAVE35';
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-    setPromoCode(`${prefix}-${random}`);
+    setPromoCode('LST35');
   };
 
   const copyToClipboard = () => {
