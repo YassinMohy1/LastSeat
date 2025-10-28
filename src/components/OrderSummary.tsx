@@ -22,7 +22,7 @@ export default function OrderSummary({
   const protectionCost = selectedPlan?.per_passenger
     ? (selectedPlan?.price || 0) * passengerCount
     : (selectedPlan?.price || 0);
-  const baggageCost = baggageProtection ? baggagePrice : 0;
+  const baggageCost = baggageProtection ? baggagePrice * passengerCount : 0;
   const subtotal = baseFare + protectionCost + baggageCost + serviceFee;
   const tax = subtotal * (taxRate / 100);
   const total = subtotal + tax;
@@ -61,7 +61,12 @@ export default function OrderSummary({
           <div className="flex justify-between items-center py-2 border-b border-gray-200">
             <div>
               <div className="text-gray-700">Baggage Protection</div>
-              <div className="text-xs text-gray-500">Lost baggage coverage</div>
+              <div className="text-xs text-gray-500">
+                Lost baggage coverage
+                {passengerCount > 1 && (
+                  <span> (${baggagePrice.toFixed(2)} × {passengerCount})</span>
+                )}
+              </div>
             </div>
             <span className="font-semibold text-gray-900">${baggageCost.toFixed(2)}</span>
           </div>

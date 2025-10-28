@@ -49,7 +49,7 @@ export default function Checkout() {
       const protectionCost = selectedPlanData?.per_passenger
         ? (selectedPlanData?.price || 0) * passengerCount
         : (selectedPlanData?.price || 0);
-      const baggageCost = baggageProtection ? pricingData.addons.baggage_protection.price : 0;
+      const baggageCost = baggageProtection ? pricingData.addons.baggage_protection.price * passengerCount : 0;
       const subtotal = pricingData.product.base_fare + protectionCost + baggageCost + pricingData.fees.service_fee;
       const tax = subtotal * (pricingData.fees.tax_rate / 100);
       const total = subtotal + tax;
@@ -174,6 +174,7 @@ export default function Checkout() {
                 description={pricingData.addons.baggage_protection.description}
                 selected={baggageProtection}
                 onToggle={setBaggageProtection}
+                passengerCount={passengerCount}
               />
 
               <BillingPayment

@@ -7,6 +7,7 @@ interface BaggageProtectionProps {
   description: string;
   selected: boolean;
   onToggle: (selected: boolean) => void;
+  passengerCount?: number;
 }
 
 export default function BaggageProtection({
@@ -15,8 +16,10 @@ export default function BaggageProtection({
   description,
   selected,
   onToggle,
+  passengerCount = 1,
 }: BaggageProtectionProps) {
   const [showTooltip, setShowTooltip] = useState(false);
+  const totalPrice = price * passengerCount;
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
@@ -45,12 +48,19 @@ export default function BaggageProtection({
               className="w-5 h-5 text-brand-blue cursor-pointer mt-1"
             />
             <div className="text-right">
-              <div className="text-2xl font-bold text-gray-900">${price}</div>
-              <div className="text-xs text-gray-500">one-time fee</div>
+              <div className="text-2xl font-bold text-gray-900">${totalPrice.toFixed(2)}</div>
+              <div className="text-xs text-gray-500">
+                (per person){passengerCount > 1 && ` × ${passengerCount}`}
+              </div>
             </div>
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 mb-2">Yes, Protect My Baggage</h3>
+          <h3 className="text-base font-normal text-gray-900 mb-2">
+            Yes, I want to add Lost Baggage Protection for{' '}
+            <span className="font-bold">${totalPrice.toFixed(2)}</span>{' '}
+            <span className="text-sm text-gray-600">(per person)</span> and I agree to the{' '}
+            <a href="#" className="text-brand-blue hover:underline">Terms & Conditions</a>
+          </h3>
           <p className="text-sm text-gray-600 mb-3">{description}</p>
 
           <div className="flex items-start gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
