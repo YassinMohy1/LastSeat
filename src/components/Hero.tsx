@@ -1,19 +1,50 @@
 import SearchBar from './SearchBar';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Hero() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowVideo(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!showVideo || !videoRef.current) return;
+
+    const video = videoRef.current;
+
+    const handleCanPlay = () => {
+      setIsVideoLoaded(true);
+    };
+
+    video.addEventListener('canplay', handleCanPlay);
+
+    return () => {
+      video.removeEventListener('canplay', handleCanPlay);
+    };
+  }, [showVideo]);
+
   return (
     <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-sky-900 via-sky-800 to-sky-700" id="home">
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230c4a6e;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%230e7490;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%230369a1;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23grad)'/%3E%3C/svg%3E"
-        className="absolute inset-0 w-full h-full object-cover opacity-100 z-0"
-      >
-        <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=69024f37&is=6900fdb7&hm=9debbc9a909b224799fb1d9d56aecfd638496993979b5312ba7f4d10b919a46c&" type="video/mp4" />
-      </video>
+      {showVideo && (
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="none"
+          className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-1000 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
+        >
+          <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=69024f37&is=6900fdb7&hm=9debbc9a909b224799fb1d9d56aecfd638496993979b5312ba7f4d10b919a46c&" type="video/mp4" />
+        </video>
+      )}
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50 z-[1]"></div>
 
@@ -50,30 +81,50 @@ export default function Hero() {
         <div className="mt-10 sm:mt-12">
           <p className="text-white text-center text-xs sm:text-sm font-medium mb-3 drop-shadow-md">Trusted Partner Airlines</p>
           <div className="flex items-center justify-center gap-8 md:gap-12 px-4">
-            <img
-              src="https://logos-world.net/wp-content/uploads/2020/03/Qatar-Airways-Logo.png"
-              alt="Qatar Airways"
-              loading="lazy"
-              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="https://logos-world.net/wp-content/uploads/2020/03/Turkish-Airlines-Logo.png"
-              alt="Turkish Airlines"
-              loading="lazy"
-              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="/image copy copy copy copy copy copy copy copy copy copy copy.png"
-              alt="Singapore Airlines"
-              loading="lazy"
-              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
-            <img
-              src="/image copy copy copy copy copy copy copy copy copy copy copy copy copy.png"
-              alt="Ethiopian Airlines"
-              loading="lazy"
-              className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
-            />
+            <div className="h-8 sm:h-10 md:h-12 flex items-center">
+              <img
+                src="https://logos-world.net/wp-content/uploads/2020/03/Qatar-Airways-Logo.png"
+                alt="Qatar Airways"
+                width="120"
+                height="48"
+                loading="eager"
+                fetchPriority="high"
+                className="h-full w-auto object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              />
+            </div>
+            <div className="h-8 sm:h-10 md:h-12 flex items-center">
+              <img
+                src="https://logos-world.net/wp-content/uploads/2020/03/Turkish-Airlines-Logo.png"
+                alt="Turkish Airlines"
+                width="120"
+                height="48"
+                loading="eager"
+                fetchPriority="high"
+                className="h-full w-auto object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              />
+            </div>
+            <div className="h-8 sm:h-10 md:h-12 flex items-center">
+              <img
+                src="/image copy copy copy copy copy copy copy copy copy copy copy.png"
+                alt="Singapore Airlines"
+                width="120"
+                height="48"
+                loading="eager"
+                fetchPriority="high"
+                className="h-full w-auto object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              />
+            </div>
+            <div className="h-8 sm:h-10 md:h-12 flex items-center">
+              <img
+                src="/image copy copy copy copy copy copy copy copy copy copy copy copy copy.png"
+                alt="Ethiopian Airlines"
+                width="120"
+                height="48"
+                loading="eager"
+                fetchPriority="high"
+                className="h-full w-auto object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert"
+              />
+            </div>
             <span className="text-white text-sm sm:text-base font-medium opacity-90">and more...</span>
           </div>
         </div>
