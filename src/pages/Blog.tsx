@@ -3,65 +3,11 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import AIAssistant from '../components/AIAssistant';
-
-const blogPosts = [
-  {
-    id: 1,
-    title: 'Top 10 Budget Travel Destinations for 2025',
-    excerpt: 'Discover the most affordable and exciting destinations to visit this year without breaking the bank.',
-    image: 'https://images.pexels.com/photos/3278215/pexels-photo-3278215.jpeg?auto=compress&cs=tinysrgb&w=800',
-    author: 'Sarah Johnson',
-    date: 'November 15, 2025',
-    category: 'Travel Tips'
-  },
-  {
-    id: 2,
-    title: 'How to Find Cheap Flights: Expert Tips',
-    excerpt: 'Learn the insider secrets travel agents use to find the best flight deals for their clients.',
-    image: 'https://images.pexels.com/photos/1309644/pexels-photo-1309644.jpeg?auto=compress&cs=tinysrgb&w=800',
-    author: 'Michael Chen',
-    date: 'November 12, 2025',
-    category: 'Flight Deals'
-  },
-  {
-    id: 3,
-    title: 'Best Time to Book International Flights',
-    excerpt: 'Timing is everything when it comes to booking international travel. Find out when to book for maximum savings.',
-    image: 'https://images.pexels.com/photos/2026324/pexels-photo-2026324.jpeg?auto=compress&cs=tinysrgb&w=800',
-    author: 'Emily Rodriguez',
-    date: 'November 8, 2025',
-    category: 'Travel Planning'
-  },
-  {
-    id: 4,
-    title: '7 Hidden Fees Airlines Charge and How to Avoid Them',
-    excerpt: 'Uncover the hidden costs airlines add to your ticket and learn how to skip these unnecessary fees.',
-    image: 'https://images.pexels.com/photos/912050/pexels-photo-912050.jpeg?auto=compress&cs=tinysrgb&w=800',
-    author: 'David Thompson',
-    date: 'November 5, 2025',
-    category: 'Money Saving'
-  },
-  {
-    id: 5,
-    title: 'Last-Minute Flight Booking Strategies',
-    excerpt: 'Need to book a flight quickly? Here are proven strategies to find great deals even at the last minute.',
-    image: 'https://images.pexels.com/photos/1008155/pexels-photo-1008155.jpeg?auto=compress&cs=tinysrgb&w=800',
-    author: 'Jennifer Martinez',
-    date: 'November 1, 2025',
-    category: 'Travel Tips'
-  },
-  {
-    id: 6,
-    title: 'How to Upgrade to Business Class for Less',
-    excerpt: 'Flying business class does not have to cost a fortune. Discover the tricks to affordable upgrades.',
-    image: 'https://images.pexels.com/photos/1906658/pexels-photo-1906658.jpeg?auto=compress&cs=tinysrgb&w=800',
-    author: 'Robert Williams',
-    date: 'October 28, 2025',
-    category: 'Flight Deals'
-  }
-];
+import { getAllBlogPosts } from '../data/blogData';
 
 export default function Blog() {
+  const blogPosts = getAllBlogPosts();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white">
       <Header />
@@ -112,10 +58,13 @@ export default function Blog() {
                     </div>
                   </div>
 
-                  <button className="flex items-center gap-2 text-brand-red font-semibold hover:gap-3 transition-all">
+                  <Link
+                    to={`/blog/${post.slug}`}
+                    className="flex items-center gap-2 text-brand-red font-semibold hover:gap-3 transition-all"
+                  >
                     Read More
                     <ArrowRight className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}

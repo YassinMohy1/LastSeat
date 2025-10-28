@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './components/ToastContainer';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import AboutUs from './pages/AboutUs';
 import GiftVouchers from './pages/GiftVouchers';
 import ContactUs from './pages/ContactUs';
@@ -26,6 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/gift-vouchers" element={<GiftVouchers />} />
           <Route path="/contact" element={<ContactUs />} />
