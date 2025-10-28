@@ -115,15 +115,22 @@ export default function CustomerPayment() {
     return 0;
   };
 
+  const getTravelCarePlanPrice = (planType: 'basic' | 'premium'): number => {
+    if (!invoice) return 0;
+    const baseAmount = Number(invoice.amount);
+    const percentage = planType === 'basic' ? 0.15 : 0.17;
+    return baseAmount * percentage;
+  };
+
   const calculateTotalAmount = (): number => {
     if (!invoice) return 0;
 
     let total = Number(invoice.amount);
 
     if (travelCarePlan === 'basic') {
-      total += 220;
+      total += getTravelCarePlanPrice('basic');
     } else if (travelCarePlan === 'premium') {
-      total += 253;
+      total += getTravelCarePlanPrice('premium');
     }
 
     if (baggageProtection) {
@@ -225,7 +232,7 @@ export default function CustomerPayment() {
                       Travel Care Plan ({travelCarePlan === 'basic' ? 'Basic' : 'Premium'}):
                     </span>
                     <span className="text-gray-900 font-semibold">
-                      ${travelCarePlan === 'basic' ? '220.00' : '253.00'}
+                      ${getTravelCarePlanPrice(travelCarePlan as 'basic' | 'premium').toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -436,7 +443,7 @@ export default function CustomerPayment() {
               {
                 id: 'basic',
                 title: 'Basic',
-                price: 220,
+                price: Math.round(getTravelCarePlanPrice('basic')),
                 features: [
                   'VIP Support',
                   'Price Drop Protection',
@@ -448,7 +455,7 @@ export default function CustomerPayment() {
               {
                 id: 'premium',
                 title: 'Premium',
-                price: 253,
+                price: Math.round(getTravelCarePlanPrice('premium')),
                 features: [
                   'Everything in Basic',
                   'Change Flight for Free',
@@ -639,7 +646,7 @@ export default function CustomerPayment() {
                   Travel Care Plan ({travelCarePlan === 'basic' ? 'Basic' : 'Premium'}):
                 </span>
                 <span className="text-gray-900 font-semibold">
-                  ${travelCarePlan === 'basic' ? '220.00' : '253.00'}
+                  ${getTravelCarePlanPrice(travelCarePlan as 'basic' | 'premium').toFixed(2)}
                 </span>
               </div>
             )}
