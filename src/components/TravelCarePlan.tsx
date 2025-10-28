@@ -95,8 +95,8 @@ export default function TravelCarePlan({ plans, selectedPlan, onPlanChange, base
   const premiumPlan = plans.find(p => p.id === 'premium');
   const nonePlan = plans.find(p => p.id === 'none');
 
-  const basicTotal = basicPlan ? (baseFare * basicPlan.percentage / 100) : 0;
-  const premiumTotal = premiumPlan ? (baseFare * premiumPlan.percentage / 100) : 0;
+  const basicTotal = basicPlan && basicPlan.percentage ? (baseFare * basicPlan.percentage / 100) : 0;
+  const premiumTotal = premiumPlan && premiumPlan.percentage ? (baseFare * premiumPlan.percentage / 100) : 0;
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
