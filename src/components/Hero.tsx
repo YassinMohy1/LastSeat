@@ -44,6 +44,18 @@ export default function Hero() {
             <div className="text-white text-xs sm:text-base drop-shadow-md">Support</div>
           </div>
         </div>
+
+        <div className="mt-10 sm:mt-12">
+          <p className="text-white text-center text-xs sm:text-sm font-medium mb-4 drop-shadow-md">Trusted Partner Airlines</p>
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-10 px-4">
+            <img src="https://logos-world.net/wp-content/uploads/2020/03/Qatar-Airways-Logo.png" alt="Qatar Airways" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
+            <img src="https://1000logos.net/wp-content/uploads/2020/04/Turkish-Airlines-Logo.png" alt="Turkish Airlines" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
+            <img src="https://logos-world.net/wp-content/uploads/2020/03/Emirates-Logo.png" alt="Emirates" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
+            <img src="https://1000logos.net/wp-content/uploads/2020/04/Etihad-Airways-Logo.png" alt="Etihad Airways" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
+            <img src="https://logos-world.net/wp-content/uploads/2020/03/Lufthansa-Logo.png" alt="Lufthansa" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
+            <img src="https://1000logos.net/wp-content/uploads/2017/03/British-Airways-Logo.png" alt="British Airways" className="h-8 sm:h-10 md:h-12 object-contain opacity-90 hover:opacity-100 transition-opacity filter brightness-0 invert" />
+          </div>
+        </div>
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
