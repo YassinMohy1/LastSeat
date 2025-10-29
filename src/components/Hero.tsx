@@ -4,21 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
-    if (!imageLoaded) return;
-
-    const timer = setTimeout(() => {
-      setShowVideo(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [imageLoaded]);
-
-  useEffect(() => {
-    if (!showVideo || !videoRef.current) return;
+    if (!videoRef.current) return;
 
     const video = videoRef.current;
 
@@ -31,33 +19,23 @@ export default function Hero() {
     return () => {
       video.removeEventListener('canplay', handleCanPlay);
     };
-  }, [showVideo]);
+  }, []);
 
   return (
     <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-black" id="home">
       <div className="absolute inset-0 w-full h-full z-0">
-        <img
-          src="/image.png"
-          alt="Background"
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-          fetchpriority="high"
-          onLoad={() => setImageLoaded(true)}
-        />
-        {showVideo && (
-          <video
-            ref={videoRef}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1500 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
-            onError={() => setIsVideoLoaded(false)}
-          >
-            <source src="/lv_0_.mp4" type="video/mp4" />
-          </video>
-        )}
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onError={() => setIsVideoLoaded(false)}
+        >
+          <source src="/lv_0_.mp4" type="video/mp4" />
+        </video>
       </div>
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50 z-[1]"></div>
