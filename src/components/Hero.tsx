@@ -34,7 +34,7 @@ export default function Hero() {
   }, [showVideo]);
 
   return (
-    <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-sky-900" id="home">
+    <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-black" id="home">
       <div className="absolute inset-0 w-full h-full z-0">
         <img
           src="/image.png"
