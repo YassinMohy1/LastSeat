@@ -32,19 +32,27 @@ export default function Hero() {
 
   return (
     <section className="pt-24 pb-12 px-3 relative overflow-hidden min-h-[80vh] sm:min-h-screen bg-gradient-to-b from-sky-900 via-sky-800 to-sky-700" id="home">
-      {showVideo && (
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="none"
-          className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-1000 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
-        >
-          <source src="https://cdn.discordapp.com/attachments/1036260892989456506/1431877637365825577/lv_0_.mp4?ex=69024f37&is=6900fdb7&hm=9debbc9a909b224799fb1d9d56aecfd638496993979b5312ba7f4d10b919a46c&" type="video/mp4" />
-        </video>
-      )}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <img
+          src="/image.png"
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {showVideo && (
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onError={() => setIsVideoLoaded(false)}
+          >
+            <source src="/lv_0_.mp4" type="video/mp4" />
+          </video>
+        )}
+      </div>
 
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50 z-[1]"></div>
 
