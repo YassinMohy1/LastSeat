@@ -9,7 +9,7 @@ import AIAssistant from '@/components/AIAssistant';
 
 export default function FlightQuote() {
   const router = useRouter();
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const toast = useToast();
   const [showAssistant, setShowAssistant] = useState(false);
   const [loading, setLoading] = useState(false);

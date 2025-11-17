@@ -57,7 +57,7 @@ export default function Footer() {
             <ul className="space-y-2 text-gray-400">
               <li>
                 <Link
-                  to="/"
+                  href="/"
                   className="hover:text-white transition"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
@@ -65,20 +65,20 @@ export default function Footer() {
                 </Link>
               </li>
               <li><a href="/#how-to-book" className="hover:text-white transition">How to Book</a></li>
-              <li><Link to="/blog" className="hover:text-white transition">Blog</Link></li>
+              <li><Link href="/blog" className="hover:text-white transition">Blog</Link></li>
               <li><a href="/#offers" className="hover:text-white transition">Offers</a></li>
-              <li><Link to="/gift-vouchers" className="hover:text-white transition">Gift Vouchers</Link></li>
+              <li><Link href="/gift-vouchers" className="hover:text-white transition">Gift Vouchers</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-lg font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-gray-400">
-              <li><Link to="/about" className="hover:text-white transition">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-white transition">Contact Us</Link></li>
+              <li><Link href="/about" className="hover:text-white transition">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition">Contact Us</Link></li>
               <li><a href="#" className="hover:text-white transition">FAQs</a></li>
-              <li><Link to="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link></li>
-              <li><Link to="/terms-conditions" className="hover:text-white transition">Terms & Conditions</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link></li>
+              <li><Link href="/terms-conditions" className="hover:text-white transition">Terms & Conditions</Link></li>
             </ul>
           </div>
 

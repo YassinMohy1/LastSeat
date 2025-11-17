@@ -111,12 +111,12 @@ export default function AdminDashboard() {
     if (authLoading) return;
 
     if (!adminProfile) {
-      router.push('/login', { replace: true });
+      router.replace('/login');
       return;
     }
 
     if (adminProfile.role !== 'admin' && adminProfile.role !== 'main_admin') {
-      router.push('/', { replace: true });
+      router.replace('/');
       return;
     }
 

@@ -44,12 +44,12 @@ export default function AIAssistant({ isOpen, onClose, onOpen }: AIAssistantProp
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-assistant`,
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/chat-assistant`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
           },
           body: JSON.stringify({ messages: newMessages }),
         }

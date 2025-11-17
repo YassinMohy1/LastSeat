@@ -87,7 +87,7 @@ export default function NMIPaymentForm({
   }, [amount, currency, invoiceNumber, customerEmail]);
 
   useEffect(() => {
-    const tokenizationKey = import.meta.env.VITE_NMI_TOKENIZATION_KEY;
+    const tokenizationKey = process.env.NEXT_PUBLIC_NMI_TOKENIZATION_KEY;
 
     if (!tokenizationKey || tokenizationKey === 'YOUR_PUBLIC_TOKENIZATION_KEY_HERE') {
       onErrorRef.current('Payment system is not configured. Please contact support.');
@@ -189,12 +189,12 @@ export default function NMIPaymentForm({
                 console.log('Processing payment with token:', response.token);
 
                 const result = await fetch(
-                  `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nmi-process-payment`,
+                  `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/nmi-process-payment`,
                   {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                      'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
                     },
                     body: JSON.stringify({
                       paymentToken: response.token,

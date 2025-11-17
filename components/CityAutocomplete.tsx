@@ -51,8 +51,8 @@ export default function CityAutocomplete({ value, onChange, placeholder, label }
     setLoading(true);
 
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
       const response = await fetch(
         `${supabaseUrl}/functions/v1/search-airports?keyword=${encodeURIComponent(query)}`,

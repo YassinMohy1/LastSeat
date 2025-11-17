@@ -297,7 +297,7 @@ export default function GiftVouchers() {
           </div>
         </div>
       </div>
-      <AIAssistant />
+      <AIAssistant isOpen={false} onClose={() => {}} onOpen={() => {}} />
       <Footer />
     </>
   );

@@ -180,7 +180,7 @@ export default function AboutUs() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/"
+              href="/"
               className="bg-gradient-to-r from-brand-red to-brand-blue hover:shadow-xl text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
             >
               Search Flights
@@ -195,7 +195,7 @@ export default function AboutUs() {
         </div>
       </div>
       </div>
-      <AIAssistant />
+      <AIAssistant isOpen={false} onClose={() => {}} onOpen={() => {}} />
       <Footer />
     </>
   );

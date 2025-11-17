@@ -256,7 +256,7 @@ export default function ContactUs() {
         </div>
       </div>
       </div>
-      <AIAssistant />
+      <AIAssistant isOpen={false} onClose={() => {}} onOpen={() => {}} />
       <Footer />
     </>
   );

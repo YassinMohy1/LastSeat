@@ -1,7 +1,8 @@
 'use client';
 
 import { Calendar, User, ArrowLeft, Clock, Share2 } from 'lucide-react';
-import { Link, useParams, Navigate } from 'next/navigation';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AIAssistant from '@/components/AIAssistant';
@@ -10,14 +11,14 @@ import { useEffect } from 'react';
 
 export default function BlogPost() {
   const { slug } = useParams();
-  const post = slug ? getBlogPostBySlug(slug) : undefined;
+  const post = slug ? getBlogPostBySlug(Array.isArray(slug) ? slug[0] : slug) : undefined;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
 
   if (!post) {
-    return <Navigate to="/blog" replace />;
+    if (typeof window !== "undefined") { window.location.href = "/blog"; } return null;
   }
 
   const readingTime = Math.ceil(
@@ -34,7 +35,7 @@ export default function BlogPost() {
           <article className="container mx-auto px-4 max-w-4xl">
             {/* Back Button */}
             <Link
-              to="/blog"
+              href="/blog"
               className="inline-flex items-center gap-2 text-brand-red font-semibold hover:gap-3 transition-all mb-8 group"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -156,7 +157,7 @@ export default function BlogPost() {
                   Call: 888-602-6667
                 </a>
                 <Link
-                  to="/"
+                  href="/"
                   className="inline-block bg-white/20 backdrop-blur text-white font-bold px-8 py-4 rounded-lg hover:bg-white/30 transition transform hover:scale-105"
                 >
                   Search Flights
@@ -168,7 +169,7 @@ export default function BlogPost() {
             <div className="mt-16">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Continue Reading</h3>
               <Link
-                to="/blog"
+                href="/blog"
                 className="inline-flex items-center gap-2 text-brand-red font-semibold hover:gap-3 transition-all"
               >
                 <span>View All Articles</span>
@@ -178,7 +179,7 @@ export default function BlogPost() {
           </article>
         </main>
       </div>
-      <AIAssistant />
+      <AIAssistant isOpen={false} onClose={() => {}} onOpen={() => {}} />
       <Footer />
     </>
   );

@@ -264,7 +264,7 @@ export default function PrivacyPolicy() {
         </div>
       </div>
       </div>
-      <AIAssistant />
+      <AIAssistant isOpen={false} onClose={() => {}} onOpen={() => {}} />
       <Footer />
     </>
   );

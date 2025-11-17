@@ -263,7 +263,7 @@ export default function TermsConditions() {
         </div>
       </div>
       </div>
-      <AIAssistant />
+      <AIAssistant isOpen={false} onClose={() => {}} onOpen={() => {}} />
       <Footer />
     </>
   );

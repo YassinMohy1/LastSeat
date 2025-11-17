@@ -98,7 +98,7 @@ export default function Login() {
             throw new Error('Your account has been deactivated. Please contact support.');
           }
 
-          router.push('/admin/dashboard', { replace: true });
+          router.replace('/admin/dashboard');
           return;
         }
 

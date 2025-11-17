@@ -36,7 +36,7 @@ export default function PaymentModal({ isOpen, onClose, bookingDetails }: Paymen
     setIsProcessing(true);
 
     try {
-      const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+      const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
       if (!stripeKey || stripeKey === 'your_stripe_publishable_key_here') {
         alert('Payment is currently being processed by phone. Please call 888-602-6667 to complete your booking.');
@@ -50,11 +50,11 @@ export default function PaymentModal({ isOpen, onClose, bookingDetails }: Paymen
         throw new Error('Failed to load payment processor');
       }
 
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-payment-intent`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
         },
         body: JSON.stringify({
           amount: bookingDetails.amount,

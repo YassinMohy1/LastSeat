@@ -149,42 +149,37 @@ export default function Header() {
       )}
       <header className="bg-white shadow-md fixed w-full top-0 z-50">
 
-      <nav className="container mx-auto px-3 py-1.5">
+      <nav className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <Link
-              to="/"
-              className="flex items-center gap-2"
+              href="/"
+              className="flex items-center gap-2 group"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               <img
-                src="https://cdn.discordapp.com/attachments/1322984185811435641/1432494452705988700/5285517b-4a48-4557-b84b-ef4a9aa619db.png?ex=690141eb&is=68fff06b&hm=eaecebb87b6bbf8f9aee13084555faa83c81bb3d679c2ff3b5275498ea57d6f5&"
+                src="/Transparent Logo.png"
                 alt="Last Seat Ticket"
-                className="h-8 sm:h-10 w-auto object-contain"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  console.error('Failed to load logo');
-                }}
+                className="h-12 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </Link>
 
-            <ul className="hidden lg:flex gap-4 items-center text-xs">
+            <ul className="hidden lg:flex gap-6 items-center text-sm font-medium">
               <li>
                 <Link
-                  to="/"
-                  className="hover:text-brand-blue transition"
+                  href="/"
+                  className="hover:text-brand-red transition-colors duration-300 flex items-center gap-2"
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 >
                   Home
                 </Link>
               </li>
-              <li><a href="/#how-to-book" className="hover:text-brand-blue transition">How to Book</a></li>
-              <li><Link to="/blog" className="hover:text-brand-blue transition">Blog</Link></li>
-              <li><a href="/#offers" className="hover:text-brand-blue transition">Offers</a></li>
-              <li><Link to="/gift-vouchers" className="hover:text-brand-blue transition">Gift Vouchers</Link></li>
-              <li><Link to="/about" className="hover:text-brand-blue transition">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-brand-blue transition">Contact Us</Link></li>
+              <li><a href="/#how-to-book" className="hover:text-brand-red transition-colors duration-300">How to Book</a></li>
+              <li><Link href="/blog" className="hover:text-brand-red transition-colors duration-300">Blog</Link></li>
+              <li><a href="/#offers" className="hover:text-brand-red transition-colors duration-300">Offers</a></li>
+              <li><Link href="/gift-vouchers" className="hover:text-brand-red transition-colors duration-300">Gift Vouchers</Link></li>
+              <li><Link href="/about" className="hover:text-brand-red transition-colors duration-300">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-brand-red transition-colors duration-300">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -195,43 +190,43 @@ export default function Header() {
             {mobileMenuOpen ? <X /> : <Menu />}
           </button>
 
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-6">
             <div className="flex flex-col items-end">
               <a
                 href="tel:888-602-6667"
-                className="flex items-center gap-1.5 text-brand-blue hover:text-brand-blue/80 transition text-xs font-semibold group hover:scale-105 duration-300"
+                className="flex items-center gap-2 text-brand-blue hover:text-brand-red transition-colors duration-300 text-sm font-bold group"
               >
-                <Phone className="w-3.5 h-3.5 group-hover:rotate-12 transition-transform duration-300" />
-                <span className="font-bold">888-602-6667</span>
+                <Phone className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
+                <span className="text-lg">888-602-6667</span>
               </a>
-              <span className="text-[10px] text-gray-500 animate-pulse">Available 24/7</span>
+              <span className="text-xs text-gray-500 animate-pulse">Available 24/7</span>
             </div>
             {isAdmin ? (
               <Link
-                to="/admin/dashboard"
-                className="flex items-center gap-1 px-2 py-1 bg-brand-blue/10 text-brand-blue rounded-lg hover:bg-brand-blue/20 transition-all duration-300"
+                href="/admin/dashboard"
+                className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-white rounded-lg hover:bg-brand-red transition-all duration-300 font-medium"
               >
-                <DoorOpen className="w-3.5 h-3.5" />
-                <span className="text-xs font-medium">Dashboard</span>
+                <DoorOpen className="w-4 h-4" />
+                <span className="text-sm">Dashboard</span>
               </Link>
             ) : (
               <Link
-                to="/admin/login"
-                className="flex items-center gap-1 px-2 py-1 border border-brand-blue/30 text-brand-blue rounded-lg hover:bg-brand-blue/5 transition-all duration-300"
+                href="/login"
+                className="flex items-center gap-2 px-4 py-2 border-2 border-brand-blue text-brand-blue rounded-lg hover:bg-brand-blue hover:text-white transition-all duration-300 font-medium"
               >
-                <DoorOpen className="w-3.5 h-3.5" />
-                <span className="text-xs font-medium">Login</span>
+                <DoorOpen className="w-4 h-4" />
+                <span className="text-sm">Login</span>
               </Link>
             )}
           </div>
         </div>
 
         {mobileMenuOpen && (
-          <ul className="lg:hidden mt-3 space-y-2 pb-3 text-sm">
+          <ul className="lg:hidden mt-4 space-y-3 pb-4 text-sm">
             <li>
               <Link
-                to="/"
-                className="block hover:text-brand-blue transition"
+                href="/"
+                className="block py-2 hover:text-brand-red transition-colors duration-300"
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                   setMobileMenuOpen(false);
@@ -240,28 +235,39 @@ export default function Header() {
                 Home
               </Link>
             </li>
-            <li><a href="/#how-to-book" className="block hover:text-brand-blue transition">How to Book</a></li>
-            <li><Link to="/blog" className="block hover:text-brand-blue transition">Blog</Link></li>
-            <li><a href="/#offers" className="block hover:text-brand-blue transition">Offers</a></li>
-            <li><Link to="/gift-vouchers" className="block hover:text-brand-blue transition">Gift Vouchers</Link></li>
-            <li><Link to="/about" className="block hover:text-brand-blue transition">About Us</Link></li>
-            <li><Link to="/contact" className="block hover:text-brand-blue transition">Contact Us</Link></li>
+            <li><a href="/#how-to-book" className="block py-2 hover:text-brand-red transition-colors duration-300" onClick={() => setMobileMenuOpen(false)}>How to Book</a></li>
+            <li><Link href="/blog" className="block py-2 hover:text-brand-red transition-colors duration-300" onClick={() => setMobileMenuOpen(false)}>Blog</Link></li>
+            <li><a href="/#offers" className="block py-2 hover:text-brand-red transition-colors duration-300" onClick={() => setMobileMenuOpen(false)}>Offers</a></li>
+            <li><Link href="/gift-vouchers" className="block py-2 hover:text-brand-red transition-colors duration-300" onClick={() => setMobileMenuOpen(false)}>Gift Vouchers</Link></li>
+            <li><Link href="/about" className="block py-2 hover:text-brand-red transition-colors duration-300" onClick={() => setMobileMenuOpen(false)}>About Us</Link></li>
+            <li><Link href="/contact" className="block py-2 hover:text-brand-red transition-colors duration-300" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link></li>
+            <li className="pt-2">
+              <a
+                href="tel:888-602-6667"
+                className="flex items-center gap-2 text-brand-blue hover:text-brand-red transition-colors duration-300 font-bold py-2"
+              >
+                <Phone className="w-5 h-5" />
+                <span>888-602-6667</span>
+              </a>
+            </li>
             <li>
               {isAdmin ? (
                 <Link
-                  to="/admin/dashboard"
-                  className="flex items-center gap-1 px-2 py-1 bg-brand-blue/10 text-brand-blue rounded-lg hover:bg-brand-blue/20 transition-all duration-300 w-fit"
+                  href="/admin/dashboard"
+                  className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-white rounded-lg hover:bg-brand-red transition-all duration-300 w-fit font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  <DoorOpen className="w-3.5 h-3.5" />
-                  <span className="text-xs font-medium">Dashboard</span>
+                  <DoorOpen className="w-4 h-4" />
+                  <span>Dashboard</span>
                 </Link>
               ) : (
                 <Link
-                  to="/admin/login"
-                  className="flex items-center gap-1 px-2 py-1 border border-brand-blue/30 text-brand-blue rounded-lg hover:bg-brand-blue/5 transition-all duration-300 w-fit"
+                  href="/login"
+                  className="flex items-center gap-2 px-4 py-2 border-2 border-brand-blue text-brand-blue rounded-lg hover:bg-brand-blue hover:text-white transition-all duration-300 w-fit font-medium"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  <DoorOpen className="w-3.5 h-3.5" />
-                  <span className="text-xs font-medium">Login</span>
+                  <DoorOpen className="w-4 h-4" />
+                  <span>Login</span>
                 </Link>
               )}
             </li>

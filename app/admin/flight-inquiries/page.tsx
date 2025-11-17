@@ -54,7 +54,7 @@ export default function FlightInquiriesManagement() {
     if (authLoading) return;
 
     if (!adminProfile || (adminProfile.role !== 'admin' && adminProfile.role !== 'main_admin')) {
-      router.push('/login', { replace: true });
+      router.replace('/login');
       return;
     }
 

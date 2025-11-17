@@ -19,7 +19,7 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   }
 
   if (!user || !adminProfile) {
-    return <Navigate to="/login" replace />;
+    return <Navigate href="/login" replace />;
   }
 
   return <>{children}</>;
